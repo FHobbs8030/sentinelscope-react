@@ -34,37 +34,61 @@ The platform bridges the gap between traditional command-line security tooling a
 
 ### Enumeration Stage
 
-![Enumeration Stage](client/public/images/enumeration-stage.png)
+<img
+  src="client/public/images/enumeration-stage.png"
+  alt="Dashboard Preview"
+  width="100%"
+/>
 
 ---
 
 ### Recon Stage
 
-![Recon Stage](client/public/images/recon-stage.png)
+<img
+  src="client/public/images/recon-stage.png"
+  alt="Dashboard Preview"
+  width="100%"
+/>
 
 ---
 
 ### Reporting Engine
 
-![Reporting Engine](client/public/images/reporting-engine.png)
+<img
+  src="client/public/images/reporting-engine.png"
+  alt="Dashboard Preview"
+  width="100%"
+/>
 
 ---
 
 ### Topology Map
 
-![Topology Map](client/public/images/topology-map.png)
+<img
+  src="client/public/images/topology-map.png"
+  alt="Dashboard Preview"
+  width="100%"
+/>
 
 ---
 
 ### Vulnerability Analysis
 
-![Vulnerability Analysis](client/public/images/vuln-analysis.png)
+<img
+  src="client/public/images/vuln-analysis.png"
+  alt="Dashboard Preview"
+  width="100%"
+/>
 
 ---
 
 ### What To Do Next
 
-![What To Do Next](client/public/images/What_to_do_next.png)
+<img
+  src="client/public/images/What_to_do_next.png"
+  alt="Dashboard Preview"
+  width="100%"
+/>
 
 ---
 
