@@ -23,18 +23,6 @@ The platform bridges the gap between traditional command-line security tooling a
 
 ### Dashboard Preview
 
-Image Path:
-
-```text
-/public/images/dashboard-preview.png
-```
-
-Markdown Usage:
-
-```md
-![Dashboard Preview](client/public/images/dashboard-preview.png)
-```
-
 Preview:
 
 ![Dashboard Preview](client/public/images/dashboard-preview.png)
