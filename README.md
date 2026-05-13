@@ -21,7 +21,7 @@ The platform bridges the gap between traditional command-line security tooling a
 
 ## 🧠 Core Features
 
-## 🌐 Reconnaissance Engine
+### 🌐 Reconnaissance Engine
 
 - host discovery
 - service enumeration
@@ -29,9 +29,7 @@ The platform bridges the gap between traditional command-line security tooling a
 - network visibility
 - scan orchestration
 
----
-
-## 🛡️ Vulnerability Analysis
+### 🛡️ Vulnerability Analysis
 
 - vulnerability tracking
 - severity scoring
@@ -39,18 +37,14 @@ The platform bridges the gap between traditional command-line security tooling a
 - threat monitoring
 - alert prioritization
 
----
-
-## 🗺️ Topology Mapping
+### 🗺️ Topology Mapping
 
 - network relationship visualization
 - infrastructure mapping
 - node hierarchy display
 - traffic intelligence
 
----
-
-## 📊 Reporting System
+### 📊 Reporting System
 
 - structured security reporting
 - export-ready intelligence summaries
@@ -105,94 +99,166 @@ SentinelScope/
 │       └── utils/
 │
 ├── docs/
-│   ├── diagrams/
-│   ├── reports/
-│   └── screenshots/
-│
 └── server/
-    ├── controllers/
-    ├── middleware/
-    ├── models/
-    ├── parsers/
-    ├── reports/
-    ├── routes/
-    ├── scanners/
-    ├── services/
-    └── utils/
-🎨 UI Architecture
+```
 
-SentinelScope follows a layered UI architecture:
+---
 
-UI Primitive Layer
+## 🖼️ Image Gallery
 
-Reusable UI foundations:
+All images are located in:
 
-Card
-Button
-Badge
-Input
-Dashboard Composition Layer
-
-Reusable operational dashboard systems:
-
-DashboardGrid
-StatCard
-SectionHeader
-ScanPanel
-Workflow Layer
-
-Operational security workflows:
-
-scan management
-reconnaissance operations
-vulnerability analysis
-reporting pipelines
-🛰️ Design Philosophy
-
-SentinelScope focuses on:
-
-clarity
-hierarchy
-low visual noise
-operational efficiency
-enterprise-grade structure
-tactical dashboard workflows
-
-This is NOT:
-
-RGB overload
-hacker movie UI
-gaming aesthetics
-
-This IS:
-
-professional
-structured
-intelligence-focused
-scalable
-data-oriented
-🖼️ Public Image Assets
-
-All image assets are located in:
-
+```text
 client/public/images/
-Available Images
-Dashboard Preview
+```
+
+---
+
+### Dashboard Preview
+
+Image Path:
+
+```text
 /public/images/dashboard-preview.png
-Enumeration Stage
+```
+
+Markdown Usage:
+
+```md
+![Dashboard Preview](client/public/images/dashboard-preview.png)
+```
+
+Preview:
+
+![Dashboard Preview](client/public/images/dashboard-preview.png)
+
+---
+
+### Enumeration Stage
+
+Image Path:
+
+```text
 /public/images/enumeration-stage.png
-Recon Stage
+```
+
+Markdown Usage:
+
+```md
+![Enumeration Stage](client/public/images/enumeration-stage.png)
+```
+
+Preview:
+
+![Enumeration Stage](client/public/images/enumeration-stage.png)
+
+---
+
+### Recon Stage
+
+Image Path:
+
+```text
 /public/images/recon-stage.png
-Reporting Engine
+```
+
+Markdown Usage:
+
+```md
+![Recon Stage](client/public/images/recon-stage.png)
+```
+
+Preview:
+
+![Recon Stage](client/public/images/recon-stage.png)
+
+---
+
+### Reporting Engine
+
+Image Path:
+
+```text
 /public/images/reporting-engine.png
-Topology Map
+```
+
+Markdown Usage:
+
+```md
+![Reporting Engine](client/public/images/reporting-engine.png)
+```
+
+Preview:
+
+![Reporting Engine](client/public/images/reporting-engine.png)
+
+---
+
+### Topology Map
+
+Image Path:
+
+```text
 /public/images/topology-map.png
-Vulnerability Stage
+```
+
+Markdown Usage:
+
+```md
+![Topology Map](client/public/images/topology-map.png)
+```
+
+Preview:
+
+![Topology Map](client/public/images/topology-map.png)
+
+---
+
+### Vulnerability Analysis
+
+Image Path:
+
+```text
 /public/images/vuln-analysis.png
-What's Next
+```
+
+Markdown Usage:
+
+```md
+![Vulnerability Analysis](client/public/images/vuln-analysis.png)
+```
+
+Preview:
+
+![Vulnerability Analysis](client/public/images/vuln-analysis.png)
+
+---
+
+### What To Do Next
+
+Image Path:
+
+```text
 /public/images/What_to_do_next.png
-🧩 Current Frontend Components
-UI Components
+```
+
+Markdown Usage:
+
+```md
+![What To Do Next](client/public/images/What_to_do_next.png)
+```
+
+Preview:
+
+![What To Do Next](client/public/images/What_to_do_next.png)
+
+---
+
+## 🧩 Current Frontend Components
+
+### UI Components
+
+```text
 components/ui/
 ├── Badge
 ├── Button
@@ -204,60 +270,100 @@ components/ui/
 ├── Table
 ├── Tabs
 └── Tooltip
-Dashboard Components
+```
+
+### Dashboard Components
+
+```text
 components/dashboard/
 ├── DashboardGrid
 ├── ScanPanel
 ├── SectionHeader
 └── StatCard
-🔥 Current Development Status
-✅ Completed
-React + Vite setup
-Responsive AppShell
-Sidebar navigation
-Topbar
-MainContent system
-PageContainer system
-Tactical UI design system
-UI primitives
-Dashboard composition layer
-Operational scan panel foundation
-🚧 In Progress
-TerminalPanel
-Live scan workflows
-Recon orchestration
-Vulnerability pipelines
-Reporting dashboards
-API integrations
-🛠️ Installation
-Clone Repository
+```
+
+---
+
+## 🔥 Current Development Status
+
+### ✅ Completed
+
+- React + Vite setup
+- Responsive AppShell
+- Sidebar navigation
+- Topbar
+- MainContent system
+- PageContainer system
+- Tactical UI design system
+- UI primitives
+- Dashboard composition layer
+- Operational scan panel foundation
+
+### 🚧 In Progress
+
+- TerminalPanel
+- Live scan workflows
+- Recon orchestration
+- Vulnerability pipelines
+- Reporting dashboards
+- API integrations
+
+---
+
+## 🛠️ Installation
+
+### Clone Repository
+
+```bash
 git clone https://github.com/FHobbs8030/sentinelscope.git
-Navigate Into Project
+```
+
+### Navigate Into Project
+
+```bash
 cd sentinelscope
-Install Frontend Dependencies
+```
+
+### Install Frontend Dependencies
+
+```bash
 cd client
 npm install
-Start Frontend
+```
+
+### Start Frontend
+
+```bash
 npm run dev
-🔗 Repository Links
-Frontend Repository
+```
+
+---
+
+## 🔗 Repository Links
+
+### Frontend Repository
 
 https://github.com/FHobbs8030/sentinelscope
 
-Backend Repository
+### Backend Repository
 
 https://github.com/FHobbs8030/sentinelscope-server
 
-🧠 Engineering Principles
+---
+
+## 🧠 Engineering Principles
 
 Every system in SentinelScope is designed around:
 
-modularity
-scalability
-maintainability
-operational clarity
-reusable architecture
-🛡️ SentinelScope
+- modularity
+- scalability
+- maintainability
+- operational clarity
+- reusable architecture
 
-“Make it clear first.
-Structured systems naturally become powerful.”
+---
+
+## 🛰️ SentinelScope
+
+> “Make it clear first.
+> Structured systems naturally become powerful.”
