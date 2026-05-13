@@ -1,7 +1,5 @@
-import DashboardCard from "./components/DashboardCard";
-import ActionButtons from "./components/ActionButtons";
-import SystemStatus from "./components/SystemStatus";
-import TargetInput from "./components/TargetInput";
+import NetworkOverviewSection from "./components/NetworkOverviewSection";
+import ScanOperationsSection from "./components/ScanOperationsSection";
 
 function Dashboard() {
   return (
@@ -9,16 +7,12 @@ function Dashboard() {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "1.5rem",
+        gap: "2rem",
       }}
     >
-      <ActionButtons />
+      <NetworkOverviewSection />
 
-      <SystemStatus />
-
-      <TargetInput />
-
-      <DashboardCard />
+      <ScanOperationsSection />
     </div>
   );
 }

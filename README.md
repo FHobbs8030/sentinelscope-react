@@ -1,253 +1,263 @@
 # 🛡️ SentinelScope
 
-## 🌐 Advanced Reconnaissance & Security Workflow Dashboard
-
-SentinelScope is a full-stack MERN application designed to centralize and visualize the complete penetration testing and reconnaissance workflow in a single modern interface.
-
-The platform orchestrates multiple security and networking tools, stores scan intelligence, tracks findings across engagement stages, and generates structured reports for authorized security assessments and educational lab environments.
+> Tactical cybersecurity intelligence and reconnaissance platform built with React, Vite, Node.js, and modular dashboard architecture.
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Project Overview
 
-### 🖥️ Frontend
+SentinelScope is a modern cybersecurity operations platform focused on:
 
-[https://sentinelscope.io](https://sentinelscope.io)
+- network reconnaissance
+- vulnerability intelligence
+- topology visualization
+- reporting workflows
+- operational scan management
+- dashboard-driven security analytics
 
-### 🔌 API
-
-[https://api.sentinelscope.io](https://api.sentinelscope.io)
-
----
-
-## 📦 Repository Links
-
-### 💻 Frontend Repository
-
-[SentinelScope Client](https://github.com/FHobbs8030/sentinelscope-client)
-
-### ⚙️ Backend Repository
-
-[SentinelScope Server](https://github.com/FHobbs8030/sentinelscope-server)
+The platform bridges the gap between traditional command-line security tooling and modern enterprise-grade web application workflows.
 
 ---
 
-## 📖 Overview
+## 🧠 Core Features
 
-SentinelScope bridges the gap between traditional command-line security tooling and modern full-stack application workflows.
+## 🌐 Reconnaissance Engine
 
-The platform aggregates:
-
-- 🌍 reconnaissance intelligence
-- 🔍 service enumeration
-- 📡 HTTP metadata
-- ⚠️ vulnerability findings
-- 📑 reporting artifacts
-- 🧠 infrastructure intelligence
-
-into a unified dashboard experience.
+- host discovery
+- service enumeration
+- port scanning
+- network visibility
+- scan orchestration
 
 ---
 
-## ✨ Features
+## 🛡️ Vulnerability Analysis
 
-### 🛰️ Reconnaissance Dashboard
-
-#### Recon Features
-
-- 🌐 DNS resolution
-- 🧾 WHOIS lookups
-- 📍 IP intelligence
-- 🔄 reverse DNS analysis
-- 🚪 open port discovery
-- 🖥️ service detection
-- ☁️ cloud provider identification
-- 🕸️ topology visualization
-- 🧪 technology fingerprinting
-
-#### Integrated Tools
-
-- 🛠️ Nmap
-- 🗺️ Zenmap
-- 📜 NSE Scripts
-- 🔍 Wappalyzer
-- 🌐 Browser DevTools
+- vulnerability tracking
+- severity scoring
+- risk visualization
+- threat monitoring
+- alert prioritization
 
 ---
 
-### 🔎 Enumeration Engine
+## 🗺️ Topology Mapping
 
-#### Enumeration Features
-
-- 📡 HTTP header analysis
-- 🤖 robots.txt discovery
-- 🔗 API route inspection
-- 📂 hidden directory enumeration
-- 🧱 HTTP method detection
-- 🍪 cookie/session analysis
-- 🔑 JWT detection
-- 🌍 CORS inspection
-
-#### Enumeration Integrated Tools
-
-- 🛠️ Burp Suite
-- 📂 Gobuster
-- ⚡ FFUF
-- 🌐 curl
-- 📜 NSE HTTP scripts
+- network relationship visualization
+- infrastructure mapping
+- node hierarchy display
+- traffic intelligence
 
 ---
 
-### ⚠️ Vulnerability Analysis
+## 📊 Reporting System
 
-#### Vulnerability Features
-
-- 🛡️ security header analysis
-- 🌍 weak CORS detection
-- 🚨 exposed administrative endpoints
-- ⚙️ insecure configuration identification
-- 🧠 automated finding classification
-- 📊 severity categorization
-- 🔗 finding correlation engine
-
-#### Categories
-
-- 🔐 Authentication flaws
-- ⚙️ Configuration weaknesses
-- 📂 Exposure findings
-- 🧱 Missing security controls
-- 🚦 Transport security issues
+- structured security reporting
+- export-ready intelligence summaries
+- operational dashboards
+- metric aggregation
 
 ---
 
-### 💥 Exploitation Tracking (Authorized Labs Only)
+## ⚙️ Frontend Stack
 
-Supported environments:
-
-- 🍹 OWASP Juice Shop
-- 🧨 DVWA
-- 🧪 TryHackMe Labs
-- 🎯 Hack The Box
-
-#### Features
-
-- 📝 payload logging
-- 📸 proof-of-concept storage
-- 📡 request/response snapshots
-- 🏷️ authorization scope tagging
-- 🗂️ evidence management
+- React
+- Vite
+- Modular Component Architecture
+- Responsive Dashboard System
+- Tactical Dark Theme UI
+- Reusable UI Primitive System
 
 ---
 
-### 🧠 Post-Exploitation Analysis
+## ⚙️ Backend Stack
 
-#### Post-Exploitation Features
-
-- 🔄 session tracking
-- 🔑 token analysis
-- 🛂 privilege mapping
-- 📦 exposed data cataloging
-- 👤 access-level documentation
-- ⏱️ timeline correlation
+- Node.js
+- Express
+- Modular Service Architecture
+- REST APIs
+- Security Workflow Integration
 
 ---
 
-### 📑 Reporting System
-
-#### Reporting Features
-
-- 📝 Markdown report generation
-- 📄 PDF export support
-- 📊 severity summaries
-- 🛠️ remediation recommendations
-- 👔 executive summaries
-- 🔬 technical findings
-- 📸 evidence screenshots
-- 🕒 engagement timelines
-
----
-
-## 🧭 Dashboard Workflow
-
-SentinelScope organizes engagements into six operational stages:
-
-1. 🛰️ Reconnaissance
-2. 🔎 Enumeration
-3. ⚠️ Vulnerability Analysis
-4. 💥 Exploitation
-5. 🧠 Post-Exploitation
-6. 📑 Reporting
-
----
-
-## 🧰 Tech Stack
-
-### 🎨 Frontend
-
-- ⚛️ React
-- ⚡ Vite
-- 📈 Recharts
-- 🔄 Axios
-- 🧭 React Router
-
-### ⚙️ Backend
-
-- 🟢 Node.js
-- 🚂 Express
-- 🔧 child_process orchestration
-- 🌐 REST API architecture
-
-### 🗄️ Database
-
-- 🍃 MongoDB
-- 🧩 Mongoose
-
-### 🔐 Security Tooling
-
-- 🛠️ Nmap
-- 🗺️ Zenmap
-- 📜 NSE Scripts
-- 🛠️ Burp Suite
-- 📂 Gobuster
-- ⚡ FFUF
-
----
-
-## 🏗️ Project Structure
+## 📂 Project Structure
 
 ```text
-sentinelscope/
+SentinelScope/
 │
 ├── client/
 │   ├── public/
-│   │   ├── images/
-│   │   │   ├── dashboard-preview.png
-│   │   │   ├── recon-stage.png
-│   │   │   ├── enumeration-stage.png
-│   │   │   ├── vuln-analysis.png
-│   │   │   ├── reporting-engine.png
-│   │   │   └── topology-map.png
+│   │   └── images/
 │   │
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── utils/
-│   │   ├── services/
-│   │   ├── contexts/
-│   │   ├── assets/
-│   │   └── styles/
+│   └── src/
+│       ├── assets/
+│       ├── components/
+│       │   ├── dashboard/
+│       │   ├── layout/
+│       │   └── ui/
+│       │
+│       ├── contexts/
+│       ├── features/
+│       ├── hooks/
+│       ├── pages/
+│       ├── services/
+│       ├── styles/
+│       └── utils/
 │
-├── server/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── services/
-│   ├── scanners/
-│   ├── parsers/
+├── docs/
+│   ├── diagrams/
 │   ├── reports/
-│   ├── utils/
-│   └── app.js
+│   └── screenshots/
 │
-└── README.md
+└── server/
+    ├── controllers/
+    ├── middleware/
+    ├── models/
+    ├── parsers/
+    ├── reports/
+    ├── routes/
+    ├── scanners/
+    ├── services/
+    └── utils/
+🎨 UI Architecture
+
+SentinelScope follows a layered UI architecture:
+
+UI Primitive Layer
+
+Reusable UI foundations:
+
+Card
+Button
+Badge
+Input
+Dashboard Composition Layer
+
+Reusable operational dashboard systems:
+
+DashboardGrid
+StatCard
+SectionHeader
+ScanPanel
+Workflow Layer
+
+Operational security workflows:
+
+scan management
+reconnaissance operations
+vulnerability analysis
+reporting pipelines
+🛰️ Design Philosophy
+
+SentinelScope focuses on:
+
+clarity
+hierarchy
+low visual noise
+operational efficiency
+enterprise-grade structure
+tactical dashboard workflows
+
+This is NOT:
+
+RGB overload
+hacker movie UI
+gaming aesthetics
+
+This IS:
+
+professional
+structured
+intelligence-focused
+scalable
+data-oriented
+🖼️ Public Image Assets
+
+All image assets are located in:
+
+client/public/images/
+Available Images
+Dashboard Preview
+/public/images/dashboard-preview.png
+Enumeration Stage
+/public/images/enumeration-stage.png
+Recon Stage
+/public/images/recon-stage.png
+Reporting Engine
+/public/images/reporting-engine.png
+Topology Map
+/public/images/topology-map.png
+Vulnerability Stage
+/public/images/vuln-analysis.png
+What's Next
+/public/images/What_to_do_next.png
+🧩 Current Frontend Components
+UI Components
+components/ui/
+├── Badge
+├── Button
+├── Card
+├── Input
+├── Modal
+├── Panel
+├── Select
+├── Table
+├── Tabs
+└── Tooltip
+Dashboard Components
+components/dashboard/
+├── DashboardGrid
+├── ScanPanel
+├── SectionHeader
+└── StatCard
+🔥 Current Development Status
+✅ Completed
+React + Vite setup
+Responsive AppShell
+Sidebar navigation
+Topbar
+MainContent system
+PageContainer system
+Tactical UI design system
+UI primitives
+Dashboard composition layer
+Operational scan panel foundation
+🚧 In Progress
+TerminalPanel
+Live scan workflows
+Recon orchestration
+Vulnerability pipelines
+Reporting dashboards
+API integrations
+🛠️ Installation
+Clone Repository
+git clone https://github.com/FHobbs8030/sentinelscope.git
+Navigate Into Project
+cd sentinelscope
+Install Frontend Dependencies
+cd client
+npm install
+Start Frontend
+npm run dev
+🔗 Repository Links
+Frontend Repository
+
+https://github.com/FHobbs8030/sentinelscope
+
+Backend Repository
+
+https://github.com/FHobbs8030/sentinelscope-server
+
+🧠 Engineering Principles
+
+Every system in SentinelScope is designed around:
+
+modularity
+scalability
+maintainability
+operational clarity
+reusable architecture
+🛡️ SentinelScope
+
+“Make it clear first.
+Structured systems naturally become powerful.”
