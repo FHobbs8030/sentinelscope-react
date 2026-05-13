@@ -23,9 +23,9 @@ const navigation = [
   },
 ];
 
-function Sidebar() {
+function Sidebar({ isOpen, onClose }) {
   return (
-    <aside className="sidebar">
+    <aside className={isOpen ? "sidebar sidebar-open" : "sidebar"}>
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <div className="sidebar-logo-icon">S</div>
@@ -36,6 +36,10 @@ function Sidebar() {
             <p>Attack Surface Intelligence</p>
           </div>
         </div>
+
+        <button className="sidebar-mobile-close" onClick={onClose}>
+          ✕
+        </button>
       </div>
 
       <nav className="sidebar-navigation">
