@@ -1,0 +1,176 @@
+:root {
+  /* =========================================
+     CORE BACKGROUNDS
+  ========================================= */
+  --color-bg-primary: #0a0f1a;
+  --color-bg-secondary: #101826;
+  --color-bg-tertiary: #162033;
+  --color-bg-elevated: #1b2840;
+  --color-bg-overlay: rgba(5, 10, 20, 0.82);
+
+  /* =========================================
+     SURFACES
+  ========================================= */
+  --color-surface-primary: #111b2d;
+  --color-surface-secondary: #172338;
+  --color-surface-hover: #1d2d47;
+  --color-surface-active: #243858;
+
+  /* =========================================
+     BORDERS
+  ========================================= */
+  --color-border-primary: #24324d;
+  --color-border-secondary: #31415f;
+  --color-border-accent: #3b82f6;
+
+  /* =========================================
+     PRIMARY TEXT
+  ========================================= */
+  --color-text-primary: #f5f7fa;
+  --color-text-secondary: #c7d2e3;
+  --color-text-muted: #8ea0bf;
+  --color-text-disabled: #5d6b86;
+
+  /* =========================================
+     BRAND / PRIMARY ACCENT
+  ========================================= */
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+
+  /* =========================================
+     SUCCESS
+  ========================================= */
+  --color-success-100: #dcfce7;
+  --color-success-300: #86efac;
+  --color-success-500: #22c55e;
+  --color-success-700: #15803d;
+
+  /* =========================================
+     WARNING
+  ========================================= */
+  --color-warning-100: #fef9c3;
+  --color-warning-300: #fde047;
+  --color-warning-500: #eab308;
+  --color-warning-700: #a16207;
+
+  /* =========================================
+     ERROR / DANGER
+  ========================================= */
+  --color-danger-100: #fee2e2;
+  --color-danger-300: #fca5a5;
+  --color-danger-500: #ef4444;
+  --color-danger-700: #b91c1c;
+
+  /* =========================================
+     INFO
+  ========================================= */
+  --color-info-100: #dbeafe;
+  --color-info-300: #93c5fd;
+  --color-info-500: #0ea5e9;
+  --color-info-700: #0369a1;
+
+  /* =========================================
+     SIDEBAR
+  ========================================= */
+  --sidebar-bg: #0b1220;
+  --sidebar-border: #1e293b;
+  --sidebar-item-hover: #172338;
+  --sidebar-item-active: #1e3a5f;
+  --sidebar-text: #d8e1f0;
+
+  /* =========================================
+     TOPBAR
+  ========================================= */
+  --topbar-bg: rgba(10, 15, 26, 0.92);
+  --topbar-border: #24324d;
+
+  /* =========================================
+     TERMINAL PANELS
+  ========================================= */
+  --terminal-bg: #050b14;
+  --terminal-header: #111827;
+  --terminal-border: #1f2937;
+  --terminal-text: #d1fae5;
+  --terminal-prompt: #22c55e;
+
+  /* =========================================
+     STATUS COLORS
+  ========================================= */
+  --status-online: #22c55e;
+  --status-offline: #ef4444;
+  --status-warning: #eab308;
+  --status-running: #3b82f6;
+
+  /* =========================================
+     CHART COLORS
+  ========================================= */
+  --chart-blue: #3b82f6;
+  --chart-cyan: #06b6d4;
+  --chart-green: #22c55e;
+  --chart-yellow: #eab308;
+  --chart-red: #ef4444;
+  --chart-purple: #8b5cf6;
+
+  /* =========================================
+     SCROLLBAR
+  ========================================= */
+  --scrollbar-bg: #0f172a;
+  --scrollbar-thumb: #334155;
+  --scrollbar-thumb-hover: #475569;
+
+  /* =========================================
+     FOCUS STATES
+  ========================================= */
+  --focus-ring: rgba(59, 130, 246, 0.45);
+
+  /* =========================================
+     GRADIENTS
+  ========================================= */
+  --gradient-primary:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #1d4ed8
+    );
+
+  --gradient-surface:
+    linear-gradient(
+      180deg,
+      rgba(23, 35, 56, 1),
+      rgba(13, 20, 34, 1)
+    );
+
+  /* =========================================
+     OVERLAY EFFECTS
+  ========================================= */
+  --overlay-dark:
+    linear-gradient(
+      to bottom,
+      rgba(5, 10, 20, 0.2),
+      rgba(5, 10, 20, 0.9)
+    );
+
+  /* =========================================
+     CYBER ACCENT GLOWS
+  ========================================= */
+  --glow-primary:
+    0 0 24px rgba(59, 130, 246, 0.28);
+
+  --glow-success:
+    0 0 24px rgba(34, 197, 94, 0.25);
+
+  --glow-danger:
+    0 0 24px rgba(239, 68, 68, 0.25);
+
+  /* =========================================
+     TRANSITIONS
+  ========================================= */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s ease;
+}

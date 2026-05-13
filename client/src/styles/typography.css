@@ -1,0 +1,88 @@
+/* =========================================
+   TYPOGRAPHY SYSTEM
+========================================= */
+
+body {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  font-size: var(--font-md);
+
+  line-height: 1.5;
+
+  color: var(--color-text-primary);
+
+  background: var(--color-bg-primary);
+}
+
+/* =========================================
+   HEADINGS
+========================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+
+  line-height: 1.15;
+
+  letter-spacing: -0.02em;
+
+  color: var(--color-text-primary);
+}
+
+h1 {
+  font-size: 48px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 20px;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+h6 {
+  font-size: 14px;
+}
+
+/* =========================================
+   TEXT HELPERS
+========================================= */
+
+p {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-small {
+  font-size: var(--font-sm);
+}
+
+.text-xs {
+  font-size: var(--font-xs);
+}
+
+.text-bold {
+  font-weight: 700;
+}
