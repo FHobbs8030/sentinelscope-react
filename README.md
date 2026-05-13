@@ -22,8 +22,7 @@ The platform bridges the gap between traditional command-line security tooling a
 ---
 
 ### Dashboard Preview
-
-Preview:
+---
 
 ![Dashboard Preview](client/public/images/dashboard-preview.png)
 
