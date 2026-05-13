@@ -30,20 +30,6 @@ The platform bridges the gap between traditional command-line security tooling a
 
 ### Enumeration Stage
 
-Image Path:
-
-```text
-/public/images/enumeration-stage.png
-```
-
-Markdown Usage:
-
-```md
-![Enumeration Stage](client/public/images/enumeration-stage.png)
-```
-
-Preview:
-
 ![Enumeration Stage](client/public/images/enumeration-stage.png)
 
 ---
