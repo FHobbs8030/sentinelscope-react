@@ -36,39 +36,11 @@ The platform bridges the gap between traditional command-line security tooling a
 
 ### Recon Stage
 
-Image Path:
-
-```text
-/public/images/recon-stage.png
-```
-
-Markdown Usage:
-
-```md
-![Recon Stage](client/public/images/recon-stage.png)
-```
-
-Preview:
-
 ![Recon Stage](client/public/images/recon-stage.png)
 
 ---
 
 ### Reporting Engine
-
-Image Path:
-
-```text
-/public/images/reporting-engine.png
-```
-
-Markdown Usage:
-
-```md
-![Reporting Engine](client/public/images/reporting-engine.png)
-```
-
-Preview:
 
 ![Reporting Engine](client/public/images/reporting-engine.png)
 
@@ -76,39 +48,11 @@ Preview:
 
 ### Topology Map
 
-Image Path:
-
-```text
-/public/images/topology-map.png
-```
-
-Markdown Usage:
-
-```md
-![Topology Map](client/public/images/topology-map.png)
-```
-
-Preview:
-
 ![Topology Map](client/public/images/topology-map.png)
 
 ---
 
 ### Vulnerability Analysis
-
-Image Path:
-
-```text
-/public/images/vuln-analysis.png
-```
-
-Markdown Usage:
-
-```md
-![Vulnerability Analysis](client/public/images/vuln-analysis.png)
-```
-
-Preview:
 
 ![Vulnerability Analysis](client/public/images/vuln-analysis.png)
 
@@ -116,24 +60,9 @@ Preview:
 
 ### What To Do Next
 
-Image Path:
-
-```text
-/public/images/What_to_do_next.png
-```
-
-Markdown Usage:
-
-```md
-![What To Do Next](client/public/images/What_to_do_next.png)
-```
-
-Preview:
-
 ![What To Do Next](client/public/images/What_to_do_next.png)
 
 ---
-
 
 ## 🧠 Core Features
 
