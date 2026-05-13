@@ -19,99 +19,6 @@ The platform bridges the gap between traditional command-line security tooling a
 
 ---
 
-## 🧠 Core Features
-
-### 🌐 Reconnaissance Engine
-
-- host discovery
-- service enumeration
-- port scanning
-- network visibility
-- scan orchestration
-
-### 🛡️ Vulnerability Analysis
-
-- vulnerability tracking
-- severity scoring
-- risk visualization
-- threat monitoring
-- alert prioritization
-
-### 🗺️ Topology Mapping
-
-- network relationship visualization
-- infrastructure mapping
-- node hierarchy display
-- traffic intelligence
-
-### 📊 Reporting System
-
-- structured security reporting
-- export-ready intelligence summaries
-- operational dashboards
-- metric aggregation
-
----
-
-## ⚙️ Frontend Stack
-
-- React
-- Vite
-- Modular Component Architecture
-- Responsive Dashboard System
-- Tactical Dark Theme UI
-- Reusable UI Primitive System
-
----
-
-## ⚙️ Backend Stack
-
-- Node.js
-- Express
-- Modular Service Architecture
-- REST APIs
-- Security Workflow Integration
-
----
-
-## 📂 Project Structure
-
-```text
-SentinelScope/
-│
-├── client/
-│   ├── public/
-│   │   └── images/
-│   │
-│   └── src/
-│       ├── assets/
-│       ├── components/
-│       │   ├── dashboard/
-│       │   ├── layout/
-│       │   └── ui/
-│       │
-│       ├── contexts/
-│       ├── features/
-│       ├── hooks/
-│       ├── pages/
-│       ├── services/
-│       ├── styles/
-│       └── utils/
-│
-├── docs/
-└── server/
-```
-
----
-
-## 🖼️ Image Gallery
-
-All images are located in:
-
-```text
-client/public/images/
-```
-
 ---
 
 ### Dashboard Preview
@@ -253,6 +160,89 @@ Preview:
 ![What To Do Next](client/public/images/What_to_do_next.png)
 
 ---
+
+
+## 🧠 Core Features
+
+### 🌐 Reconnaissance Engine
+
+- host discovery
+- service enumeration
+- port scanning
+- network visibility
+- scan orchestration
+
+### 🛡️ Vulnerability Analysis
+
+- vulnerability tracking
+- severity scoring
+- risk visualization
+- threat monitoring
+- alert prioritization
+
+### 🗺️ Topology Mapping
+
+- network relationship visualization
+- infrastructure mapping
+- node hierarchy display
+- traffic intelligence
+
+### 📊 Reporting System
+
+- structured security reporting
+- export-ready intelligence summaries
+- operational dashboards
+- metric aggregation
+
+---
+
+## ⚙️ Frontend Stack
+
+- React
+- Vite
+- Modular Component Architecture
+- Responsive Dashboard System
+- Tactical Dark Theme UI
+- Reusable UI Primitive System
+
+---
+
+## ⚙️ Backend Stack
+
+- Node.js
+- Express
+- Modular Service Architecture
+- REST APIs
+- Security Workflow Integration
+
+---
+
+## 📂 Project Structure
+
+```text
+SentinelScope/
+│
+├── client/
+│   ├── public/
+│   │   └── images/
+│   │
+│   └── src/
+│       ├── assets/
+│       ├── components/
+│       │   ├── dashboard/
+│       │   ├── layout/
+│       │   └── ui/
+│       │
+│       ├── contexts/
+│       ├── features/
+│       ├── hooks/
+│       ├── pages/
+│       ├── services/
+│       ├── styles/
+│       └── utils/
+│
+├── docs/
+└── server/
 
 ## 🧩 Current Frontend Components
 
