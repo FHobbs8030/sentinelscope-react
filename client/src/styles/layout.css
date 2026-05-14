@@ -44,19 +44,6 @@
 }
 
 /* =========================================
-   DASHBOARD GRID
-========================================= */
-
-.dashboard-grid {
-  display: grid;
-
-  grid-template-columns:
-    repeat(auto-fit, minmax(320px, 1fr));
-
-  gap: var(--space-5);
-}
-
-/* =========================================
    PANEL GRID
 ========================================= */
 
@@ -76,10 +63,6 @@
 @media (max-width: 1024px) {
   .page-container {
     padding: var(--space-4);
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr;
   }
 }
 

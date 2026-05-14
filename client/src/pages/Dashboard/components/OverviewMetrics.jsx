@@ -3,7 +3,7 @@ import StatCard from "../../../components/dashboard/StatCard/StatCard";
 
 function OverviewMetrics() {
   return (
-    <DashboardGrid columns={4}>
+    <DashboardGrid columns={2}>
       <StatCard
         title="Active Hosts"
         value="148"

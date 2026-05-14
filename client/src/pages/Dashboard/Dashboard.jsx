@@ -3,6 +3,8 @@ import ScanOperationsSection from "./components/ScanOperationsSection";
 
 import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
 
+import ActivityFeed from "../../components/ActivityFeed/ActivityFeed";
+
 import { mockTerminalLogs } from "../../data/mockTerminalLogs";
 
 function Dashboard() {
@@ -17,6 +19,8 @@ function Dashboard() {
       <NetworkOverviewSection />
 
       <ScanOperationsSection />
+
+      <ActivityFeed />
 
       <TerminalPanel
         title="Network Operations Terminal"
