@@ -6,10 +6,7 @@ function ScanOperationsSection() {
     <section>
       <SectionHeader
         title="Scan Operations"
-        subtitle="
-          Launch and manage reconnaissance
-          and vulnerability scans.
-        "
+        subtitle="Launch and manage reconnaissance and vulnerability scans."
       />
 
       <div

@@ -1,5 +1,5 @@
-import Card from "../../ui/Card";
-import Badge from "../../ui/Badge";
+import Card from "../../ui/Card/Card";
+import Badge from "../../ui/Badge/Badge";
 
 import "./StatCard.css";
 

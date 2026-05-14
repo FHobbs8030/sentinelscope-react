@@ -13,17 +13,3 @@
 
   gap: var(--space-5);
 }
-
-@media (max-width: 1024px) {
-  .page-container {
-    padding:
-      var(--space-4);
-  }
-}
-
-@media (max-width: 768px) {
-  .page-container {
-    padding:
-      var(--space-3);
-  }
-}

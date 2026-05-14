@@ -27,9 +27,3 @@
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
 }
-
-@media (min-width: 769px) {
-  .sidebar-overlay {
-    display: none;
-  }
-}

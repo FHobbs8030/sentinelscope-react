@@ -1,5 +1,5 @@
-import DashboardGrid from "../../../components/dashboard/DashboardGrid";
-import StatCard from "../../../components/dashboard/StatCard";
+import DashboardGrid from "../../../components/dashboard/DashboardGrid/DashboardGrid";
+import StatCard from "../../../components/dashboard/StatCard/StatCard";
 
 function OverviewMetrics() {
   return (

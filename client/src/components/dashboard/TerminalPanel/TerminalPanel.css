@@ -1,0 +1,146 @@
+.terminal-panel {
+  display: flex;
+  flex-direction: column;
+
+  background: #111827;
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35);
+
+  min-width: 0;
+}
+
+.terminal-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px 20px;
+
+  background: rgba(255, 255, 255, 0.02);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.terminal-panel__title {
+  margin: 0;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  color: #f3f4f6;
+}
+
+.terminal-panel__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #34d399;
+
+  letter-spacing: 0.08em;
+}
+
+.terminal-panel__status-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #34d399;
+
+  box-shadow:
+    0 0 10px rgba(52, 211, 153, 0.7);
+}
+
+.terminal-panel__body {
+  overflow-y: auto;
+
+  padding: 20px;
+
+  background: #0b1020;
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  scrollbar-width: thin;
+
+  min-height: 0;
+}
+
+.terminal-panel__log {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  margin-bottom: 12px;
+
+  line-height: 1.5;
+
+  font-size: 14px;
+
+  word-break: break-word;
+}
+
+.terminal-panel__timestamp {
+  flex-shrink: 0;
+
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.terminal-panel__message {
+  color: #d1d5db;
+}
+
+.terminal-panel__log--info .terminal-panel__message {
+  color: #93c5fd;
+}
+
+.terminal-panel__log--success .terminal-panel__message {
+  color: #34d399;
+}
+
+.terminal-panel__log--warning .terminal-panel__message {
+  color: #fbbf24;
+}
+
+.terminal-panel__log--error .terminal-panel__message {
+  color: #f87171;
+}
+
+.terminal-panel__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 14px 20px;
+
+  background: rgba(255, 255, 255, 0.02);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+  font-family:
+    "Fira Code",
+    monospace;
+
+  font-size: 13px;
+}
+
+.terminal-panel__prompt {
+  color: #34d399;
+
+  font-weight: 700;
+}
+
+.terminal-panel__footer-text {
+  color: rgba(255, 255, 255, 0.45);
+}

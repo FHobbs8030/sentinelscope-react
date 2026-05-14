@@ -1,6 +1,10 @@
 import NetworkOverviewSection from "./components/NetworkOverviewSection";
 import ScanOperationsSection from "./components/ScanOperationsSection";
 
+import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
+
+import { mockTerminalLogs } from "../../data/mockTerminalLogs";
+
 function Dashboard() {
   return (
     <div
@@ -13,6 +17,12 @@ function Dashboard() {
       <NetworkOverviewSection />
 
       <ScanOperationsSection />
+
+      <TerminalPanel
+        title="Network Operations Terminal"
+        status="LIVE"
+        logs={mockTerminalLogs}
+      />
     </div>
   );
 }

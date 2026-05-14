@@ -1,9 +1,11 @@
 import AppShell from "./components/layout/AppShell/AppShell";
 
+import Dashboard from "./pages/Dashboard/Dashboard";
+
 function App() {
   return (
     <AppShell>
-      <div>SentinelScope Dashboard</div>
+      <Dashboard />
     </AppShell>
   );
 }
