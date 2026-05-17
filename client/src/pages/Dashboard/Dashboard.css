@@ -1,0 +1,46 @@
+.dashboard-shell {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    300px;
+
+  gap: var(--space-5);
+
+  min-width: 0;
+}
+
+.dashboard-main {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+
+  min-width: 0;
+}
+
+/* =========================
+   Large Laptop
+========================= */
+
+@media (max-width: 1439px) {
+  .dashboard-shell {
+    grid-template-columns:
+      minmax(0, 1fr)
+      260px;
+  }
+}
+
+/* =========================
+   Tablet
+========================= */
+
+@media (max-width: 1023px) {
+  .dashboard-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-feed {
+    display: none;
+  }
+}

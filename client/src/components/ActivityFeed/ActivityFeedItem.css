@@ -4,11 +4,11 @@
 
   gap: var(--space-3);
 
-  padding: var(--space-4);
+  padding: var(--space-3);
 
   background: var(--color-surface-2);
 
-  border-radius: 16px;
+  border-radius: 14px;
 
   border-left: 3px solid transparent;
 
@@ -73,7 +73,7 @@
 .activity-feed-description {
   font-size: 0.82rem;
 
-  line-height: 1.5;
+  line-height: 1.4;
 
   color: var(--color-text-secondary);
 }
