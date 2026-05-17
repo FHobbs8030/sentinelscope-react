@@ -32,10 +32,10 @@
 }
 
 /* =========================
-   Tablet
+   Tablet / Small Laptop
 ========================= */
 
-@media (max-width: 1023px) {
+@media (max-width: 1199px) {
   .dashboard-shell {
     grid-template-columns: 1fr;
   }

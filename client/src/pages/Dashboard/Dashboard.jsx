@@ -1,5 +1,6 @@
 import "./Dashboard.css";
 
+import KpiSummarySection from "./components/KpiSummarySection";
 import NetworkOverviewSection from "./components/NetworkOverviewSection";
 import ScanOperationsSection from "./components/ScanOperationsSection";
 
@@ -13,6 +14,8 @@ function Dashboard() {
   return (
     <div className="dashboard-shell">
       <div className="dashboard-main">
+        <KpiSummarySection />
+
         <NetworkOverviewSection />
 
         <ScanOperationsSection />
