@@ -1,0 +1,88 @@
+.activity-feed {
+  width: 320px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+
+  padding: var(--space-5);
+
+  background: var(--color-surface-1);
+
+  border-left: 1px solid var(--color-border-subtle);
+
+  overflow: hidden;
+}
+
+.activity-feed-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: var(--space-4);
+}
+
+.activity-feed-header-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.activity-feed-heading {
+  font-size: 1rem;
+  font-weight: 600;
+
+  color: var(--color-text-primary);
+}
+
+.activity-feed-subtitle {
+  font-size: 0.8rem;
+
+  line-height: 1.4;
+
+  color: var(--color-text-secondary);
+}
+
+.activity-feed-status {
+  flex-shrink: 0;
+
+  padding:
+    6px
+    10px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(34, 197, 94, 0.12);
+
+  color: #22c55e;
+
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.activity-feed-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+
+  overflow-y: auto;
+
+  padding-right: 4px;
+}
+
+/* Scrollbar */
+
+.activity-feed-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.activity-feed-list::-webkit-scrollbar-thumb {
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  border-radius: 999px;
+}

@@ -1,0 +1,129 @@
+.activity-feed-item {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-3);
+
+  padding: var(--space-4);
+
+  background: var(--color-surface-2);
+
+  border-radius: 16px;
+
+  border-left: 3px solid transparent;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.activity-feed-item:hover {
+  transform: translateY(-2px);
+
+  background: var(--color-surface-3);
+}
+
+.activity-feed-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: var(--space-3);
+}
+
+.activity-feed-severity {
+  display: flex;
+  align-items: center;
+
+  gap: var(--space-2);
+}
+
+.severity-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+}
+
+.severity-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  letter-spacing: 0.02em;
+}
+
+.activity-feed-timestamp {
+  font-size: 0.72rem;
+
+  color: var(--color-text-secondary);
+
+  white-space: nowrap;
+}
+
+.activity-feed-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  line-height: 1.4;
+
+  color: var(--color-text-primary);
+}
+
+.activity-feed-description {
+  font-size: 0.82rem;
+
+  line-height: 1.5;
+
+  color: var(--color-text-secondary);
+}
+
+.activity-feed-meta-row {
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.activity-feed-source,
+.activity-feed-meta {
+  font-size: 0.76rem;
+
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   Severity States
+========================= */
+
+.activity-feed-item.critical {
+  border-left-color: #ef4444;
+}
+
+.activity-feed-item.critical .severity-dot {
+  background: #ef4444;
+}
+
+.activity-feed-item.warning {
+  border-left-color: #f59e0b;
+}
+
+.activity-feed-item.warning .severity-dot {
+  background: #f59e0b;
+}
+
+.activity-feed-item.success {
+  border-left-color: #22c55e;
+}
+
+.activity-feed-item.success .severity-dot {
+  background: #22c55e;
+}
+
+.activity-feed-item.info {
+  border-left-color: #3b82f6;
+}
+
+.activity-feed-item.info .severity-dot {
+  background: #3b82f6;
+}

@@ -1,30 +1,30 @@
 import "./ActivityFeed.css";
 
 import activityData from "./activityData";
-import ActivityItem from "./ActivityItem";
+
+import ActivityFeedItem from "./ActivityFeedItem";
 
 function ActivityFeed() {
   return (
-    <section className="activity-feed">
-      <div className="activity-feed__header">
-        <h3 className="activity-feed__title">
-          Live Activity
-        </h3>
+    <aside className="activity-feed">
+      <div className="activity-feed-header">
+        <div className="activity-feed-header-content">
+          <h3 className="activity-feed-heading">Live Activity</h3>
 
-        <span className="activity-feed__status">
-          Monitoring Active
-        </span>
+          <p className="activity-feed-subtitle">
+            Real-time operational telemetry
+          </p>
+        </div>
+
+        <span className="activity-feed-status">Monitoring</span>
       </div>
 
-      <div className="activity-feed__list">
-        {activityData.map((item) => (
-          <ActivityItem
-            key={item.id}
-            item={item}
-          />
+      <div className="activity-feed-list">
+        {activityData.map((event) => (
+          <ActivityFeedItem key={event.id} event={event} />
         ))}
       </div>
-    </section>
+    </aside>
   );
 }
 

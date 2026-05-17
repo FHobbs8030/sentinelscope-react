@@ -15,3 +15,25 @@ export function formatTimeAgo(timestamp) {
 
   return `${days}d ago`;
 }
+
+export const severityConfig = {
+  critical: {
+    label: "Critical",
+    className: "critical",
+  },
+
+  warning: {
+    label: "Warning",
+    className: "warning",
+  },
+
+  success: {
+    label: "Success",
+    className: "success",
+  },
+
+  info: {
+    label: "Info",
+    className: "info",
+  },
+};
