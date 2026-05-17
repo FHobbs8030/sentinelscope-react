@@ -1,15 +1,45 @@
-.analytics-card {
+.severity-chart-card {
   padding: 16px;
   border-radius: 12px;
 }
 
-.analytics-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.severity-chart-card__header {
+  margin-bottom: 12px;
 }
 
-.analytics-bar {
+.severity-chart-card__title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.severity-chart-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.severity-chart-card__row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.severity-chart-card__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.severity-chart-card__track {
+  width: 100%;
   height: 6px;
   border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.severity-chart-card__bar {
+  height: 100%;
+  border-radius: 4px;
+  background: #3b82f6;
 }
