@@ -1,0 +1,15 @@
+.analytics-card {
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.analytics-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.analytics-bar {
+  height: 6px;
+  border-radius: 4px;
+}
