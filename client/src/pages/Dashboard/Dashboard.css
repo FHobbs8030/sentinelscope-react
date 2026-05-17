@@ -10,6 +10,11 @@
   min-width: 0;
 }
 
+.dashboard-shell > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .dashboard-main {
   display: flex;
   flex-direction: column;

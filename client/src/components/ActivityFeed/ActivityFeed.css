@@ -1,5 +1,9 @@
 .activity-feed {
-  width: 320px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
