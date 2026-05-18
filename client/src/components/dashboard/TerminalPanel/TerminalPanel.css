@@ -2,17 +2,17 @@
   display: flex;
   flex-direction: column;
 
-  background: #111827;
-
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
+  min-width: 0;
+  min-height: 440px;
 
   overflow: hidden;
 
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.35);
+  background: #111827;
 
-  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
 }
 
 .terminal-panel__header {
@@ -20,9 +20,9 @@
   align-items: center;
   justify-content: space-between;
 
-  padding: 16px 20px;
+  padding: 15px 20px;
 
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.025);
 
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -30,21 +30,23 @@
 .terminal-panel__title {
   margin: 0;
 
-  font-size: 16px;
-  font-weight: 600;
-
   color: #f3f4f6;
+
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .terminal-panel__status {
   display: flex;
   align-items: center;
+
   gap: 8px;
 
-  font-size: 12px;
-  font-weight: 600;
-
   color: #34d399;
+
+  font-size: 12px;
+  font-weight: 700;
 
   letter-spacing: 0.08em;
 }
@@ -57,11 +59,14 @@
 
   background: #34d399;
 
-  box-shadow:
-    0 0 10px rgba(52, 211, 153, 0.7);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.7);
 }
 
 .terminal-panel__body {
+  flex: 1;
+
+  min-height: 0;
+
   overflow-y: auto;
 
   padding: 20px;
@@ -71,22 +76,37 @@
   font-family:
     "Fira Code",
     monospace;
+}
 
-  scrollbar-width: thin;
+.terminal-panel__body::-webkit-scrollbar {
+  width: 8px;
+}
 
-  min-height: 0;
+.terminal-panel__body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.terminal-panel__body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+
+.terminal-panel__body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .terminal-panel__log {
   display: flex;
   align-items: flex-start;
+
   gap: 12px;
 
-  margin-bottom: 12px;
+  margin-bottom: 11px;
 
+  color: #d1d5db;
+
+  font-size: 13px;
   line-height: 1.5;
-
-  font-size: 14px;
 
   word-break: break-word;
 }
@@ -120,11 +140,12 @@
 .terminal-panel__footer {
   display: flex;
   align-items: center;
+
   gap: 10px;
 
-  padding: 14px 20px;
+  padding: 13px 20px;
 
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.025);
 
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 
@@ -132,7 +153,7 @@
     "Fira Code",
     monospace;
 
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .terminal-panel__prompt {
@@ -143,4 +164,23 @@
 
 .terminal-panel__footer-text {
   color: rgba(255, 255, 255, 0.45);
+}
+
+@media (max-width: 768px) {
+  .terminal-panel {
+    min-height: 360px;
+
+    border-radius: 16px;
+  }
+
+  .terminal-panel__header,
+  .terminal-panel__body,
+  .terminal-panel__footer {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .terminal-panel__log {
+    font-size: 12px;
+  }
 }

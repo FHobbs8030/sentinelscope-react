@@ -3,6 +3,7 @@ import "./Dashboard.css";
 import KpiSummarySection from "./components/KpiSummarySection";
 import NetworkOverviewSection from "./components/NetworkOverviewSection";
 import ScanOperationsSection from "./components/ScanOperationsSection";
+import AnalyticsSection from "./components/AnalyticsSection/AnalyticsSection";
 
 import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
 
@@ -19,6 +20,8 @@ function Dashboard() {
         <NetworkOverviewSection />
 
         <ScanOperationsSection />
+
+        <AnalyticsSection />
 
         <TerminalPanel
           title="Network Operations Terminal"

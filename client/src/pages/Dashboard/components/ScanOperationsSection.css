@@ -11,6 +11,8 @@
   max-width: 100%;
   min-width: 0;
 
+  margin-top: 32px;
+
   overflow: hidden;
 }
 
@@ -300,21 +302,17 @@
   transform: translateY(-50%);
 }
 
-/* =========================
-   Desktop / Laptop Containment
-========================= */
-
 @media (max-width: 1599px) {
   .scan-operations-section {
     grid-template-columns: 1fr;
   }
 }
 
-/* =========================
-   Mobile
-========================= */
-
 @media (max-width: 767px) {
+  .scan-operations-section {
+    margin-top: 24px;
+  }
+
   .scan-launch-panel,
   .recent-scans-panel {
     gap: var(--space-4);
@@ -332,10 +330,6 @@
     min-width: 620px;
   }
 }
-
-/* =========================
-   Small Mobile
-========================= */
 
 @media (max-width: 420px) {
   .scan-launch-panel,
