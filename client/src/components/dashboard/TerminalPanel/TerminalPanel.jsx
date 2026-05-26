@@ -35,15 +35,13 @@ function TerminalPanel({
         {logs.map((log) => (
           <div
             key={log.id}
-            className={`terminal-panel__log terminal-panel__log--${log.type}`}
+            className={`terminal-panel__log terminal-panel__log--${log.level}`}
           >
             <span className="terminal-panel__timestamp">
-              [{log.timestamp}]
+              [{new Date(log.timestamp).toLocaleTimeString()}]
             </span>
 
-            <span className="terminal-panel__message">
-              {log.message}
-            </span>
+            <span className="terminal-panel__message">{log.message}</span>
           </div>
         ))}
       </div>
@@ -51,9 +49,7 @@ function TerminalPanel({
       <div className="terminal-panel__footer">
         <span className="terminal-panel__prompt">&gt;</span>
 
-        <span className="terminal-panel__footer-text">
-          awaiting command...
-        </span>
+        <span className="terminal-panel__footer-text">awaiting command...</span>
       </div>
     </section>
   );

@@ -9,9 +9,11 @@ import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPane
 
 import ActivityFeed from "../../components/ActivityFeed";
 
-import { mockTerminalLogs } from "../../data/mockTerminalLogs";
+import useTelemetry from "../../hooks/useTelemetry";
 
 function Dashboard() {
+  const telemetryLogs = useTelemetry();
+
   return (
     <div className="dashboard-shell">
       <div className="dashboard-main">
@@ -26,7 +28,7 @@ function Dashboard() {
         <TerminalPanel
           title="Network Operations Terminal"
           status="LIVE"
-          logs={mockTerminalLogs}
+          logs={telemetryLogs}
         />
       </div>
 

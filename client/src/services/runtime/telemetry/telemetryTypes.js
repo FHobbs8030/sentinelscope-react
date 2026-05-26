@@ -1,0 +1,82 @@
+import { SCAN_EVENTS } from "../scanEventBus";
+
+export const TELEMETRY_LEVELS = {
+  INFO: "info",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ERROR: "error",
+  SYSTEM: "system",
+};
+
+export const TELEMETRY_SOURCES = {
+  RUNTIME: "runtime-engine",
+  SCAN: "scan-system",
+  METRICS: "runtime-metrics",
+  SYSTEM: "system-core",
+};
+
+export const TELEMETRY_LIMITS = {
+  MAX_LOG_ENTRIES: 250,
+};
+
+export const TELEMETRY_EVENT_CONFIG = {
+  [SCAN_EVENTS.SCAN_CREATED]: {
+    level: TELEMETRY_LEVELS.INFO,
+    source: TELEMETRY_SOURCES.SCAN,
+  },
+
+  [SCAN_EVENTS.SCAN_STARTED]: {
+    level: TELEMETRY_LEVELS.INFO,
+    source: TELEMETRY_SOURCES.SCAN,
+  },
+
+  [SCAN_EVENTS.SCAN_STAGE_CHANGED]: {
+    level: TELEMETRY_LEVELS.INFO,
+    source: TELEMETRY_SOURCES.RUNTIME,
+  },
+
+  [SCAN_EVENTS.SCAN_PROGRESS_UPDATED]: {
+    level: TELEMETRY_LEVELS.INFO,
+    source: TELEMETRY_SOURCES.RUNTIME,
+  },
+
+  [SCAN_EVENTS.SCAN_COMPLETED]: {
+    level: TELEMETRY_LEVELS.SUCCESS,
+    source: TELEMETRY_SOURCES.SCAN,
+  },
+
+  [SCAN_EVENTS.SCAN_FAILED]: {
+    level: TELEMETRY_LEVELS.ERROR,
+    source: TELEMETRY_SOURCES.SCAN,
+  },
+
+  [SCAN_EVENTS.SCAN_CANCELLED]: {
+    level: TELEMETRY_LEVELS.WARNING,
+    source: TELEMETRY_SOURCES.SCAN,
+  },
+
+  [SCAN_EVENTS.FINDING_DISCOVERED]: {
+    level: TELEMETRY_LEVELS.WARNING,
+    source: TELEMETRY_SOURCES.RUNTIME,
+  },
+
+  [SCAN_EVENTS.CRITICAL_FINDING_DISCOVERED]: {
+    level: TELEMETRY_LEVELS.ERROR,
+    source: TELEMETRY_SOURCES.RUNTIME,
+  },
+
+  [SCAN_EVENTS.SYSTEM_LOAD_CHANGED]: {
+    level: TELEMETRY_LEVELS.WARNING,
+    source: TELEMETRY_SOURCES.METRICS,
+  },
+
+  [SCAN_EVENTS.QUEUE_UPDATED]: {
+    level: TELEMETRY_LEVELS.INFO,
+    source: TELEMETRY_SOURCES.SYSTEM,
+  },
+
+  [SCAN_EVENTS.TELEMETRY_EVENT]: {
+    level: TELEMETRY_LEVELS.INFO,
+    source: TELEMETRY_SOURCES.SYSTEM,
+  },
+};
