@@ -2,47 +2,16 @@ import "./ScanOperationsSection.css";
 
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
-
-const recentScans = [
-  {
-    id: 1,
-    target: "example.com",
-    type: "Full Scan",
-    profile: "General",
-    status: "Running",
-    progress: "72%",
-    started: "2 min ago",
-  },
-  {
-    id: 2,
-    target: "192.168.1.10",
-    type: "Port Scan",
-    profile: "Comprehensive",
-    status: "Completed",
-    progress: "100%",
-    started: "45 min ago",
-  },
-  {
-    id: 3,
-    target: "api.sentinelscope.dev",
-    type: "Web Scan",
-    profile: "OWASP",
-    status: "Completed",
-    progress: "100%",
-    started: "1 hour ago",
-  },
-  {
-    id: 4,
-    target: "10.0.0.5",
-    type: "Vulnerability Scan",
-    profile: "Critical",
-    status: "Queued",
-    progress: "5%",
-    started: "2 hours ago",
-  },
-];
+import useScans from "../../../hooks/useScans";
 
 function ScanOperationsSection() {
+  const { scans, metrics, isLoading, error } = useScans();
+
+  console.log(scans);
+  console.log(metrics);
+  console.log(isLoading);
+  console.log(error);
+
   return (
     <section className="scan-operations-section">
       <div className="scan-launch-panel">
@@ -126,11 +95,14 @@ function ScanOperationsSection() {
             </thead>
 
             <tbody>
-              {recentScans.map((scan) => (
+              {scans.map((scan) => (
                 <tr key={scan.id}>
                   <td>{scan.target}</td>
+
                   <td>{scan.type}</td>
+
                   <td>{scan.profile}</td>
+
                   <td>
                     <span
                       className={`scan-status scan-status--${scan.status
@@ -140,19 +112,21 @@ function ScanOperationsSection() {
                       {scan.status}
                     </span>
                   </td>
+
                   <td>
                     <div className="scan-progress">
                       <span
                         className="scan-progress-bar"
-                        style={{ width: scan.progress }}
+                        style={{ width: `${scan.progress}%` }}
                       />
 
                       <span className="scan-progress-label">
-                        {scan.progress}
+                        {scan.progress}%
                       </span>
                     </div>
                   </td>
-                  <td>{scan.started}</td>
+
+                  <td>{scan.duration || "Pending"}</td>
                 </tr>
               ))}
             </tbody>
