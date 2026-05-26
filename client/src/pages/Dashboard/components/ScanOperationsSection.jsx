@@ -1,13 +1,24 @@
 import "./ScanOperationsSection.css";
 
+import { useState } from "react";
+
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
+
 import useScans from "../../../hooks/useScans";
+
+import scanRuntimeEngine from "../../../services/runtime/scanRuntimeEngine";
 
 const TERMINAL_SCAN_STATES = ["completed", "failed", "cancelled"];
 
 function ScanOperationsSection() {
   const { scans, metrics, isLoading, error } = useScans();
+
+  const [target, setTarget] = useState("");
+
+  const [scanType, setScanType] = useState("Full Scan");
+
+  const [profile, setProfile] = useState("General");
 
   const formatElapsedTime = (seconds = 0) => {
     const mins = Math.floor(seconds / 60);
@@ -19,6 +30,34 @@ function ScanOperationsSection() {
 
   const formatStatusLabel = (status = "") => {
     return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  const handleStartScan = () => {
+    if (!target.trim()) {
+      return;
+    }
+
+    scanRuntimeEngine.addScan({
+      target,
+
+      type: scanType,
+
+      profile,
+
+      status: "queued",
+
+      severity: generateSeverity(),
+
+      activity: "Operational scan queued for execution",
+    });
+
+    setTarget("");
+  };
+
+  const generateSeverity = () => {
+    const severities = ["low", "medium", "high", "critical"];
+
+    return severities[Math.floor(Math.random() * severities.length)];
   };
 
   if (isLoading) {
@@ -57,6 +96,8 @@ function ScanOperationsSection() {
         <div className="scan-form-grid">
           <Input
             label="Target"
+            value={target}
+            onChange={(event) => setTarget(event.target.value)}
             placeholder="example.com or 192.168.1.1"
             helperText="Enter an IP address, hostname, or domain."
           />
@@ -64,7 +105,11 @@ function ScanOperationsSection() {
           <label className="scan-field">
             <span className="scan-field-label">Scan Type</span>
 
-            <select className="scan-select" defaultValue="Full Scan">
+            <select
+              className="scan-select"
+              value={scanType}
+              onChange={(event) => setScanType(event.target.value)}
+            >
               <option>Full Scan</option>
               <option>Port Scan</option>
               <option>Web Scan</option>
@@ -75,7 +120,11 @@ function ScanOperationsSection() {
           <label className="scan-field">
             <span className="scan-field-label">Profile</span>
 
-            <select className="scan-select" defaultValue="General">
+            <select
+              className="scan-select"
+              value={profile}
+              onChange={(event) => setProfile(event.target.value)}
+            >
               <option>General</option>
               <option>Quick</option>
               <option>Comprehensive</option>
@@ -85,7 +134,7 @@ function ScanOperationsSection() {
         </div>
 
         <div className="scan-panel-actions">
-          <Button>Start Scan</Button>
+          <Button onClick={handleStartScan}>Start Scan</Button>
 
           <button className="scan-secondary-action" type="button">
             Import Targets

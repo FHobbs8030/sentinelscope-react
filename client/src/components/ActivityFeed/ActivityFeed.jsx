@@ -1,10 +1,27 @@
 import "./ActivityFeed.css";
 
-import activityData from "./activityData";
-
 import ActivityFeedItem from "./ActivityFeedItem";
 
+import useTelemetry from "../../hooks/useTelemetry";
+
 function ActivityFeed() {
+  const telemetryLogs = useTelemetry();
+
+  const activityEvents = [...telemetryLogs]
+    .reverse()
+    .slice(0, 12)
+    .map((log) => ({
+      id: log.id,
+
+      type: mapTelemetryLevel(log.level),
+
+      title: log.message,
+
+      timestamp: new Date(log.timestamp).toLocaleTimeString(),
+
+      source: log.source,
+    }));
+
   return (
     <aside className="activity-feed">
       <div className="activity-feed-header">
@@ -20,12 +37,31 @@ function ActivityFeed() {
       </div>
 
       <div className="activity-feed-list">
-        {activityData.map((event) => (
+        {activityEvents.map((event) => (
           <ActivityFeedItem key={event.id} event={event} />
         ))}
       </div>
     </aside>
   );
+}
+
+function mapTelemetryLevel(level) {
+  switch (level) {
+    case "success":
+      return "success";
+
+    case "warning":
+      return "warning";
+
+    case "error":
+      return "critical";
+
+    case "system":
+      return "info";
+
+    default:
+      return "info";
+  }
 }
 
 export default ActivityFeed;

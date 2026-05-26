@@ -3,7 +3,7 @@ import "./ActivityFeedItem.css";
 import { severityConfig, formatTimeAgo } from "./activityUtils";
 
 function ActivityFeedItem({ event }) {
-  const severity = severityConfig[event.severity];
+  const severity = severityConfig[event.type] || severityConfig.info;
 
   return (
     <article className={`activity-feed-item ${severity.className}`}>
@@ -21,12 +21,14 @@ function ActivityFeedItem({ event }) {
 
       <h4 className="activity-feed-title">{event.title}</h4>
 
-      <p className="activity-feed-description">{event.description}</p>
+      <p className="activity-feed-description">
+        Live operational telemetry event detected.
+      </p>
 
       <div className="activity-feed-meta-row">
         <span className="activity-feed-source">{event.source}</span>
 
-        <span className="activity-feed-meta">{event.meta}</span>
+        <span className="activity-feed-meta">Runtime Telemetry</span>
       </div>
     </article>
   );
