@@ -1,18 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import scanService from "../services/scanService";
+
+import scanRuntimeEngine from "../services/runtime/scanRuntimeEngine";
+
+import { TERMINAL_SCAN_STATES } from "../services/runtime/scanStateMachine";
+
+const ACTIVE_SCAN_STATES = [
+  "queued",
+  "initializing",
+  "recon",
+  "enumeration",
+  "analysis",
+  "exploitation",
+  "reporting",
+];
 
 const useScans = () => {
   const [scans, setScans] = useState([]);
-
-  const [activeScans, setActiveScans] = useState([]);
-
-  const [completedScans, setCompletedScans] = useState([]);
-
-  const [failedScans, setFailedScans] = useState([]);
-
-  const [criticalScans, setCriticalScans] = useState([]);
-
-  const [metrics, setMetrics] = useState(null);
 
   const [selectedScan, setSelectedScan] = useState(null);
 
@@ -26,27 +31,13 @@ const useScans = () => {
 
       setError(null);
 
-      const [allScans, active, completed, failed, critical, scanMetrics] =
-        await Promise.all([
-          scanService.getScans(),
-          scanService.getActiveScans(),
-          scanService.getCompletedScans(),
-          scanService.getFailedScans(),
-          scanService.getCriticalScans(),
-          scanService.getScanMetrics(),
-        ]);
+      const allScans = await scanService.getScans();
 
-      setScans(allScans);
+      scanRuntimeEngine.initialize(allScans);
 
-      setActiveScans(active);
+      setScans(scanRuntimeEngine.getScans());
 
-      setCompletedScans(completed);
-
-      setFailedScans(failed);
-
-      setCriticalScans(critical);
-
-      setMetrics(scanMetrics);
+      scanRuntimeEngine.start();
     } catch (err) {
       console.error("Failed to load scans:", err);
 
@@ -62,7 +53,9 @@ const useScans = () => {
 
   const selectScanById = useCallback(async (scanId) => {
     try {
-      const scan = await scanService.getScanById(scanId);
+      const currentScans = scanRuntimeEngine.getScans();
+
+      const scan = currentScans.find((item) => item.id === scanId) ?? null;
 
       setSelectedScan(scan);
 
@@ -80,9 +73,13 @@ const useScans = () => {
     setSelectedScan(null);
   }, []);
 
-  const getScansByTarget = useCallback(async (target) => {
+  const getScansByTarget = useCallback((target) => {
     try {
-      return await scanService.getScansByTarget(target);
+      const currentScans = scanRuntimeEngine.getScans();
+
+      return currentScans.filter((scan) =>
+        scan.target?.toLowerCase().includes(target.toLowerCase()),
+      );
     } catch (err) {
       console.error("Failed to retrieve target scans:", err);
 
@@ -92,9 +89,13 @@ const useScans = () => {
     }
   }, []);
 
-  const getScansByType = useCallback(async (type) => {
+  const getScansByType = useCallback((type) => {
     try {
-      return await scanService.getScansByType(type);
+      const currentScans = scanRuntimeEngine.getScans();
+
+      return currentScans.filter(
+        (scan) => scan.type?.toLowerCase() === type.toLowerCase(),
+      );
     } catch (err) {
       console.error("Failed to retrieve scan type data:", err);
 
@@ -104,39 +105,137 @@ const useScans = () => {
     }
   }, []);
 
-  const runningScans = useMemo(() => {
-    return scans.filter((scan) => scan.status === "Running");
+  const addScan = useCallback((scan) => {
+    scanRuntimeEngine.addScan(scan);
+  }, []);
+
+  const cancelScan = useCallback((scanId) => {
+    scanRuntimeEngine.cancelScan(scanId);
+  }, []);
+
+  const removeScan = useCallback((scanId) => {
+    scanRuntimeEngine.removeScan(scanId);
+  }, []);
+
+  const activeScans = useMemo(() => {
+    return scans.filter((scan) => ACTIVE_SCAN_STATES.includes(scan.status));
+  }, [scans]);
+
+  const completedScans = useMemo(() => {
+    return scans.filter((scan) => scan.status === "completed");
+  }, [scans]);
+
+  const failedScans = useMemo(() => {
+    return scans.filter((scan) => scan.status === "failed");
+  }, [scans]);
+
+  const criticalScans = useMemo(() => {
+    return scans.filter((scan) => scan.severity?.toLowerCase() === "critical");
   }, [scans]);
 
   const queuedScans = useMemo(() => {
-    return scans.filter((scan) => scan.status === "Queued");
-  }, [scans]);
-
-  const pausedScans = useMemo(() => {
-    return scans.filter((scan) => scan.status === "Paused");
+    return scans.filter((scan) => scan.status === "queued");
   }, [scans]);
 
   const initializingScans = useMemo(() => {
-    return scans.filter((scan) => scan.status === "Initializing");
+    return scans.filter((scan) => scan.status === "initializing");
+  }, [scans]);
+
+  const runningScans = useMemo(() => {
+    return scans.filter(
+      (scan) =>
+        scan.status !== "queued" &&
+        scan.status !== "completed" &&
+        scan.status !== "failed" &&
+        scan.status !== "cancelled",
+    );
   }, [scans]);
 
   const liveScans = useMemo(() => {
-    return scans.filter((scan) => scan.live);
+    return scans.filter((scan) => !TERMINAL_SCAN_STATES.includes(scan.status));
   }, [scans]);
 
   const criticalFindingsCount = useMemo(() => {
-    return scans
-      .filter((scan) => scan.severity === "Critical")
-      .reduce((total, scan) => total + scan.findings, 0);
+    return scans.reduce((total, scan) => {
+      if (scan.severity?.toLowerCase() === "critical") {
+        return total + (scan.findings ?? 0);
+      }
+
+      return total;
+    }, 0);
   }, [scans]);
 
+  const metrics = useMemo(() => {
+    const totalScans = scans.length;
+
+    const completedCount = completedScans.length;
+
+    const failedCount = failedScans.length;
+
+    const activeCount = activeScans.length;
+
+    const successRate =
+      totalScans > 0 ? Math.round((completedCount / totalScans) * 100) : 0;
+
+    const averageFindings =
+      totalScans > 0
+        ? Math.round(
+            scans.reduce((total, scan) => total + (scan.findings ?? 0), 0) /
+              totalScans,
+          )
+        : 0;
+
+    return {
+      totalScans,
+      activeScans: activeCount,
+      completedScans: completedCount,
+      failedScans: failedCount,
+      successRate,
+      criticalFindings: criticalFindingsCount,
+      averageFindings,
+    };
+  }, [scans, activeScans, completedScans, failedScans, criticalFindingsCount]);
+
   useEffect(() => {
+    let mounted = true;
+
     const initializeScans = async () => {
+      if (!mounted) {
+        return;
+      }
+
       await loadScans();
     };
 
     initializeScans();
+
+    return () => {
+      mounted = false;
+    };
   }, [loadScans]);
+
+  useEffect(() => {
+    const unsubscribe = scanRuntimeEngine.subscribe((updatedScans) => {
+      setScans(updatedScans);
+
+      setSelectedScan((previousSelectedScan) => {
+        if (!previousSelectedScan) {
+          return null;
+        }
+
+        return (
+          updatedScans.find((scan) => scan.id === previousSelectedScan.id) ??
+          null
+        );
+      });
+    });
+
+    return () => {
+      unsubscribe();
+
+      scanRuntimeEngine.stop();
+    };
+  }, []);
 
   return {
     scans,
@@ -144,10 +243,9 @@ const useScans = () => {
     completedScans,
     failedScans,
     criticalScans,
-    runningScans,
     queuedScans,
-    pausedScans,
     initializingScans,
+    runningScans,
     liveScans,
     metrics,
     selectedScan,
@@ -158,6 +256,9 @@ const useScans = () => {
     clearSelectedScan,
     getScansByTarget,
     getScansByType,
+    addScan,
+    cancelScan,
+    removeScan,
     criticalFindingsCount,
   };
 };

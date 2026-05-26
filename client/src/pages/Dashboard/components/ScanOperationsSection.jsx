@@ -4,13 +4,40 @@ import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import useScans from "../../../hooks/useScans";
 
+const TERMINAL_SCAN_STATES = ["completed", "failed", "cancelled"];
+
 function ScanOperationsSection() {
   const { scans, metrics, isLoading, error } = useScans();
 
-  console.log(scans);
-  console.log(metrics);
-  console.log(isLoading);
-  console.log(error);
+  const formatElapsedTime = (seconds = 0) => {
+    const mins = Math.floor(seconds / 60);
+
+    const secs = seconds % 60;
+
+    return `${mins}m ${secs}s`;
+  };
+
+  const formatStatusLabel = (status = "") => {
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  if (isLoading) {
+    return (
+      <section className="scan-operations-section">
+        <div className="scan-loading-state">
+          Loading operational scan data...
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="scan-operations-section">
+        <div className="scan-error-state">{error}</div>
+      </section>
+    );
+  }
 
   return (
     <section className="scan-operations-section">
@@ -72,13 +99,19 @@ function ScanOperationsSection() {
             <h2 className="scan-panel-title">Recent Scans</h2>
 
             <p className="scan-panel-subtitle">
-              Track scan status, progress, and target activity.
+              Live operational telemetry and runtime scan progression.
             </p>
           </div>
 
-          <button className="scan-link-action" type="button">
-            View all
-          </button>
+          <div className="scan-panel-metrics">
+            <span className="scan-metric">
+              Active: {metrics?.activeScans ?? 0}
+            </span>
+
+            <span className="scan-metric">
+              Critical Findings: {metrics?.criticalFindings ?? 0}
+            </span>
+          </div>
         </div>
 
         <div className="recent-scans-table-wrap">
@@ -87,48 +120,85 @@ function ScanOperationsSection() {
               <tr>
                 <th>Target</th>
                 <th>Type</th>
-                <th>Profile</th>
                 <th>Status</th>
                 <th>Progress</th>
-                <th>Started</th>
+                <th>Findings</th>
+                <th>Runtime</th>
+                <th>Activity</th>
               </tr>
             </thead>
 
             <tbody>
-              {scans.map((scan) => (
-                <tr key={scan.id}>
-                  <td>{scan.target}</td>
+              {scans.map((scan) => {
+                const isLive = !TERMINAL_SCAN_STATES.includes(scan.status);
 
-                  <td>{scan.type}</td>
+                return (
+                  <tr key={scan.id}>
+                    <td>
+                      <div className="scan-target-cell">
+                        <span className="scan-target">{scan.target}</span>
 
-                  <td>{scan.profile}</td>
+                        {scan.severity && (
+                          <span
+                            className={`scan-severity scan-severity--${scan.severity.toLowerCase()}`}
+                          >
+                            {scan.severity}
+                          </span>
+                        )}
+                      </div>
+                    </td>
 
-                  <td>
-                    <span
-                      className={`scan-status scan-status--${scan.status
-                        .toLowerCase()
-                        .replace(" ", "-")}`}
-                    >
-                      {scan.status}
-                    </span>
-                  </td>
+                    <td>
+                      <span className="scan-type">{scan.type}</span>
+                    </td>
 
-                  <td>
-                    <div className="scan-progress">
-                      <span
-                        className="scan-progress-bar"
-                        style={{ width: `${scan.progress}%` }}
-                      />
+                    <td>
+                      <div className="scan-status-wrapper">
+                        {isLive && <span className="scan-live-indicator" />}
 
-                      <span className="scan-progress-label">
-                        {scan.progress}%
+                        <span
+                          className={`scan-status scan-status--${scan.status}`}
+                        >
+                          {formatStatusLabel(scan.status)}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className="scan-progress">
+                        <div className="scan-progress-track">
+                          <div
+                            className={`scan-progress-bar scan-progress-bar--${scan.status}`}
+                            style={{
+                              width: `${scan.progress ?? 0}%`,
+                            }}
+                          />
+                        </div>
+
+                        <span className="scan-progress-label">
+                          {scan.progress ?? 0}%
+                        </span>
+                      </div>
+                    </td>
+
+                    <td>
+                      <span className="scan-findings">
+                        {scan.findings ?? 0}
                       </span>
-                    </div>
-                  </td>
+                    </td>
 
-                  <td>{scan.duration || "Pending"}</td>
-                </tr>
-              ))}
+                    <td>
+                      <span className="scan-runtime">
+                        {formatElapsedTime(scan.elapsedTime)}
+                      </span>
+                    </td>
+
+                    <td>
+                      <div className="scan-activity-cell">{scan.activity}</div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
