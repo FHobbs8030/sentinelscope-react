@@ -182,7 +182,7 @@ function ScanOperationsSection() {
                 const isLive = !TERMINAL_SCAN_STATES.includes(scan.status);
 
                 return (
-                  <tr key={scan.id}>
+                  <tr key={scan.mongoId ?? scan.id ?? scan.target}>
                     <td>
                       <div className="scan-target-cell">
                         <span className="scan-target">{scan.target}</span>

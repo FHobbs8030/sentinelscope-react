@@ -8,6 +8,7 @@ import {
 } from "./scanStateMachine";
 
 import scanEventBus from "./scanEventBus";
+import { createScan, updateScan } from "../api/scansApi";
 
 const RUNTIME_INTERVAL = 2000;
 
@@ -92,9 +93,7 @@ class ScanRuntimeEngine {
 
   addScan(scan) {
     const runtimeScan = {
-      id:
-        scan.id ??
-        `scan-${crypto.randomUUID()}`,
+      id: scan.id ?? `scan-${crypto.randomUUID()}`,
 
       progress: 0,
 
@@ -118,6 +117,22 @@ class ScanRuntimeEngine {
     };
 
     this.scans.unshift(runtimeScan);
+
+   createScan({
+     name: runtimeScan.name ?? runtimeScan.target,
+     target: runtimeScan.target,
+     scanType: runtimeScan.type ?? "recon",
+     status: runtimeScan.status,
+     progress: runtimeScan.progress,
+     findingsCount: runtimeScan.findingsCount,
+     startedAt: runtimeScan.startedAt,
+   })
+     .then((response) => {
+       runtimeScan.mongoId = response?.data?._id;
+     })
+     .catch((error) => {
+       console.error("Failed to persist scan:", error);
+     });
 
     scanEventBus.emitScanCreated(runtimeScan);
 
@@ -291,6 +306,17 @@ class ScanRuntimeEngine {
             findings: updatedScan.findingsCount,
           },
         );
+      }
+
+      if (updatedScan.mongoId) {
+        updateScan(updatedScan.mongoId, {
+          status: updatedScan.status,
+          progress: updatedScan.progress,
+          findingsCount: updatedScan.findingsCount,
+          completedAt: updatedScan.completedAt ?? null,
+        }).catch((error) => {
+          console.error("Failed to update persisted scan:", error);
+        });
       }
 
       return updatedScan;
