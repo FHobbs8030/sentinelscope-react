@@ -182,7 +182,7 @@ class ScanEventBus {
   }
 
   generateEventId() {
-    return `evt-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    return `evt-${crypto.randomUUID()}`;
   }
 }
 

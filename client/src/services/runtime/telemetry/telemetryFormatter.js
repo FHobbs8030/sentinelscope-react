@@ -79,7 +79,9 @@ function buildTelemetryMessage(eventType, payload) {
       return `Scan cancelled for ${payload.scan?.target || "unknown target"}`;
 
     case SCAN_EVENTS.FINDING_DISCOVERED:
-      return `Finding discovered: ${payload.finding || "unknown finding"}`;
+      return `${payload.finding?.value || 0} findings discovered (total: ${
+        payload.finding?.total || 0
+      })`;
 
     case SCAN_EVENTS.CRITICAL_FINDING_DISCOVERED:
       return `Critical finding discovered: ${

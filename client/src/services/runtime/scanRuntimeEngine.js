@@ -94,11 +94,11 @@ class ScanRuntimeEngine {
     const runtimeScan = {
       id:
         scan.id ??
-        `scan-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        `scan-${crypto.randomUUID()}`,
 
       progress: 0,
 
-      findings: 0,
+      findingsCount: 0,
 
       elapsedTime: 0,
 
@@ -225,9 +225,9 @@ class ScanRuntimeEngine {
 
         progress,
 
-        findings: scan.findings + findingsIncrease,
+        findingsCount: (scan.findingsCount || 0) + findingsIncrease,
 
-        elapsedTime: scan.elapsedTime + RUNTIME_INTERVAL / 1000,
+        elapsedTime: (scan.elapsedTime || 0) + RUNTIME_INTERVAL / 1000,
 
         activity: getRandomStageMessage(nextState),
 
@@ -253,7 +253,7 @@ class ScanRuntimeEngine {
         scanEventBus.emitFindingDiscovered(
           {
             value: findingsIncrease,
-            total: updatedScan.findings,
+            total: updatedScan.findingsCount,
           },
           updatedScan.severity,
           updatedScan,
@@ -264,7 +264,7 @@ class ScanRuntimeEngine {
           {
             scanId: updatedScan.id,
             severity: updatedScan.severity,
-            findings: updatedScan.findings,
+            findings: updatedScan.findingsCount,
           },
         );
       }
@@ -288,7 +288,7 @@ class ScanRuntimeEngine {
           `Operational scan completed for ${updatedScan.target}`,
           {
             scanId: updatedScan.id,
-            findings: updatedScan.findings,
+            findings: updatedScan.findingsCount,
           },
         );
       }

@@ -1,146 +1,85 @@
-import mockScans from "../data/mock/mockScans";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "http://localhost:3001/api";
 
-const NETWORK_DELAY = 300;
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    throw new Error(`HTTP Error: ${response.status}`);
+  }
 
-const simulateNetworkDelay = (data) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(data);
-    }, NETWORK_DELAY);
-  });
-
-const sortByNewest = (scans) => {
-  return [...scans].sort((a, b) => {
-    const aTime = new Date(a.startedAt || a.queuedAt).getTime();
-    const bTime = new Date(b.startedAt || b.queuedAt).getTime();
-
-    return bTime - aTime;
-  });
+  return response.json();
 };
 
 const getScans = async () => {
-  return simulateNetworkDelay(sortByNewest(mockScans));
+  const response = await fetch(`${API_BASE_URL}/scans`);
+
+  const result = await handleResponse(response);
+
+  return result.data || [];
 };
 
 const getScanById = async (scanId) => {
-  const scan = mockScans.find((item) => item.id === scanId);
-
-  return simulateNetworkDelay(scan || null);
-};
-
-const getActiveScans = async () => {
-  const activeStatuses = ["Running", "Initializing", "Queued"];
-
-  const scans = mockScans.filter((scan) =>
-    activeStatuses.includes(scan.status),
+  const response = await fetch(
+    `${API_BASE_URL}/scans/${scanId}`,
   );
 
-  return simulateNetworkDelay(sortByNewest(scans));
+  const result = await handleResponse(response);
+
+  return result.data || null;
 };
 
-const getCompletedScans = async () => {
-  const scans = mockScans.filter((scan) => scan.status === "Completed");
+const createScan = async (scanData) => {
+  const response = await fetch(`${API_BASE_URL}/scans`, {
+    method: "POST",
 
-  return simulateNetworkDelay(sortByNewest(scans));
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify(scanData),
+  });
+
+  const result = await handleResponse(response);
+
+  return result.data;
 };
 
-const getFailedScans = async () => {
-  const scans = mockScans.filter((scan) => scan.status === "Failed");
+const updateScan = async (scanId, updates) => {
+  const response = await fetch(
+    `${API_BASE_URL}/scans/${scanId}`,
+    {
+      method: "PATCH",
 
-  return simulateNetworkDelay(sortByNewest(scans));
-};
+      headers: {
+        "Content-Type": "application/json",
+      },
 
-const getCriticalScans = async () => {
-  const scans = mockScans.filter((scan) => scan.severity === "Critical");
-
-  return simulateNetworkDelay(sortByNewest(scans));
-};
-
-const getRunningScans = async () => {
-  const scans = mockScans.filter((scan) => scan.status === "Running");
-
-  return simulateNetworkDelay(sortByNewest(scans));
-};
-
-const getQueuedScans = async () => {
-  const scans = mockScans.filter((scan) => scan.status === "Queued");
-
-  return simulateNetworkDelay(sortByNewest(scans));
-};
-
-const getPausedScans = async () => {
-  const scans = mockScans.filter((scan) => scan.status === "Paused");
-
-  return simulateNetworkDelay(sortByNewest(scans));
-};
-
-const getScansByTarget = async (target) => {
-  const normalizedTarget = target.toLowerCase();
-
-  const scans = mockScans.filter((scan) =>
-    scan.target.toLowerCase().includes(normalizedTarget),
+      body: JSON.stringify(updates),
+    },
   );
 
-  return simulateNetworkDelay(sortByNewest(scans));
+  const result = await handleResponse(response);
+
+  return result.data;
 };
 
-const getScansByType = async (type) => {
-  const scans = mockScans.filter((scan) => scan.type === type);
+const deleteScan = async (scanId) => {
+  const response = await fetch(
+    `${API_BASE_URL}/scans/${scanId}`,
+    {
+      method: "DELETE",
+    },
+  );
 
-  return simulateNetworkDelay(sortByNewest(scans));
-};
-
-const getScanMetrics = async () => {
-  const totalScans = mockScans.length;
-
-  const runningScans = mockScans.filter(
-    (scan) => scan.status === "Running",
-  ).length;
-
-  const completedScans = mockScans.filter(
-    (scan) => scan.status === "Completed",
-  ).length;
-
-  const failedScans = mockScans.filter(
-    (scan) => scan.status === "Failed",
-  ).length;
-
-  const queuedScans = mockScans.filter(
-    (scan) => scan.status === "Queued",
-  ).length;
-
-  const totalFindings = mockScans.reduce((sum, scan) => sum + scan.findings, 0);
-
-  const criticalFindings = mockScans.filter(
-    (scan) => scan.severity === "Critical",
-  ).length;
-
-  const metrics = {
-    totalScans,
-    runningScans,
-    completedScans,
-    failedScans,
-    queuedScans,
-    totalFindings,
-    criticalFindings,
-  };
-
-  return simulateNetworkDelay(metrics);
+  return handleResponse(response);
 };
 
 const scanService = {
   getScans,
   getScanById,
-  getActiveScans,
-  getCompletedScans,
-  getFailedScans,
-  getCriticalScans,
-  getRunningScans,
-  getQueuedScans,
-  getPausedScans,
-  getScansByTarget,
-  getScansByType,
-  getScanMetrics,
+  createScan,
+  updateScan,
+  deleteScan,
 };
 
 export default scanService;
