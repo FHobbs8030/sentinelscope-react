@@ -32,25 +32,6 @@ function ScanOperationsSection() {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
-  const formatScanType = (type = "") => {
-    switch (type) {
-      case "full":
-        return "Full Scan";
-
-      case "recon":
-        return "Recon Scan";
-
-      case "enumeration":
-        return "Enumeration Scan";
-
-      case "vulnerability":
-        return "Vulnerability Scan";
-
-      default:
-        return type;
-    }
-  };
-
   const handleStartScan = () => {
     if (!target.trim()) {
       return;
@@ -185,12 +166,10 @@ function ScanOperationsSection() {
             <thead>
               <tr>
                 <th>Target</th>
-                <th>Type</th>
                 <th>Status</th>
                 <th>Progress</th>
-                <th>Findings</th>
                 <th>Runtime</th>
-                <th>Activity</th>
+                <th>Actions</th>
               </tr>
             </thead>
 
@@ -212,12 +191,6 @@ function ScanOperationsSection() {
                           </span>
                         )}
                       </div>
-                    </td>
-
-                    <td>
-                      <span className="scan-type">
-                        {formatScanType(scan.type)}
-                      </span>
                     </td>
 
                     <td>
@@ -250,19 +223,27 @@ function ScanOperationsSection() {
                     </td>
 
                     <td>
-                      <span className="scan-findings">
-                        {scan.findingsCount ?? 0}
-                      </span>
-                    </td>
-
-                    <td>
                       <span className="scan-runtime">
                         {formatElapsedTime(scan.elapsedTime)}
                       </span>
                     </td>
 
                     <td>
-                      <div className="scan-activity-cell">{scan.activity}</div>
+                      <div className="scan-actions">
+                        {scan.status === "interrupted" && (
+                          <button
+                            className="scan-action-button"
+                            type="button"
+                            onClick={() =>
+                              scanRuntimeEngine.resumeScan(
+                                scan.mongoId ?? scan.id,
+                              )
+                            }
+                          >
+                            Resume
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );

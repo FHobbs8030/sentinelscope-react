@@ -316,6 +316,7 @@
 
   .topbar-search {
     max-width: none;
+    display: none;
   }
 
   .topbar-left {
