@@ -32,29 +32,22 @@ function ScanOperationsSection() {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
- const handleStartScan = () => {
-   if (!target.trim()) {
-     return;
-   }
+  const handleStartScan = () => {
+    if (!target.trim()) {
+      return;
+    }
 
-   const severity = generateSeverity();
+    const severity = generateSeverity();
 
-   launchMission({
-     target,
-     type: scanType,
-     profile,
-     severity,
-   });
+    launchMission({
+      target,
+      type: scanType,
+      profile,
+      severity,
+    });
 
-   scanRuntimeEngine.addScan({
-     target,
-     type: scanType,
-     profile,
-     severity,
-   });
-
-   setTarget("");
- };
+    setTarget("");
+  };
 
   const generateSeverity = () => {
     const severities = ["low", "medium", "high", "critical"];
