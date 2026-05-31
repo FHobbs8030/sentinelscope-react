@@ -4,13 +4,17 @@ import { MISSION_STATES } from "./missionStates";
 
 import scanEventBus from "../runtime/scanEventBus";
 
-export function createMission(type, target) {
+export function createMission({ target, type, profile, severity }) {
   return {
     id: crypto.randomUUID(),
 
+    target,
+
     type,
 
-    target,
+    profile,
+
+    severity,
 
     state: MISSION_STATES.QUEUED,
 
@@ -20,8 +24,13 @@ export function createMission(type, target) {
   };
 }
 
-export function launchMission(type, target) {
-  const mission = createMission(type, target);
+export function launchMission({ target, type, profile, severity }) {
+  const mission = createMission({
+    target,
+    type,
+    profile,
+    severity,
+  });
 
   enqueueMission(mission);
 
@@ -29,6 +38,8 @@ export function launchMission(type, target) {
     source: "recon-orchestrator",
     missionId: mission.id,
     missionType: type,
+    profile,
+    severity,
   });
 
   return mission;

@@ -1,5 +1,5 @@
 import "./ScanOperationsSection.css";
-
+import { launchMission } from "../../../services/orchestration/reconOrchestrator";
 import { useState } from "react";
 
 import Button from "../../../components/ui/Button";
@@ -32,22 +32,29 @@ function ScanOperationsSection() {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
-  const handleStartScan = () => {
-    if (!target.trim()) {
-      return;
-    }
+ const handleStartScan = () => {
+   if (!target.trim()) {
+     return;
+   }
 
-    scanRuntimeEngine.addScan({
-      target,
-      type: scanType,
-      profile,
-      status: "queued",
-      severity: generateSeverity(),
-      activity: "Operational scan queued for execution",
-    });
+   const severity = generateSeverity();
 
-    setTarget("");
-  };
+   launchMission({
+     target,
+     type: scanType,
+     profile,
+     severity,
+   });
+
+   scanRuntimeEngine.addScan({
+     target,
+     type: scanType,
+     profile,
+     severity,
+   });
+
+   setTarget("");
+ };
 
   const generateSeverity = () => {
     const severities = ["low", "medium", "high", "critical"];
