@@ -2,7 +2,6 @@ import {
   SCAN_STATE_METADATA,
   getNextScanState,
   getRandomStageMessage,
-  generateStageProgress,
   isTerminalScanState,
   shouldFailScan,
 } from "./scanStateMachine";
@@ -270,16 +269,40 @@ class ScanRuntimeEngine {
         return failedScan;
       }
 
-      const nextState = getNextScanState(scan.status);
+      const currentMetadata = SCAN_STATE_METADATA[scan.status];
 
-      const progress = generateStageProgress(nextState);
+      const progressIncrease = this.randomNumber(2, 8);
 
-      const findingsIncrease = this.generateFindings(nextState);
+      let progress = Math.min(100, (scan.progress ?? 0) + progressIncrease);
+
+      let currentState = scan.status;
+
+      if (
+        currentMetadata &&
+        progress >= currentMetadata.progressMax &&
+        scan.status !== "reporting"
+      ) {
+        currentState = getNextScanState(scan.status);
+      }
+
+      const activeMetadata = SCAN_STATE_METADATA[currentState];
+
+   if (activeMetadata) {
+     if (currentState !== scan.status) {
+       progress = activeMetadata.progressMin;
+     } else {
+       progress = Math.max(progress, activeMetadata.progressMin);
+
+       progress = Math.min(progress, activeMetadata.progressMax);
+     }
+   }
+
+      const findingsIncrease = this.generateFindings(currentState);
 
       const updatedScan = {
         ...scan,
 
-        status: nextState,
+        status: currentState,
 
         progress,
 
@@ -287,20 +310,20 @@ class ScanRuntimeEngine {
 
         elapsedTime: (scan.elapsedTime || 0) + RUNTIME_INTERVAL / 1000,
 
-        activity: getRandomStageMessage(nextState),
+        activity: getRandomStageMessage(currentState),
 
         updatedAt: new Date().toISOString(),
       };
 
-      if (scan.status !== nextState) {
-        scanEventBus.emitStageChanged(scan.status, nextState, updatedScan);
+      if (scan.status !== currentState) {
+        scanEventBus.emitStageChanged(scan.status, currentState, updatedScan);
 
         scanEventBus.emitTelemetry(
-          `${updatedScan.target} entered ${nextState} stage`,
+          `${updatedScan.target} entered ${currentState} stage`,
           {
             scanId: updatedScan.id,
             previousStage: scan.status,
-            nextState,
+            newStage: currentState,
           },
         );
       }
@@ -327,11 +350,11 @@ class ScanRuntimeEngine {
         );
       }
 
-      if (nextState === "initializing") {
+      if (currentState === "initializing") {
         scanEventBus.emitScanStarted(updatedScan);
       }
 
-      if (nextState === "completed") {
+      if (currentState === "completed") {
         updatedScan.completedAt = new Date().toISOString();
 
         updatedScan.progress = 100;

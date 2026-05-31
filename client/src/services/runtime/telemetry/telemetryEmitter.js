@@ -21,9 +21,21 @@ export function initializeTelemetryEmitter() {
     return;
   }
 
-  Object.values(SCAN_EVENTS).forEach((eventName) => {
-    registerTelemetryEvent(eventName);
-  });
+ [
+  SCAN_EVENTS.SCAN_CREATED,
+  SCAN_EVENTS.SCAN_STARTED,
+  SCAN_EVENTS.SCAN_STAGE_CHANGED,
+  SCAN_EVENTS.SCAN_COMPLETED,
+  SCAN_EVENTS.SCAN_FAILED,
+  SCAN_EVENTS.SCAN_CANCELLED,
+  SCAN_EVENTS.FINDING_DISCOVERED,
+  SCAN_EVENTS.CRITICAL_FINDING_DISCOVERED,
+  SCAN_EVENTS.SYSTEM_LOAD_CHANGED,
+  SCAN_EVENTS.QUEUE_UPDATED,
+  SCAN_EVENTS.TELEMETRY_EVENT,
+].forEach((eventName) => {
+  registerTelemetryEvent(eventName);
+});
 }
 
 export function destroyTelemetryEmitter() {

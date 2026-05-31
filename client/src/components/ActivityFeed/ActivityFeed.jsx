@@ -17,7 +17,7 @@ function ActivityFeed() {
 
       title: log.message,
 
-      timestamp: new Date(log.timestamp).toLocaleTimeString(),
+      timestamp: new Date(log.timestamp).getTime(),
 
       source: log.source,
     }));

@@ -6,6 +6,7 @@ export const SCAN_STATES = [
   "analysis",
   "exploitation",
   "reporting",
+  "interrupted",
   "completed",
   "failed",
   "cancelled",
@@ -87,6 +88,15 @@ export const SCAN_STATE_METADATA = {
     canFail: false,
   },
 
+  interrupted: {
+    label: "Interrupted",
+    progressMin: 0,
+    progressMax: 100,
+    duration: 0,
+    color: "warning",
+    canFail: false,
+  },
+
   completed: {
     label: "Completed",
     progressMin: 100,
@@ -156,6 +166,12 @@ export const STAGE_ACTIVITY_MESSAGES = {
     "Compiling operational report",
     "Generating findings summary",
     "Finalizing scan intelligence",
+  ],
+
+  interrupted: [
+    "Scan interrupted during runtime execution",
+    "Operator review required before continuation",
+    "Runtime recovery checkpoint created",
   ],
 
   completed: ["Scan completed successfully", "Operational report finalized"],
