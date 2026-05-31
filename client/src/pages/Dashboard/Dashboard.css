@@ -12,6 +12,7 @@
 
 .dashboard-shell > * {
   min-width: 0;
+
   max-width: 100%;
 }
 
@@ -24,20 +25,54 @@
   min-width: 0;
 }
 
+.kpi-summary-section {
+  margin-top: var(--space-5);
+}
+
 /* =========================
-   Large Laptop
+   Ultra Wide / Desktop
 ========================= */
 
-@media (max-width: 1439px) {
+@media (min-width: 1441px) {
   .dashboard-shell {
     grid-template-columns:
       minmax(0, 1fr)
-      260px;
+      320px;
   }
 }
 
 /* =========================
-   Tablet / Small Laptop
+   Large Laptop
+========================= */
+
+@media (max-width: 1440px) {
+  .dashboard-shell {
+    grid-template-columns:
+      minmax(0, 1fr)
+      280px;
+  }
+}
+
+/* =========================
+   Laptop Refinement
+========================= */
+
+@media (max-width: 1280px) {
+  .dashboard-shell {
+    grid-template-columns:
+      minmax(0, 1fr)
+      250px;
+
+    gap: var(--space-4);
+  }
+
+  .dashboard-main {
+    gap: var(--space-4);
+  }
+}
+
+/* =========================
+   Sidebar Collapse Transition
 ========================= */
 
 @media (max-width: 1199px) {
@@ -47,5 +82,87 @@
 
   .activity-feed {
     display: none;
+  }
+
+  .dashboard-main {
+    width: 100%;
+  }
+}
+
+/* =========================
+   Tablet / Small Laptop
+========================= */
+
+@media (max-width: 992px) {
+  .dashboard-shell {
+    gap: var(--space-4);
+  }
+
+  .dashboard-main {
+    gap: var(--space-4);
+  }
+
+  .kpi-summary-section {
+    margin-top: var(--space-4);
+  }
+}
+
+/* =========================
+   Tablet
+========================= */
+
+@media (max-width: 768px) {
+  .dashboard-shell {
+    gap: var(--space-4);
+  }
+
+  .dashboard-main {
+    gap: var(--space-4);
+  }
+
+  .kpi-summary-section {
+    margin-top: var(--space-5);
+  }
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 640px) {
+  .dashboard-shell {
+    gap: var(--space-3);
+  }
+
+  .dashboard-main {
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-shell {
+    gap: var(--space-3);
+  }
+
+  .dashboard-main {
+    gap: var(--space-3);
+  }
+
+  .kpi-summary-section {
+    margin-top: var(--space-4);
+  }
+}
+
+/* =========================
+   Landscape Height Refinement
+========================= */
+
+@media (max-height: 600px) {
+  .dashboard-main {
+    gap: var(--space-3);
+  }
+
+  .kpi-summary-section {
+    margin-top: var(--space-3);
   }
 }

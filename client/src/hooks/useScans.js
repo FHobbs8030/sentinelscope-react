@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import scanService from "../services/scanService";
-
 import scanRuntimeEngine from "../services/runtime/scanRuntimeEngine";
 
 import { TERMINAL_SCAN_STATES } from "../services/runtime/scanStateMachine";
+
+import { getScans } from "../services/api/scansApi";
+
+import { rebuildRuntimeScans } from "./runtimeRecovery";
 
 const ACTIVE_SCAN_STATES = [
   "queued",
@@ -31,9 +33,25 @@ const useScans = () => {
 
       setError(null);
 
-      const allScans = await scanService.getScans();
+      const persistedScans = await getScans();
 
-      scanRuntimeEngine.initialize(allScans);
+      console.log("HYDRATION RESPONSE:", persistedScans);
+
+      const runtimeScans = rebuildRuntimeScans(persistedScans);
+
+      console.log("RECOVERED RUNTIME SCANS:", runtimeScans);
+
+      const interruptedCount = runtimeScans.filter(
+        (scan) => scan.status === "interrupted",
+      ).length;
+
+      console.log(`RUNTIME RECOVERY: Recovered ${runtimeScans.length} scans`);
+
+      console.log(
+        `RUNTIME RECOVERY: ${interruptedCount} interrupted scans require review`,
+      );
+
+      scanRuntimeEngine.initialize(runtimeScans);
 
       setScans(scanRuntimeEngine.getScans());
 
@@ -129,6 +147,10 @@ const useScans = () => {
     return scans.filter((scan) => scan.status === "failed");
   }, [scans]);
 
+  const interruptedScans = useMemo(() => {
+    return scans.filter((scan) => scan.status === "interrupted");
+  }, [scans]);
+
   const criticalScans = useMemo(() => {
     return scans.filter((scan) => scan.severity?.toLowerCase() === "critical");
   }, [scans]);
@@ -147,7 +169,8 @@ const useScans = () => {
         scan.status !== "queued" &&
         scan.status !== "completed" &&
         scan.status !== "failed" &&
-        scan.status !== "cancelled",
+        scan.status !== "cancelled" &&
+        scan.status !== "interrupted",
     );
   }, [scans]);
 
@@ -158,7 +181,7 @@ const useScans = () => {
   const criticalFindingsCount = useMemo(() => {
     return scans.reduce((total, scan) => {
       if (scan.severity?.toLowerCase() === "critical") {
-        return total + (scan.findings ?? 0);
+        return total + (scan.findingsCount ?? 0);
       }
 
       return total;
@@ -174,14 +197,18 @@ const useScans = () => {
 
     const activeCount = activeScans.length;
 
+    const interruptedCount = interruptedScans.length;
+
     const successRate =
       totalScans > 0 ? Math.round((completedCount / totalScans) * 100) : 0;
 
     const averageFindings =
       totalScans > 0
         ? Math.round(
-            scans.reduce((total, scan) => total + (scan.findings ?? 0), 0) /
-              totalScans,
+            scans.reduce(
+              (total, scan) => total + (scan.findingsCount ?? 0),
+              0,
+            ) / totalScans,
           )
         : 0;
 
@@ -190,11 +217,19 @@ const useScans = () => {
       activeScans: activeCount,
       completedScans: completedCount,
       failedScans: failedCount,
+      interruptedScans: interruptedCount,
       successRate,
       criticalFindings: criticalFindingsCount,
       averageFindings,
     };
-  }, [scans, activeScans, completedScans, failedScans, criticalFindingsCount]);
+  }, [
+    scans,
+    activeScans,
+    completedScans,
+    failedScans,
+    interruptedScans,
+    criticalFindingsCount,
+  ]);
 
   useEffect(() => {
     let mounted = true;
@@ -242,6 +277,7 @@ const useScans = () => {
     activeScans,
     completedScans,
     failedScans,
+    interruptedScans,
     criticalScans,
     queuedScans,
     initializingScans,

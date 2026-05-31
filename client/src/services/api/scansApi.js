@@ -23,3 +23,25 @@ export async function updateScan(id, updates) {
 
   return response.json();
 }
+
+export async function getScans() {
+  const response = await fetch(API_URL);
+
+  const data = await response.json();
+
+  console.log("HYDRATION RESPONSE:", data);
+
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+  if (Array.isArray(data.scans)) {
+    return data.scans;
+  }
+
+  if (Array.isArray(data.data)) {
+    return data.data;
+  }
+
+  return [];
+}

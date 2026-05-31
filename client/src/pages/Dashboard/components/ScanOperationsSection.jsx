@@ -16,7 +16,7 @@ function ScanOperationsSection() {
 
   const [target, setTarget] = useState("");
 
-  const [scanType, setScanType] = useState("Full Scan");
+  const [scanType, setScanType] = useState("full");
 
   const [profile, setProfile] = useState("General");
 
@@ -32,6 +32,25 @@ function ScanOperationsSection() {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
+  const formatScanType = (type = "") => {
+    switch (type) {
+      case "full":
+        return "Full Scan";
+
+      case "recon":
+        return "Recon Scan";
+
+      case "enumeration":
+        return "Enumeration Scan";
+
+      case "vulnerability":
+        return "Vulnerability Scan";
+
+      default:
+        return type;
+    }
+  };
+
   const handleStartScan = () => {
     if (!target.trim()) {
       return;
@@ -39,15 +58,10 @@ function ScanOperationsSection() {
 
     scanRuntimeEngine.addScan({
       target,
-
       type: scanType,
-
       profile,
-
       status: "queued",
-
       severity: generateSeverity(),
-
       activity: "Operational scan queued for execution",
     });
 
@@ -110,10 +124,13 @@ function ScanOperationsSection() {
               value={scanType}
               onChange={(event) => setScanType(event.target.value)}
             >
-              <option>Full Scan</option>
-              <option>Port Scan</option>
-              <option>Web Scan</option>
-              <option>Vulnerability Scan</option>
+              <option value="full">Full Scan</option>
+
+              <option value="recon">Recon Scan</option>
+
+              <option value="enumeration">Enumeration Scan</option>
+
+              <option value="vulnerability">Vulnerability Scan</option>
             </select>
           </label>
 
@@ -198,7 +215,9 @@ function ScanOperationsSection() {
                     </td>
 
                     <td>
-                      <span className="scan-type">{scan.type}</span>
+                      <span className="scan-type">
+                        {formatScanType(scan.type)}
+                      </span>
                     </td>
 
                     <td>
@@ -232,7 +251,7 @@ function ScanOperationsSection() {
 
                     <td>
                       <span className="scan-findings">
-                        {scan.findings ?? 0}
+                        {scan.findingsCount ?? 0}
                       </span>
                     </td>
 

@@ -24,6 +24,14 @@ function KpiSummarySection() {
 
     {
       id: 3,
+      label: "Interrupted Scans",
+      value: metrics.interruptedScans,
+      trend: "Recovered after refresh",
+      status: metrics.interruptedScans > 0 ? "warning" : "positive",
+    },
+
+    {
+      id: 4,
       label: "Failed Scans",
       value: metrics.failedScans,
       trend: "Operational runtime failures",
@@ -31,7 +39,7 @@ function KpiSummarySection() {
     },
 
     {
-      id: 4,
+      id: 5,
       label: "Critical Findings",
       value: metrics.criticalFindings,
       trend: "High-priority vulnerabilities",
@@ -39,7 +47,7 @@ function KpiSummarySection() {
     },
 
     {
-      id: 5,
+      id: 6,
       label: "Average Findings",
       value: metrics.averageFindings,
       trend: "Per operational scan",
@@ -47,7 +55,7 @@ function KpiSummarySection() {
     },
 
     {
-      id: 6,
+      id: 7,
       label: "Completed Scans",
       value: metrics.completedScans,
       trend: "Successfully processed",

@@ -23,9 +23,9 @@ const navigation = [
   },
 ];
 
-function Sidebar({ isOpen, onClose }) {
+function Sidebar({ className = "sidebar", onClose }) {
   return (
-    <aside className={isOpen ? "sidebar sidebar-open" : "sidebar"}>
+    <aside className={className}>
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <div className="sidebar-logo-icon">S</div>
@@ -37,7 +37,12 @@ function Sidebar({ isOpen, onClose }) {
           </div>
         </div>
 
-        <button className="sidebar-mobile-close" onClick={onClose}>
+        <button
+          className="sidebar-mobile-close"
+          type="button"
+          onClick={onClose}
+          aria-label="Close navigation menu"
+        >
           ✕
         </button>
       </div>
@@ -57,7 +62,7 @@ function Sidebar({ isOpen, onClose }) {
                       : "sidebar-item"
                   }
                 >
-                  <button className="sidebar-button">
+                  <button className="sidebar-button" type="button">
                     <span className="sidebar-indicator" />
 
                     <span className="sidebar-label">{item}</span>
@@ -70,7 +75,13 @@ function Sidebar({ isOpen, onClose }) {
       </nav>
 
       <div className="sidebar-footer">
-        <button className="sidebar-collapse-button">Collapse</button>
+        <button
+          className="sidebar-collapse-button"
+          type="button"
+          onClick={onClose}
+        >
+          Collapse
+        </button>
       </div>
     </aside>
   );

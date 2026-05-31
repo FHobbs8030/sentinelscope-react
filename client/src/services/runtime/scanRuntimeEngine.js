@@ -22,7 +22,33 @@ class ScanRuntimeEngine {
   }
 
   initialize(initialScans = []) {
-    this.scans = [...initialScans];
+    this.scans = Array.isArray(initialScans) ? [...initialScans] : [];
+
+    console.log("RUNTIME INITIALIZED:", this.scans);
+
+    const interruptedCount = this.scans.filter(
+      (scan) => scan.status === "interrupted",
+    ).length;
+
+    scanEventBus.emitTelemetry(
+      `Recovered ${this.scans.length} persisted scans`,
+      {
+        source: "runtime-recovery",
+        recoveredScans: this.scans.length,
+      },
+    );
+
+    if (interruptedCount > 0) {
+      scanEventBus.emitTelemetry(
+        `${interruptedCount} interrupted scans require operator review`,
+        {
+          source: "runtime-recovery",
+          interruptedScans: interruptedCount,
+        },
+      );
+    }
+
+    this.emit();
   }
 
   start() {
@@ -86,7 +112,7 @@ class ScanRuntimeEngine {
   }
 
   setScans(scans = []) {
-    this.scans = [...scans];
+    this.scans = Array.isArray(scans) ? [...scans] : [];
 
     this.emit();
   }
@@ -94,6 +120,8 @@ class ScanRuntimeEngine {
   addScan(scan) {
     const runtimeScan = {
       id: scan.id ?? `scan-${crypto.randomUUID()}`,
+
+      mongoId: scan.mongoId ?? null,
 
       progress: 0,
 
@@ -118,21 +146,25 @@ class ScanRuntimeEngine {
 
     this.scans.unshift(runtimeScan);
 
-   createScan({
-     name: runtimeScan.name ?? runtimeScan.target,
-     target: runtimeScan.target,
-     scanType: runtimeScan.type ?? "recon",
-     status: runtimeScan.status,
-     progress: runtimeScan.progress,
-     findingsCount: runtimeScan.findingsCount,
-     startedAt: runtimeScan.startedAt,
-   })
-     .then((response) => {
-       runtimeScan.mongoId = response?.data?._id;
-     })
-     .catch((error) => {
-       console.error("Failed to persist scan:", error);
-     });
+    createScan({
+      name: runtimeScan.name ?? runtimeScan.target,
+      target: runtimeScan.target,
+      scanType: runtimeScan.type ?? "recon",
+      status: runtimeScan.status,
+      progress: runtimeScan.progress,
+      findingsCount: runtimeScan.findingsCount,
+      startedAt: runtimeScan.startedAt,
+    })
+      .then((response) => {
+        console.log("CREATE SCAN RESPONSE:", response);
+
+        runtimeScan.mongoId = response?._id ?? response?.data?._id ?? null;
+
+        console.log("ASSIGNED MONGOID:", runtimeScan.mongoId);
+      })
+      .catch((error) => {
+        console.error("Failed to persist scan:", error);
+      });
 
     scanEventBus.emitScanCreated(runtimeScan);
 
@@ -223,6 +255,17 @@ class ScanRuntimeEngine {
             target: failedScan.target,
           },
         );
+
+        if (failedScan.mongoId) {
+          updateScan(failedScan.mongoId, {
+            status: failedScan.status,
+            progress: failedScan.progress,
+            findingsCount: failedScan.findingsCount,
+            completedAt: null,
+          }).catch((error) => {
+            console.error("Failed to update failed scan:", error);
+          });
+        }
 
         return failedScan;
       }

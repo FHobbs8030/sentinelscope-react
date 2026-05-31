@@ -114,7 +114,7 @@
   background: #ef4444;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .kpi-summary-section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 
@@ -130,8 +130,21 @@
   }
 }
 
+@media (max-width: 640px) {
+  .kpi-summary-section {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: var(--space-3);
+  }
+
+  .kpi-summary-card__value {
+    font-size: 1.35rem;
+  }
+}
+
 @media (max-width: 480px) {
   .kpi-summary-section {
+    grid-template-columns: 1fr;
     gap: 10px;
   }
 
@@ -159,10 +172,32 @@
     width: 6px;
     height: 6px;
   }
+
+  .kpi-summary-card {
+    gap: 6px;
+  }
+
+  .kpi-summary-card__trend {
+    font-size: 0.62rem;
+
+    line-height: 1.2;
+  }
 }
 
 @media (max-width: 360px) {
   .kpi-summary-section {
     grid-template-columns: 1fr;
   }
+
+  .kpi-summary-card {
+  padding: 8px 10px;
+}
+
+.kpi-summary-card__label {
+  font-size: 0.65rem;
+}
+
+.kpi-summary-card__value {
+  font-size: 1.15rem;
+}
 }
