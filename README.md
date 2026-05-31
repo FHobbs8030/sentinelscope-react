@@ -1,28 +1,31 @@
 # 🛡️ SentinelScope
 
-> Tactical cybersecurity intelligence and reconnaissance platform built with React, Vite, Node.js, and modular dashboard architecture.
-
+> Tactical cybersecurity intelligence and reconnaissance platform built with React, Vite, Node.js, Express, MongoDB Atlas, and a modular dashboard architecture.
+<!-- markdownlint-disable MD033 -->
 ---
 
 ## 🚀 Project Overview
 
 SentinelScope is a modern cybersecurity operations platform focused on:
 
-- network reconnaissance
-- vulnerability intelligence
-- topology visualization
-- reporting workflows
-- operational scan management
-- dashboard-driven security analytics
+- Network reconnaissance
+- Vulnerability intelligence
+- Topology visualization
+- Reporting workflows
+- Operational scan management
+- Runtime monitoring
+- Telemetry analytics
+- Dashboard-driven security operations
 
 The platform bridges the gap between traditional command-line security tooling and modern enterprise-grade web application workflows.
 
----
+SentinelScope now includes a persistent runtime engine, operational telemetry monitoring, scan recovery capabilities, MongoDB-backed storage, and a fully responsive dashboard designed to support future reconnaissance, vulnerability analysis, reporting, and attack surface intelligence workflows.
 
 ---
+
+## 📸 Dashboard Preview
 
 ### Dashboard Preview
----
 
 <img
   src="client/public/images/dashboard-preview.png"
@@ -36,7 +39,7 @@ The platform bridges the gap between traditional command-line security tooling a
 
 <img
   src="client/public/images/enumeration-stage.png"
-  alt="Dashboard Preview"
+  alt="Enumeration Stage"
   width="100%"
 />
 
@@ -46,7 +49,7 @@ The platform bridges the gap between traditional command-line security tooling a
 
 <img
   src="client/public/images/recon-stage.png"
-  alt="Dashboard Preview"
+  alt="Recon Stage"
   width="100%"
 />
 
@@ -56,7 +59,7 @@ The platform bridges the gap between traditional command-line security tooling a
 
 <img
   src="client/public/images/reporting-engine.png"
-  alt="Dashboard Preview"
+  alt="Reporting Engine"
   width="100%"
 />
 
@@ -66,7 +69,7 @@ The platform bridges the gap between traditional command-line security tooling a
 
 <img
   src="client/public/images/topology-map.png"
-  alt="Dashboard Preview"
+  alt="Topology Map"
   width="100%"
 />
 
@@ -76,7 +79,7 @@ The platform bridges the gap between traditional command-line security tooling a
 
 <img
   src="client/public/images/vuln-analysis.png"
-  alt="Dashboard Preview"
+  alt="Vulnerability Analysis"
   width="100%"
 />
 
@@ -86,7 +89,7 @@ The platform bridges the gap between traditional command-line security tooling a
 
 <img
   src="client/public/images/What_to_do_next.png"
-  alt="Dashboard Preview"
+  alt="Future Development Roadmap"
   width="100%"
 />
 
@@ -96,33 +99,49 @@ The platform bridges the gap between traditional command-line security tooling a
 
 ### 🌐 Reconnaissance Engine
 
-- host discovery
-- service enumeration
-- port scanning
-- network visibility
-- scan orchestration
+- Host discovery
+- Service enumeration
+- Port scanning
+- Network visibility
+- Scan orchestration
 
 ### 🛡️ Vulnerability Analysis
 
-- vulnerability tracking
-- severity scoring
-- risk visualization
-- threat monitoring
-- alert prioritization
+- Vulnerability tracking
+- Severity scoring
+- Risk visualization
+- Threat monitoring
+- Alert prioritization
+
+### 🛰️ Runtime Recovery System
+
+- Persistent scan storage
+- Interrupted scan recovery
+- Runtime restoration
+- Scan continuation workflows
+- Operational state management
+
+### 📡 Operational Telemetry
+
+- Runtime event monitoring
+- Scan lifecycle tracking
+- Recovery event logging
+- Telemetry dashboard integration
+- Operational visibility
 
 ### 🗺️ Topology Mapping
 
-- network relationship visualization
-- infrastructure mapping
-- node hierarchy display
-- traffic intelligence
+- Network relationship visualization
+- Infrastructure mapping
+- Node hierarchy display
+- Traffic intelligence
 
 ### 📊 Reporting System
 
-- structured security reporting
-- export-ready intelligence summaries
-- operational dashboards
-- metric aggregation
+- Structured security reporting
+- Export-ready intelligence summaries
+- Operational dashboards
+- Metric aggregation
 
 ---
 
@@ -130,10 +149,11 @@ The platform bridges the gap between traditional command-line security tooling a
 
 - React
 - Vite
-- Modular Component Architecture
-- Responsive Dashboard System
+- JavaScript (ES Modules)
+- Responsive Dashboard Architecture
 - Tactical Dark Theme UI
-- Reusable UI Primitive System
+- Modular Component System
+- Reusable UI Primitive Library
 
 ---
 
@@ -141,9 +161,12 @@ The platform bridges the gap between traditional command-line security tooling a
 
 - Node.js
 - Express
-- Modular Service Architecture
+- MongoDB Atlas
+- Mongoose
 - REST APIs
-- Security Workflow Integration
+- Runtime Persistence Layer
+- Recovery Services
+- Telemetry Services
 
 ---
 
@@ -164,7 +187,6 @@ SentinelScope/
 │       │   └── ui/
 │       │
 │       ├── contexts/
-│       ├── features/
 │       ├── hooks/
 │       ├── pages/
 │       ├── services/
@@ -172,7 +194,18 @@ SentinelScope/
 │       └── utils/
 │
 ├── docs/
+│
 └── server/
+    ├── config/
+    ├── controllers/
+    ├── middleware/
+    ├── models/
+    ├── routes/
+    ├── services/
+    └── utils/
+```
+
+---
 
 ## 🧩 Current Frontend Components
 
@@ -197,7 +230,10 @@ components/ui/
 ```text
 components/dashboard/
 ├── DashboardGrid
-├── ScanPanel
+├── KpiSummarySection
+├── ScanOperationsSection
+├── TelemetryPanel
+├── RuntimePanel
 ├── SectionHeader
 └── StatCard
 ```
@@ -208,25 +244,72 @@ components/dashboard/
 
 ### ✅ Completed
 
-- React + Vite setup
+- React + Vite architecture
 - Responsive AppShell
 - Sidebar navigation
-- Topbar
-- MainContent system
-- PageContainer system
-- Tactical UI design system
-- UI primitives
+- Topbar navigation
 - Dashboard composition layer
-- Operational scan panel foundation
+- Tactical UI design system
+- UI primitive library
+- KPI Summary dashboard
+- Scan Operations dashboard
+- Recent Scans management
+- Runtime persistence architecture
+- Runtime recovery engine
+- Operational telemetry layer
+- MongoDB Atlas integration
+- Express API integration
+- Persistent scan storage
+- Responsive dashboard system
+- Mobile dashboard support (320px+)
+- Tablet dashboard support
+- Desktop dashboard support
 
 ### 🚧 In Progress
 
-- TerminalPanel
-- Live scan workflows
-- Recon orchestration
-- Vulnerability pipelines
+- Recon orchestration workflows
+- Enumeration pipelines
+- Port scanning engine
+- Findings analytics
 - Reporting dashboards
-- API integrations
+- Historical scan analytics
+- Intelligence correlation
+- Topology visualization engine
+
+### 🔮 Planned
+
+- Vulnerability intelligence engine
+- Findings correlation engine
+- Risk scoring system
+- Executive reporting
+- PDF export generation
+- Scan scheduling
+- Concurrent scan execution
+- Advanced telemetry analytics
+- Interactive topology mapping
+
+---
+
+## 📈 Project Progress
+
+| Area | Completion |
+| -------- | -------- |
+| Frontend Dashboard | 90% |
+| Responsive Design | 95% |
+| Backend Services | 75% |
+| Runtime Recovery | 90% |
+| Operational Telemetry | 90% |
+| Persistence Layer | 95% |
+| Scan Engine | 70% |
+| Vulnerability Intelligence | 50% |
+
+### Overall Project Completion
+
+## **~80% Complete**
+
+SentinelScope has evolved from a dashboard prototype into a fully operational cybersecurity platform foundation featuring persistent runtime management, telemetry monitoring, scan recovery, MongoDB-backed storage, and a responsive dashboard architecture.
+
+The remaining development effort is focused primarily on intelligence analysis, vulnerability correlation, reporting systems, topology visualization, and advanced scan orchestration.
 
 ---
 
@@ -235,13 +318,13 @@ components/dashboard/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/FHobbs8030/sentinelscope.git
+git clone https://github.com/FHobbs8030/sentinelscope-react.git
 ```
 
 ### Navigate Into Project
 
 ```bash
-cd sentinelscope
+cd sentinelscope-react
 ```
 
 ### Install Frontend Dependencies
@@ -263,11 +346,11 @@ npm run dev
 
 ### Frontend Repository
 
-https://github.com/FHobbs8030/sentinelscope
+<https://github.com/FHobbs8030/sentinelscope-react>
 
 ### Backend Repository
 
-https://github.com/FHobbs8030/sentinelscope-server
+<https://github.com/FHobbs8030/sentinelscope-express>
 
 ---
 
@@ -275,15 +358,35 @@ https://github.com/FHobbs8030/sentinelscope-server
 
 Every system in SentinelScope is designed around:
 
-- modularity
-- scalability
-- maintainability
-- operational clarity
-- reusable architecture
+- Modularity
+- Scalability
+- Maintainability
+- Operational clarity
+- Reusable architecture
+- Runtime resiliency
+- Observability
+- Long-term extensibility
+
+---
+
+## 🛰️ Future Vision
+
+SentinelScope is being developed as a unified cybersecurity operations platform capable of managing the entire reconnaissance and intelligence lifecycle through a modern web interface.
+
+Future releases will expand the platform into:
+
+- Vulnerability intelligence management
+- Attack surface analysis
+- Asset correlation
+- Risk scoring
+- Reporting automation
+- Interactive network topology visualization
+- Security operations workflows
+- Enterprise-scale telemetry analytics
 
 ---
 
 ## 🛰️ SentinelScope
 
-> “Make it clear first.
-> Structured systems naturally become powerful.”
+> "Make it clear first.  
+> Structured systems naturally become powerful."
