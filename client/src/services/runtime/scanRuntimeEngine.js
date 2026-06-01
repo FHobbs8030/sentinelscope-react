@@ -350,7 +350,7 @@ class ScanRuntimeEngine {
         );
       }
 
-      if (currentState === "initializing") {
+      if (scan.status !== currentState && currentState === "initializing") {
         scanEventBus.emitScanStarted(updatedScan);
       }
 

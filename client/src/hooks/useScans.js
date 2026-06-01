@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import scanRuntimeEngine from "../services/runtime/scanRuntimeEngine";
 
@@ -26,6 +26,8 @@ const useScans = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [error, setError] = useState(null);
+
+  const runtimeInitializedRef = useRef(false);
 
   const loadScans = useCallback(async () => {
     try {
@@ -232,21 +234,13 @@ const useScans = () => {
   ]);
 
   useEffect(() => {
-    let mounted = true;
+    if (runtimeInitializedRef.current) {
+      return;
+    }
 
-    const initializeScans = async () => {
-      if (!mounted) {
-        return;
-      }
+    runtimeInitializedRef.current = true;
 
-      await loadScans();
-    };
-
-    initializeScans();
-
-    return () => {
-      mounted = false;
-    };
+    loadScans();
   }, [loadScans]);
 
   useEffect(() => {
