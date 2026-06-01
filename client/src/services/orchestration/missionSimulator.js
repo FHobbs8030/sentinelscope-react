@@ -2,7 +2,15 @@ import scanEventBus from "../runtime/scanEventBus";
 
 import scanRuntimeEngine from "../runtime/scanRuntimeEngine";
 
+import missionStore from "./missionStore";
+
+import { MISSION_STATES } from "./missionStates";
+
 export async function simulateMissionLifecycle(mission) {
+  missionStore.updateMission(mission.id, {
+    state: MISSION_STATES.RUNNING,
+  });
+
   scanEventBus.emitTelemetry(
     `Mission execution started for ${mission.target}`,
     {
@@ -18,6 +26,10 @@ export async function simulateMissionLifecycle(mission) {
     severity: mission.severity,
     status: "queued",
     activity: "Mission accepted by runtime engine",
+  });
+
+  missionStore.updateMission(mission.id, {
+    state: MISSION_STATES.COMPLETED,
   });
 
   scanEventBus.emitTelemetry(

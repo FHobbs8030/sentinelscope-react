@@ -2,6 +2,8 @@ import { enqueueMission } from "./missionQueue";
 
 import { MISSION_STATES } from "./missionStates";
 
+import missionStore from "./missionStore";
+
 import scanEventBus from "../runtime/scanEventBus";
 
 export function createMission({ target, type, profile, severity }) {
@@ -31,6 +33,8 @@ export function launchMission({ target, type, profile, severity }) {
     profile,
     severity,
   });
+
+  missionStore.addMission(mission);
 
   enqueueMission(mission);
 

@@ -84,9 +84,9 @@ function buildTelemetryMessage(eventType, payload) {
       })`;
 
     case SCAN_EVENTS.CRITICAL_FINDING_DISCOVERED:
-      return `Critical finding discovered: ${
-        payload.finding || "unknown finding"
-      }`;
+      return `${
+        payload.finding?.value || 0
+      } critical findings discovered (total: ${payload.finding?.total || 0})`;
 
     case SCAN_EVENTS.SYSTEM_LOAD_CHANGED:
       return `System load changed to ${payload.loadState || "unknown state"}`;

@@ -2,8 +2,12 @@ import "./KpiSummarySection.css";
 
 import useScans from "../../../hooks/useScans";
 
+import useMissions from "../../../hooks/useMissions";
+
 function KpiSummarySection() {
   const { metrics } = useScans();
+
+  const { metrics: missionMetrics } = useMissions();
 
   const kpiSummaryData = [
     {
@@ -12,6 +16,14 @@ function KpiSummarySection() {
       value: metrics.activeScans,
       trend: `${metrics.completedScans} completed`,
       status: "positive",
+    },
+
+    {
+      id: 8,
+      label: "Queued Missions",
+      value: missionMetrics.queuedMissions,
+      trend: "Awaiting execution",
+      status: missionMetrics.queuedMissions > 0 ? "warning" : "positive",
     },
 
     {
