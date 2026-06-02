@@ -1,6 +1,7 @@
 import "./Dashboard.css";
 
 import KpiSummarySection from "./components/KpiSummarySection";
+import MissionQueueSection from "./components/MissionQueueSection";
 import NetworkOverviewSection from "./components/NetworkOverviewSection";
 import ScanOperationsSection from "./components/ScanOperationsSection";
 import AnalyticsSection from "./components/AnalyticsSection/AnalyticsSection";
@@ -18,6 +19,8 @@ function Dashboard() {
     <div className="dashboard-shell">
       <div className="dashboard-main">
         <KpiSummarySection />
+
+        <MissionQueueSection />
 
         <NetworkOverviewSection />
 

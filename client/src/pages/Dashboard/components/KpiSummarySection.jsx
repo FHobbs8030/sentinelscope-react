@@ -1,7 +1,6 @@
 import "./KpiSummarySection.css";
 
 import useScans from "../../../hooks/useScans";
-
 import useMissions from "../../../hooks/useMissions";
 
 function KpiSummarySection() {
@@ -24,6 +23,30 @@ function KpiSummarySection() {
       value: missionMetrics.queuedMissions,
       trend: "Awaiting execution",
       status: missionMetrics.queuedMissions > 0 ? "warning" : "positive",
+    },
+
+    {
+      id: 9,
+      label: "Running Missions",
+      value: missionMetrics.runningMissions,
+      trend: "Currently executing",
+      status: missionMetrics.runningMissions > 0 ? "warning" : "positive",
+    },
+
+    {
+      id: 10,
+      label: "Completed Missions",
+      value: missionMetrics.completedMissions,
+      trend: "Successfully orchestrated",
+      status: "positive",
+    },
+
+    {
+      id: 11,
+      label: "Failed Missions",
+      value: missionMetrics.failedMissions,
+      trend: "Require investigation",
+      status: missionMetrics.failedMissions > 0 ? "critical" : "positive",
     },
 
     {

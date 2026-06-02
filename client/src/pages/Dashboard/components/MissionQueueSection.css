@@ -1,0 +1,180 @@
+.mission-queue-section {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+
+  padding: var(--space-5);
+
+  background: var(--color-surface-2);
+
+  border: 1px solid var(--color-border-subtle);
+
+  border-radius: 16px;
+
+  min-width: 0;
+}
+
+.mission-queue-section__header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: var(--space-4);
+}
+
+.mission-queue-section__title {
+  margin: 0;
+
+  font-size: 1.125rem;
+
+  font-weight: 600;
+}
+
+.mission-queue-section__subtitle {
+  margin: 4px 0 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: 0.875rem;
+}
+
+.mission-queue-section__count {
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  background: rgba(59, 130, 246, 0.15);
+
+  color: var(--color-text-primary);
+
+  font-size: 0.875rem;
+
+  white-space: nowrap;
+}
+
+.mission-queue-table {
+  display: flex;
+
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.mission-queue-table__header,
+.mission-queue-table__row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(100px, 1fr)
+    minmax(120px, 1fr)
+    minmax(100px, 1fr);
+
+  gap: var(--space-3);
+
+  align-items: center;
+}
+
+.mission-queue-table__header {
+  padding-bottom: var(--space-3);
+
+  border-bottom: 1px solid var(--color-border-subtle);
+
+  font-size: 0.75rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+
+  color: var(--color-text-secondary);
+}
+
+.mission-queue-table__row {
+  padding: var(--space-3) 0;
+
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.mission-queue-table__row:last-child {
+  border-bottom: none;
+}
+
+.mission-queue-table__target {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.mission-state {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+
+  text-transform: capitalize;
+}
+
+.mission-state--queued {
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.mission-state--running {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.mission-state--completed {
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.mission-state--failed {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.mission-state--cancelled {
+  background: rgba(107, 114, 128, 0.15);
+}
+
+.mission-queue-table__empty {
+  padding: var(--space-5) 0;
+
+  text-align: center;
+
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .mission-queue-table__header,
+  .mission-queue-table__row {
+    grid-template-columns: 1fr;
+
+    gap: var(--space-2);
+  }
+
+  .mission-queue-table__header {
+    display: none;
+  }
+
+  .mission-queue-table__row {
+    padding: var(--space-4);
+
+    background: rgba(255, 255, 255, 0.03);
+
+    border-radius: 12px;
+
+    margin-bottom: var(--space-3);
+  }
+}

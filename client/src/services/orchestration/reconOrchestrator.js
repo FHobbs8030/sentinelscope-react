@@ -6,6 +6,8 @@ import missionStore from "./missionStore";
 
 import scanEventBus from "../runtime/scanEventBus";
 
+import { createMission as createMissionRecord } from "../api/missionsApi";
+
 export function createMission({ target, type, profile, severity }) {
   return {
     id: crypto.randomUUID(),
@@ -26,13 +28,30 @@ export function createMission({ target, type, profile, severity }) {
   };
 }
 
-export function launchMission({ target, type, profile, severity }) {
+export async function launchMission({ target, type, profile, severity }) {
   const mission = createMission({
     target,
     type,
     profile,
     severity,
   });
+
+  try {
+    const response = await createMissionRecord({
+      target,
+      type,
+      profile,
+      severity,
+      state: mission.state,
+      progress: mission.progress,
+    });
+
+    if (response?.data?._id) {
+      mission.mongoId = response.data._id;
+    }
+  } catch (error) {
+    console.error("[ReconOrchestrator] Failed to persist mission", error);
+  }
 
   missionStore.addMission(mission);
 
