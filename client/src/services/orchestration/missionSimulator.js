@@ -6,9 +6,49 @@ import missionStore from "./missionStore";
 
 import { MISSION_STATES } from "./missionStates";
 
+import { updateMission as updateMissionRecord } from "../api/missionsApi";
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function synchronizeMission(mission, updates) {
+  missionStore.updateMission(mission.id, updates);
+
+  Object.assign(mission, updates);
+
+  if (!mission.mongoId) {
+    return;
+  }
+
+  try {
+    await updateMissionRecord(mission.mongoId, updates);
+  } catch (error) {
+    console.error(
+      "[MissionSimulator] Failed to synchronize mission state",
+      error,
+    );
+  }
+}
+
 export async function simulateMissionLifecycle(mission) {
-  missionStore.updateMission(mission.id, {
+  await synchronizeMission(mission, {
+    state: MISSION_STATES.INITIALIZING,
+    progress: 10,
+  });
+
+  scanEventBus.emitTelemetry(`Mission initializing for ${mission.target}`, {
+    source: "mission-simulator",
+    missionId: mission.id,
+  });
+
+  await delay(1000);
+
+  await synchronizeMission(mission, {
     state: MISSION_STATES.RUNNING,
+    progress: 50,
   });
 
   scanEventBus.emitTelemetry(
@@ -28,8 +68,11 @@ export async function simulateMissionLifecycle(mission) {
     activity: "Mission accepted by runtime engine",
   });
 
-  missionStore.updateMission(mission.id, {
+  await delay(2000);
+
+  await synchronizeMission(mission, {
     state: MISSION_STATES.COMPLETED,
+    progress: 100,
   });
 
   scanEventBus.emitTelemetry(
