@@ -2,10 +2,29 @@ import { useEffect, useMemo, useState } from "react";
 
 import missionStore from "../services/orchestration/missionStore";
 
+import { getMissions } from "../services/api/missionsApi";
+
 export default function useMissions() {
   const [missions, setMissions] = useState(missionStore.getMissions());
 
   useEffect(() => {
+    async function hydrateMissions() {
+      try {
+        const response = await getMissions();
+
+        if (response?.data) {
+          missionStore.setMissions(response.data);
+        }
+      } catch (error) {
+        console.error(
+          "[useMissions] Failed to hydrate missions from MongoDB",
+          error,
+        );
+      }
+    }
+
+    hydrateMissions();
+
     const unsubscribe = missionStore.subscribe((updatedMissions) => {
       setMissions(updatedMissions);
     });
@@ -19,9 +38,12 @@ export default function useMissions() {
     return missions.filter((mission) => mission.state === "queued");
   }, [missions]);
 
- const runningMissions = useMemo(() => {
-   return missions.filter((mission) => mission.state === "running");
- }, [missions]);
+  const runningMissions = useMemo(() => {
+    return missions.filter(
+      (mission) =>
+        mission.state === "running" || mission.state === "initializing",
+    );
+  }, [missions]);
 
   const completedMissions = useMemo(() => {
     return missions.filter((mission) => mission.state === "completed");

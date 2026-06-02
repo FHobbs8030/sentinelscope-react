@@ -3,6 +3,12 @@ const missionStore = {
 
   subscribers: new Set(),
 
+  setMissions(missions) {
+    this.missions = [...missions];
+
+    this.notifySubscribers();
+  },
+
   addMission(mission) {
     this.missions.unshift(mission);
 
