@@ -122,6 +122,10 @@ class ScanRuntimeEngine {
 
       mongoId: scan.mongoId ?? null,
 
+      missionId: scan.missionId ?? null,
+
+      missionMongoId: scan.missionMongoId ?? null,
+
       progress: 0,
 
       findingsCount: 0,
@@ -287,15 +291,15 @@ class ScanRuntimeEngine {
 
       const activeMetadata = SCAN_STATE_METADATA[currentState];
 
-   if (activeMetadata) {
-     if (currentState !== scan.status) {
-       progress = activeMetadata.progressMin;
-     } else {
-       progress = Math.max(progress, activeMetadata.progressMin);
+      if (activeMetadata) {
+        if (currentState !== scan.status) {
+          progress = activeMetadata.progressMin;
+        } else {
+          progress = Math.max(progress, activeMetadata.progressMin);
 
-       progress = Math.min(progress, activeMetadata.progressMax);
-     }
-   }
+          progress = Math.min(progress, activeMetadata.progressMax);
+        }
+      }
 
       const findingsIncrease = this.generateFindings(currentState);
 

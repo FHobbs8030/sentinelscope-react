@@ -60,11 +60,20 @@ export async function simulateMissionLifecycle(mission) {
   );
 
   scanRuntimeEngine.addScan({
+    missionId: mission.id,
+
+    missionMongoId: mission.mongoId ?? null,
+
     target: mission.target,
+
     type: mission.type,
+
     profile: mission.profile,
+
     severity: mission.severity,
+
     status: "queued",
+
     activity: "Mission accepted by runtime engine",
   });
 
