@@ -48,7 +48,10 @@ function MissionQueueSection() {
           </div>
         ) : (
           missions.map((mission) => (
-            <div key={mission.id} className="mission-queue-table__row">
+            <div
+              key={mission.id ?? mission._id}
+              className="mission-queue-table__row"
+            >
               <span
                 className="mission-queue-table__target"
                 title={mission.target}

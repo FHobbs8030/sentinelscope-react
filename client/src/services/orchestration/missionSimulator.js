@@ -44,7 +44,7 @@ export async function simulateMissionLifecycle(mission) {
     missionId: mission.id,
   });
 
-  await delay(1000);
+  await delay(5000);
 
   await synchronizeMission(mission, {
     state: MISSION_STATES.RUNNING,
@@ -68,7 +68,7 @@ export async function simulateMissionLifecycle(mission) {
     activity: "Mission accepted by runtime engine",
   });
 
-  await delay(2000);
+  await delay(15000);
 
   await synchronizeMission(mission, {
     state: MISSION_STATES.COMPLETED,

@@ -4,6 +4,8 @@ import missionStore from "../services/orchestration/missionStore";
 
 import { getMissions } from "../services/api/missionsApi";
 
+import { recoverMissions } from "../services/orchestration/missionRecovery";
+
 export default function useMissions() {
   const [missions, setMissions] = useState(missionStore.getMissions());
 
@@ -14,6 +16,8 @@ export default function useMissions() {
 
         if (response?.data) {
           missionStore.setMissions(response.data);
+
+          recoverMissions(response.data);
         }
       } catch (error) {
         console.error(
