@@ -151,11 +151,21 @@ class ScanRuntimeEngine {
 
     createScan({
       name: runtimeScan.name ?? runtimeScan.target,
+
       target: runtimeScan.target,
+
+      missionId: runtimeScan.missionId,
+
+      missionMongoId: runtimeScan.missionMongoId,
+
       scanType: runtimeScan.type ?? "recon",
+
       status: runtimeScan.status,
+
       progress: runtimeScan.progress,
+
       findingsCount: runtimeScan.findingsCount,
+
       startedAt: runtimeScan.startedAt,
     })
       .then((response) => {
