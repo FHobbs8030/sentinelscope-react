@@ -8,6 +8,7 @@ import {
 
 import scanEventBus from "./scanEventBus";
 import { createScan, updateScan } from "../api/scansApi";
+import { createFinding } from "../api/findingsApi";
 
 const RUNTIME_INTERVAL = 2000;
 
@@ -22,8 +23,6 @@ class ScanRuntimeEngine {
 
   initialize(initialScans = []) {
     this.scans = Array.isArray(initialScans) ? [...initialScans] : [];
-
-    console.log("RUNTIME INITIALIZED:", this.scans);
 
     const interruptedCount = this.scans.filter(
       (scan) => scan.status === "interrupted",
@@ -169,11 +168,8 @@ class ScanRuntimeEngine {
       startedAt: runtimeScan.startedAt,
     })
       .then((response) => {
-        console.log("CREATE SCAN RESPONSE:", response);
 
         runtimeScan.mongoId = response?._id ?? response?.data?._id ?? null;
-
-        console.log("ASSIGNED MONGOID:", runtimeScan.mongoId);
       })
       .catch((error) => {
         console.error("Failed to persist scan:", error);
@@ -312,7 +308,7 @@ class ScanRuntimeEngine {
       }
 
       const findingsIncrease = this.generateFindings(currentState);
-
+   
       const updatedScan = {
         ...scan,
 
@@ -344,7 +340,35 @@ class ScanRuntimeEngine {
 
       scanEventBus.emitProgressUpdated(updatedScan);
 
-      if (findingsIncrease > 0) {
+      if (
+        findingsIncrease > 0 &&
+        updatedScan.mongoId &&
+        updatedScan.missionId
+      ) {
+
+
+        for (let i = 0; i < findingsIncrease; i += 1) {
+          createFinding({
+            scanId: updatedScan.mongoId,
+
+            missionId: updatedScan.missionId,
+
+            target: updatedScan.target,
+
+            title: `${currentState.toUpperCase()} Discovery`,
+
+            description: `Runtime finding generated during ${currentState} stage`,
+
+            severity: updatedScan.severity,
+
+            category: currentState,
+
+            status: "open",
+          }).catch((error) => {
+            console.error("Failed to persist finding:", error);
+          });
+        }
+
         scanEventBus.emitFindingDiscovered(
           {
             value: findingsIncrease,
