@@ -4,6 +4,7 @@ import KpiSummarySection from "./components/KpiSummarySection";
 import MissionQueueSection from "./components/MissionQueueSection";
 import NetworkOverviewSection from "./components/NetworkOverviewSection";
 import ScanOperationsSection from "./components/ScanOperationsSection";
+import FindingsOverviewSection from "./components/FindingsOverviewSection";
 import AnalyticsSection from "./components/AnalyticsSection/AnalyticsSection";
 
 import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
@@ -25,6 +26,8 @@ function Dashboard() {
         <NetworkOverviewSection />
 
         <ScanOperationsSection />
+
+        <FindingsOverviewSection />
 
         <AnalyticsSection />
 

@@ -1,14 +1,33 @@
 import "./SeverityChartCard.css";
 
-const data = [
-  { label: "Critical", value: 14 },
-  { label: "High", value: 10 },
-  { label: "Medium", value: 6 },
-  { label: "Low", value: 3 },
-];
+import useFindings from "../../../../hooks/useFindings";
 
 function SeverityChartCard() {
-  const max = Math.max(...data.map((item) => item.value));
+  const { severityMetrics } = useFindings();
+
+  const data = [
+    {
+      label: "Critical",
+      value: severityMetrics.critical,
+    },
+
+    {
+      label: "High",
+      value: severityMetrics.high,
+    },
+
+    {
+      label: "Medium",
+      value: severityMetrics.medium,
+    },
+
+    {
+      label: "Low",
+      value: severityMetrics.low,
+    },
+  ];
+
+  const max = Math.max(...data.map((item) => item.value), 1);
 
   return (
     <article className="severity-chart-card">
@@ -21,6 +40,7 @@ function SeverityChartCard() {
           <div className="severity-chart-card__row" key={item.label}>
             <div className="severity-chart-card__meta">
               <span className="severity-chart-card__label">{item.label}</span>
+
               <span className="severity-chart-card__value">{item.value}</span>
             </div>
 
