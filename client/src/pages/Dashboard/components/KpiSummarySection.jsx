@@ -2,11 +2,19 @@ import "./KpiSummarySection.css";
 
 import useScans from "../../../hooks/useScans";
 import useMissions from "../../../hooks/useMissions";
+import useFindings from "../../../hooks/useFindings";
 
 function KpiSummarySection() {
   const { metrics } = useScans();
 
   const { metrics: missionMetrics } = useMissions();
+
+  const { findings, severityMetrics } = useFindings();
+
+  const averageFindingsPerScan =
+    metrics.totalScans > 0
+      ? Math.round(findings.length / metrics.totalScans)
+      : 0;
 
   const kpiSummaryData = [
     {
@@ -76,16 +84,16 @@ function KpiSummarySection() {
     {
       id: 5,
       label: "Critical Findings",
-      value: metrics.criticalFindings,
+      value: severityMetrics.critical,
       trend: "High-priority vulnerabilities",
-      status: metrics.criticalFindings > 0 ? "critical" : "positive",
+      status: severityMetrics.critical > 0 ? "critical" : "positive",
     },
 
     {
       id: 6,
       label: "Average Findings",
-      value: metrics.averageFindings,
-      trend: "Per operational scan",
+      value: averageFindingsPerScan,
+      trend: "Per persisted scan",
       status: "warning",
     },
 

@@ -168,7 +168,6 @@ class ScanRuntimeEngine {
       startedAt: runtimeScan.startedAt,
     })
       .then((response) => {
-
         runtimeScan.mongoId = response?._id ?? response?.data?._id ?? null;
       })
       .catch((error) => {
@@ -225,6 +224,46 @@ class ScanRuntimeEngine {
       });
 
       return cancelledScan;
+    });
+
+    this.emit();
+  }
+
+  resumeScan(scanId) {
+    this.scans = this.scans.map((scan) => {
+      const matchesId = scan.id === scanId || scan.mongoId === scanId;
+
+      if (!matchesId) {
+        return scan;
+      }
+
+      const resumedScan = {
+        ...scan,
+
+        status: "queued",
+
+        live: true,
+
+        activity: "Scan resumed by operator",
+
+        updatedAt: new Date().toISOString(),
+      };
+
+      scanEventBus.emitTelemetry(`Scan resumed for ${resumedScan.target}`, {
+        scanId: resumedScan.id,
+      });
+
+      if (resumedScan.mongoId) {
+        updateScan(resumedScan.mongoId, {
+          status: resumedScan.status,
+          progress: resumedScan.progress,
+          findingsCount: resumedScan.findingsCount,
+        }).catch((error) => {
+          console.error("Failed to update resumed scan:", error);
+        });
+      }
+
+      return resumedScan;
     });
 
     this.emit();
@@ -308,7 +347,7 @@ class ScanRuntimeEngine {
       }
 
       const findingsIncrease = this.generateFindings(currentState);
-   
+
       const updatedScan = {
         ...scan,
 
@@ -345,8 +384,6 @@ class ScanRuntimeEngine {
         updatedScan.mongoId &&
         updatedScan.missionId
       ) {
-
-
         for (let i = 0; i < findingsIncrease; i += 1) {
           createFinding({
             scanId: updatedScan.mongoId,
