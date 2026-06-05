@@ -1,12 +1,32 @@
-const data = [
-  { label: "Network Scan", value: 42 },
-  { label: "Web Audit", value: 33 },
-  { label: "Port Analysis", value: 15 },
-  { label: "Vulnerability", value: 10 },
-];
+import useScans from "../../../../hooks/useScans";
 
 function ScanDistributionCard() {
-  const max = Math.max(...data.map((item) => item.value));
+  const { completedScans, failedScans, interruptedScans, activeScans } =
+    useScans();
+
+  const data = [
+    {
+      label: "Completed",
+      value: completedScans.length,
+    },
+
+    {
+      label: "Failed",
+      value: failedScans.length,
+    },
+
+    {
+      label: "Interrupted",
+      value: interruptedScans.length,
+    },
+
+    {
+      label: "Active",
+      value: activeScans.length,
+    },
+  ];
+
+  const max = Math.max(...data.map((item) => item.value), 1);
 
   return (
     <article className="analytics-card">
@@ -20,7 +40,7 @@ function ScanDistributionCard() {
             <div className="analytics-card__meta">
               <span className="analytics-card__label">{item.label}</span>
 
-              <span className="analytics-card__value">{item.value}%</span>
+              <span className="analytics-card__value">{item.value}</span>
             </div>
 
             <div className="analytics-card__track">
