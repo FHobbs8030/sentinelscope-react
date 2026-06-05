@@ -17,8 +17,6 @@ export async function getFindings() {
 
   const data = await response.json();
 
-  console.log("FINDINGS HYDRATION RESPONSE:", data);
-
   if (Array.isArray(data)) {
     return data;
   }

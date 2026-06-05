@@ -29,8 +29,6 @@ export async function getScans() {
 
   const data = await response.json();
 
-  console.log("HYDRATION RESPONSE:", data);
-
   if (Array.isArray(data)) {
     return data;
   }

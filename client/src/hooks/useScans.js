@@ -37,21 +37,7 @@ const useScans = () => {
 
       const persistedScans = await getScans();
 
-      console.log("HYDRATION RESPONSE:", persistedScans);
-
       const runtimeScans = rebuildRuntimeScans(persistedScans);
-
-      console.log("RECOVERED RUNTIME SCANS:", runtimeScans);
-
-      const interruptedCount = runtimeScans.filter(
-        (scan) => scan.status === "interrupted",
-      ).length;
-
-      console.log(`RUNTIME RECOVERY: Recovered ${runtimeScans.length} scans`);
-
-      console.log(
-        `RUNTIME RECOVERY: ${interruptedCount} interrupted scans require review`,
-      );
 
       scanRuntimeEngine.initialize(runtimeScans);
 
