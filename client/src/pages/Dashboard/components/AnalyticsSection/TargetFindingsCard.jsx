@@ -1,12 +1,25 @@
-const data = [
-  { label: "api.internal.local", value: 43 },
-  { label: "auth.production.net", value: 28 },
-  { label: "staging.gateway.dev", value: 17 },
-  { label: "vpn.edge.node", value: 12 },
-];
+import useFindings from "../../../../hooks/useFindings";
 
 function TargetFindingsCard() {
-  const max = Math.max(...data.map((item) => item.value));
+  const { findings } = useFindings();
+
+  const targetCounts = findings.reduce((accumulator, finding) => {
+    const target = (finding.target || "Unknown").trim();
+
+    accumulator[target] = (accumulator[target] || 0) + 1;
+
+    return accumulator;
+  }, {});
+
+  const data = Object.entries(targetCounts)
+    .map(([label, value]) => ({
+      label,
+      value,
+    }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 4);
+
+  const max = Math.max(...data.map((item) => item.value), 1);
 
   return (
     <article className="analytics-card">
