@@ -115,7 +115,7 @@ class ScanRuntimeEngine {
     this.emit();
   }
 
-  addScan(scan) {
+  async addScan(scan) {
     const runtimeScan = {
       id: scan.id ?? `scan-${crypto.randomUUID()}`,
 
@@ -148,31 +148,33 @@ class ScanRuntimeEngine {
 
     this.scans.unshift(runtimeScan);
 
-    createScan({
-      name: runtimeScan.name ?? runtimeScan.target,
+    try {
+      const response = await createScan({
+        name: runtimeScan.name ?? runtimeScan.target,
 
-      target: runtimeScan.target,
+        target: runtimeScan.target,
 
-      missionId: runtimeScan.missionId,
+        missionId: runtimeScan.missionId,
 
-      missionMongoId: runtimeScan.missionMongoId,
+        missionMongoId: runtimeScan.missionMongoId,
 
-      scanType: runtimeScan.type ?? "recon",
+        scanType: runtimeScan.type ?? "recon",
 
-      status: runtimeScan.status,
+        status: runtimeScan.status,
 
-      progress: runtimeScan.progress,
+        currentStage: runtimeScan.status,
 
-      findingsCount: runtimeScan.findingsCount,
+        progress: runtimeScan.progress,
 
-      startedAt: runtimeScan.startedAt,
-    })
-      .then((response) => {
-        runtimeScan.mongoId = response?._id ?? response?.data?._id ?? null;
-      })
-      .catch((error) => {
-        console.error("Failed to persist scan:", error);
+        findingsCount: runtimeScan.findingsCount,
+
+        startedAt: runtimeScan.startedAt,
       });
+
+      runtimeScan.mongoId = response?.data?._id ?? response?._id ?? null;
+    } catch (error) {
+      console.error("Failed to persist scan:", error);
+    }
 
     scanEventBus.emitScanCreated(runtimeScan);
 
@@ -183,8 +185,10 @@ class ScanRuntimeEngine {
     });
 
     this.emit();
-  }
 
+    return runtimeScan;
+  }
+  
   removeScan(scanId) {
     const removedScan = this.scans.find((scan) => scan.id === scanId);
 
@@ -240,11 +244,11 @@ class ScanRuntimeEngine {
       const resumedScan = {
         ...scan,
 
-        status: "queued",
+        status: scan.currentStage || "queued",
 
         live: true,
 
-        activity: "Scan resumed by operator",
+        activity: `Resumed from ${scan.currentStage || "queued"} stage`,
 
         updatedAt: new Date().toISOString(),
       };
@@ -256,6 +260,7 @@ class ScanRuntimeEngine {
       if (resumedScan.mongoId) {
         updateScan(resumedScan.mongoId, {
           status: resumedScan.status,
+          currentStage: resumedScan.currentStage,
           progress: resumedScan.progress,
           findingsCount: resumedScan.findingsCount,
         }).catch((error) => {
@@ -307,6 +312,7 @@ class ScanRuntimeEngine {
         if (failedScan.mongoId) {
           updateScan(failedScan.mongoId, {
             status: failedScan.status,
+            currentStage: scan.status,
             progress: failedScan.progress,
             findingsCount: failedScan.findingsCount,
             completedAt: null,
@@ -352,6 +358,8 @@ class ScanRuntimeEngine {
         ...scan,
 
         status: currentState,
+
+        currentStage: currentState,
 
         progress,
 
@@ -452,8 +460,13 @@ class ScanRuntimeEngine {
       if (updatedScan.mongoId) {
         updateScan(updatedScan.mongoId, {
           status: updatedScan.status,
+
+          currentStage: updatedScan.currentStage,
+
           progress: updatedScan.progress,
+
           findingsCount: updatedScan.findingsCount,
+
           completedAt: updatedScan.completedAt ?? null,
         }).catch((error) => {
           console.error("Failed to update persisted scan:", error);

@@ -59,7 +59,7 @@ export async function simulateMissionLifecycle(mission) {
     },
   );
 
-  scanRuntimeEngine.addScan({
+  const scan = await scanRuntimeEngine.addScan({
     missionId: mission.id,
 
     missionMongoId: mission.mongoId ?? null,
@@ -75,6 +75,11 @@ export async function simulateMissionLifecycle(mission) {
     status: "queued",
 
     activity: "Mission accepted by runtime engine",
+  });
+
+  await synchronizeMission(mission, {
+    scanId: scan.id,
+    scanMongoId: scan.mongoId,
   });
 
   await delay(15000);

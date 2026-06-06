@@ -16,6 +16,8 @@ export function rebuildRuntimeScan(scan) {
 
     status: terminal ? scan.status : "interrupted",
 
+    currentStage: scan.currentStage || scan.status || "queued",
+
     progress: scan.progress || 0,
 
     findingsCount: scan.findingsCount || 0,

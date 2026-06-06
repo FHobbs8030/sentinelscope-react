@@ -15,9 +15,21 @@ export function recoverMissions(missions) {
     MISSION_STATES.RUNNING,
   ]);
 
-  const recoveredMissions = missions.filter((mission) =>
-    recoverableStates.has(mission.state),
-  );
+  const recoveredMissions = missions.filter((mission) => {
+    if (!recoverableStates.has(mission.state)) {
+      return false;
+    }
+
+    if (mission.scanMongoId) {
+      console.info(
+        `[MissionRecovery] Skipping ${mission.target} - scan already exists`,
+      );
+
+      return false;
+    }
+
+    return true;
+  });
 
   recoveredMissions.forEach((mission) => {
     enqueueMission(mission);
