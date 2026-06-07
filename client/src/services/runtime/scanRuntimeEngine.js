@@ -150,26 +150,28 @@ class ScanRuntimeEngine {
 
     try {
       const response = await createScan({
-        name: runtimeScan.name ?? runtimeScan.target,
+  name: runtimeScan.name ?? runtimeScan.target,
 
-        target: runtimeScan.target,
+  target: runtimeScan.target,
 
-        missionId: runtimeScan.missionId,
+  missionId: runtimeScan.missionId,
 
-        missionMongoId: runtimeScan.missionMongoId,
+  missionMongoId: runtimeScan.missionMongoId,
 
-        scanType: runtimeScan.type ?? "recon",
+  scanType: runtimeScan.type ?? "recon",
 
-        status: runtimeScan.status,
+  status: runtimeScan.status,
 
-        currentStage: runtimeScan.status,
+  currentStage: runtimeScan.status,
 
-        progress: runtimeScan.progress,
+  runtimeState: "active",
 
-        findingsCount: runtimeScan.findingsCount,
+  progress: runtimeScan.progress,
 
-        startedAt: runtimeScan.startedAt,
-      });
+  findingsCount: runtimeScan.findingsCount,
+
+  startedAt: runtimeScan.startedAt,
+});
 
       runtimeScan.mongoId = response?.data?._id ?? response?._id ?? null;
     } catch (error) {
@@ -257,16 +259,21 @@ class ScanRuntimeEngine {
         scanId: resumedScan.id,
       });
 
-      if (resumedScan.mongoId) {
-        updateScan(resumedScan.mongoId, {
-          status: resumedScan.status,
-          currentStage: resumedScan.currentStage,
-          progress: resumedScan.progress,
-          findingsCount: resumedScan.findingsCount,
-        }).catch((error) => {
-          console.error("Failed to update resumed scan:", error);
-        });
-      }
+    if (resumedScan.mongoId) {
+      updateScan(resumedScan.mongoId, {
+        status: resumedScan.status,
+
+        currentStage: resumedScan.currentStage,
+
+        runtimeState: "active",
+
+        progress: resumedScan.progress,
+
+        findingsCount: resumedScan.findingsCount,
+      }).catch((error) => {
+        console.error("Failed to update resumed scan:", error);
+      });
+    }
 
       return resumedScan;
     });
@@ -309,17 +316,23 @@ class ScanRuntimeEngine {
           },
         );
 
-        if (failedScan.mongoId) {
-          updateScan(failedScan.mongoId, {
-            status: failedScan.status,
-            currentStage: scan.status,
-            progress: failedScan.progress,
-            findingsCount: failedScan.findingsCount,
-            completedAt: null,
-          }).catch((error) => {
-            console.error("Failed to update failed scan:", error);
-          });
-        }
+      if (failedScan.mongoId) {
+        updateScan(failedScan.mongoId, {
+          status: failedScan.status,
+
+          currentStage: scan.status,
+
+          runtimeState: "completed",
+
+          progress: failedScan.progress,
+
+          findingsCount: failedScan.findingsCount,
+
+          completedAt: null,
+        }).catch((error) => {
+          console.error("Failed to update failed scan:", error);
+        });
+      }
 
         return failedScan;
       }
@@ -457,21 +470,28 @@ class ScanRuntimeEngine {
         );
       }
 
-      if (updatedScan.mongoId) {
-        updateScan(updatedScan.mongoId, {
-          status: updatedScan.status,
+    if (updatedScan.mongoId) {
+      updateScan(updatedScan.mongoId, {
+        status: updatedScan.status,
 
-          currentStage: updatedScan.currentStage,
+        currentStage: updatedScan.currentStage,
 
-          progress: updatedScan.progress,
+        runtimeState:
+          updatedScan.status === "completed" ||
+          updatedScan.status === "failed" ||
+          updatedScan.status === "cancelled"
+            ? "completed"
+            : "active",
 
-          findingsCount: updatedScan.findingsCount,
+        progress: updatedScan.progress,
 
-          completedAt: updatedScan.completedAt ?? null,
-        }).catch((error) => {
-          console.error("Failed to update persisted scan:", error);
-        });
-      }
+        findingsCount: updatedScan.findingsCount,
+
+        completedAt: updatedScan.completedAt ?? null,
+      }).catch((error) => {
+        console.error("Failed to update persisted scan:", error);
+      });
+    }
 
       return updatedScan;
     });

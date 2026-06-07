@@ -14,7 +14,9 @@ export function rebuildRuntimeScan(scan) {
 
     type: scan.scanType || scan.type || "recon",
 
-    status: terminal ? scan.status : "interrupted",
+    status: terminal
+      ? scan.status
+      : scan.currentStage || scan.status || "queued",
 
     currentStage: scan.currentStage || scan.status || "queued",
 
@@ -32,11 +34,11 @@ export function rebuildRuntimeScan(scan) {
 
     severity: scan.severity || "low",
 
-    live: false,
+    live: !terminal,
 
     activity: terminal
       ? `Recovered completed scan in ${scan.status} state`
-      : `Recovered interrupted scan from ${scan.status} state`,
+      : `Recovered active scan in ${scan.currentStage || scan.status} stage`,
   };
 }
 
