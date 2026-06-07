@@ -9,6 +9,7 @@ import {
 import scanEventBus from "./scanEventBus";
 import { createScan, updateScan } from "../api/scansApi";
 import { createFinding } from "../api/findingsApi";
+import { createAlert } from "../api/alertsApi";
 
 const RUNTIME_INTERVAL = 2000;
 
@@ -400,51 +401,76 @@ class ScanRuntimeEngine {
 
       scanEventBus.emitProgressUpdated(updatedScan);
 
-      if (
-        findingsIncrease > 0 &&
-        updatedScan.mongoId &&
-        updatedScan.missionId
-      ) {
-        for (let i = 0; i < findingsIncrease; i += 1) {
-          createFinding({
-            scanId: updatedScan.mongoId,
+    if (findingsIncrease > 0 && updatedScan.mongoId && updatedScan.missionId) {
+      for (let i = 0; i < findingsIncrease; i += 1) {
+        createFinding({
+          scanId: updatedScan.mongoId,
 
-            missionId: updatedScan.missionId,
+          missionId: updatedScan.missionId,
 
-            target: updatedScan.target,
+          target: updatedScan.target,
 
-            title: `${currentState.toUpperCase()} Discovery`,
+          title: `${currentState.toUpperCase()} Discovery`,
 
-            description: `Runtime finding generated during ${currentState} stage`,
+          description: `Runtime finding generated during ${currentState} stage`,
 
-            severity: updatedScan.severity,
+          severity: updatedScan.severity,
 
-            category: currentState,
+          category: currentState,
 
-            status: "open",
-          }).catch((error) => {
-            console.error("Failed to persist finding:", error);
+          status: "open",
+        })
+          .then(() => {
+            const severity = updatedScan.severity?.toLowerCase();
+
+            if (severity === "critical" || severity === "high") {
+              return createAlert({
+                title:
+                  severity === "critical"
+                    ? "Critical Security Finding"
+                    : "High Severity Security Finding",
+
+                description: `${currentState.toUpperCase()} discovery detected on ${updatedScan.target}`,
+
+                severity,
+
+                target: updatedScan.target,
+
+                scanId: updatedScan.mongoId,
+
+                missionId: updatedScan.missionId,
+
+                source: "finding-engine",
+
+                status: "open",
+              });
+            }
+
+            return null;
+          })
+          .catch((error) => {
+            console.error("Failed to persist finding or alert:", error);
           });
-        }
-
-        scanEventBus.emitFindingDiscovered(
-          {
-            value: findingsIncrease,
-            total: updatedScan.findingsCount,
-          },
-          updatedScan.severity,
-          updatedScan,
-        );
-
-        scanEventBus.emitTelemetry(
-          `${findingsIncrease} findings discovered on ${updatedScan.target}`,
-          {
-            scanId: updatedScan.id,
-            severity: updatedScan.severity,
-            findings: updatedScan.findingsCount,
-          },
-        );
       }
+
+      scanEventBus.emitFindingDiscovered(
+        {
+          value: findingsIncrease,
+          total: updatedScan.findingsCount,
+        },
+        updatedScan.severity,
+        updatedScan,
+      );
+
+      scanEventBus.emitTelemetry(
+        `${findingsIncrease} findings discovered on ${updatedScan.target}`,
+        {
+          scanId: updatedScan.id,
+          severity: updatedScan.severity,
+          findings: updatedScan.findingsCount,
+        },
+      );
+    }
 
       if (scan.status !== currentState && currentState === "initializing") {
         scanEventBus.emitScanStarted(updatedScan);
@@ -493,8 +519,8 @@ class ScanRuntimeEngine {
       });
     }
 
-      return updatedScan;
-    });
+    return updatedScan;
+      });
 
     this.scans = updatedScans;
 

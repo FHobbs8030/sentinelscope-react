@@ -19,6 +19,7 @@ function ScanOperationsSection() {
   const [scanType, setScanType] = useState("full");
 
   const [profile, setProfile] = useState("General");
+  const [severity, setSeverity] = useState("medium");
 
   const formatElapsedTime = (seconds = 0) => {
     const mins = Math.floor(seconds / 60);
@@ -37,22 +38,14 @@ function ScanOperationsSection() {
       return;
     }
 
-    const severity = generateSeverity();
-
-    launchMission({
-      target,
-      type: scanType,
-      profile,
-      severity,
-    });
+   launchMission({
+     target,
+     type: scanType,
+     profile,
+     severity,
+   });
 
     setTarget("");
-  };
-
-  const generateSeverity = () => {
-    const severities = ["low", "medium", "high", "critical"];
-
-    return severities[Math.floor(Math.random() * severities.length)];
   };
 
   if (isLoading) {
@@ -127,6 +120,24 @@ function ScanOperationsSection() {
               <option>Quick</option>
               <option>Comprehensive</option>
               <option>Critical</option>
+            </select>
+          </label>
+
+          <label className="scan-field">
+            <span className="scan-field-label">Severity</span>
+
+            <select
+              className="scan-select"
+              value={severity}
+              onChange={(event) => setSeverity(event.target.value)}
+            >
+              <option value="low">Low</option>
+
+              <option value="medium">Medium</option>
+
+              <option value="high">High</option>
+
+              <option value="critical">Critical</option>
             </select>
           </label>
         </div>
