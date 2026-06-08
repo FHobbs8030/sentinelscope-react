@@ -32,43 +32,43 @@ Dashboard Intelligence
 
 ### Dashboard Preview
 
-<img src="client/public/images/dashboard-preview.png" alt="Dashboard Preview" width="100%"/>
+<img src="client/public/images/dashboard-preview.png" alt="Dashboard Preview" width="50%"/>
 
 ---
 
 ### Enumeration Stage
 
-<img src="client/public/images/enumeration-stage.png" alt="Enumeration Stage" width="100%"/>
+<img src="client/public/images/enumeration-stage.png" alt="Enumeration Stage" width="50%"/>
 
 ---
 
 ### Recon Stage
 
-<img src="client/public/images/recon-stage.png" alt="Recon Stage" width="100%"/>
+<img src="client/public/images/recon-stage.png" alt="Recon Stage" width="50%"/>
 
 ---
 
 ### Reporting Engine
 
-<img src="client/public/images/reporting-engine.png" alt="Reporting Engine" width="100%"/>
+<img src="client/public/images/reporting-engine.png" alt="Reporting Engine" width="50%"/>
 
 ---
 
 ### Topology Map
 
-<img src="client/public/images/topology-map.png" alt="Topology Map" width="100%"/>
+<img src="client/public/images/topology-map.png" alt="Topology Map" width="50%"/>
 
 ---
 
 ### Vulnerability Analysis
 
-<img src="client/public/images/vuln-analysis.png" alt="Vulnerability Analysis" width="100%"/>
+<img src="client/public/images/vuln-analysis.png" alt="Vulnerability Analysis" width="50%"/>
 
 ---
 
 ### What To Do Next
 
-<img src="client/public/images/What_to_do_next.png" alt="Future Development Roadmap" width="100%"/>
+<img src="client/public/images/What_to_do_next.png" alt="Future Development Roadmap" width="50%"/>
 
 ---
 
