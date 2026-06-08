@@ -5,6 +5,7 @@ import MissionQueueSection from "./components/MissionQueueSection";
 import NetworkOverviewSection from "./components/NetworkOverviewSection";
 import ScanOperationsSection from "./components/ScanOperationsSection";
 import FindingsOverviewSection from "./components/FindingsOverviewSection";
+import AlertIntelligenceSection from "./components/AlertIntelligenceSection";
 import AnalyticsSection from "./components/AnalyticsSection/AnalyticsSection";
 
 import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
@@ -28,6 +29,8 @@ function Dashboard() {
         <ScanOperationsSection />
 
         <FindingsOverviewSection />
+
+        <AlertIntelligenceSection />
 
         <AnalyticsSection />
 
