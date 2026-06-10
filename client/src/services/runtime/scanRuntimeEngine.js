@@ -332,27 +332,49 @@ class ScanRuntimeEngine {
 
         this.synchronizeMission(failedScan, "failed");
 
-   if (failedScan.mongoId) {
-     createAlert({
-       title: "Runtime Scan Failure",
+        if (failedScan.mongoId) {
+          createAlert({
+            title: "Runtime Scan Failure",
 
-       description: `Operational runtime failure detected on ${failedScan.target}`,
+            description: `Operational runtime failure detected on ${failedScan.target}`,
 
-       severity: "high",
+            severity: "high",
 
-       target: failedScan.target,
+            target: failedScan.target,
 
-       scanId: failedScan.mongoId,
+            scanId: failedScan.mongoId,
 
-       missionId: failedScan.missionId,
+            missionId: failedScan.missionId,
 
-       source: "runtime-engine",
+            source: "runtime-engine",
 
-       status: "open",
-     }).catch((error) => {
-       console.error("Failed to create runtime alert:", error);
-     });
-   }
+            status: "open",
+
+            evidence: [
+              "Runtime engine failure detected",
+              `Scan terminated during ${failedScan.status} stage`,
+            ],
+
+            riskScore: 75,
+
+            affectedAsset: failedScan.target,
+
+            recommendedActions: [
+              "Review runtime telemetry",
+              "Validate scan execution path",
+              "Investigate service availability",
+            ],
+
+            threatContext: {
+              category: "Operational Failure",
+              confidence: "High",
+            },
+
+            relatedFindings: [],
+          }).catch((error) => {
+            console.error("Failed to create runtime alert:", error);
+          });
+        }
 
         return failedScan;
       }
@@ -446,9 +468,10 @@ class ScanRuntimeEngine {
 
             status: "open",
           })
-            .then(() => {
+            .then((findingResponse) => {
               const severity = updatedScan.severity?.toLowerCase();
-
+              const findingId =
+                findingResponse?.data?._id ?? findingResponse?._id ?? null;
               if (severity === "critical" || severity === "high") {
                 return createAlert({
                   title:
@@ -469,6 +492,29 @@ class ScanRuntimeEngine {
                   source: "finding-engine",
 
                   status: "open",
+
+                  evidence: [
+                    `${currentState.toUpperCase()} discovery detected`,
+                    `Finding generated during ${currentState} stage`,
+                  ],
+
+                  riskScore: severity === "critical" ? 90 : 70,
+
+                  affectedAsset: updatedScan.target,
+
+                  recommendedActions: [
+                    "Investigate exposed services",
+                    "Review attack surface",
+                    "Validate finding accuracy",
+                  ],
+
+                  threatContext: {
+                    category: "External Reconnaissance",
+                    confidence: "High",
+                    stage: currentState,
+                  },
+
+                  relatedFindings: findingId ? [findingId] : [],
                 });
               }
 
