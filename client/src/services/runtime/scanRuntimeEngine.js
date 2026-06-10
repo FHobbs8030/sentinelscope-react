@@ -1,3 +1,4 @@
+import missionStore from "../orchestration/missionStore";
 import {
   SCAN_STATE_METADATA,
   getNextScanState,
@@ -10,6 +11,7 @@ import scanEventBus from "./scanEventBus";
 import { createScan, updateScan } from "../api/scansApi";
 import { createFinding } from "../api/findingsApi";
 import { createAlert } from "../api/alertsApi";
+import { updateMission } from "../api/missionsApi";
 
 const RUNTIME_INTERVAL = 2000;
 
@@ -151,28 +153,28 @@ class ScanRuntimeEngine {
 
     try {
       const response = await createScan({
-  name: runtimeScan.name ?? runtimeScan.target,
+        name: runtimeScan.name ?? runtimeScan.target,
 
-  target: runtimeScan.target,
+        target: runtimeScan.target,
 
-  missionId: runtimeScan.missionId,
+        missionId: runtimeScan.missionId,
 
-  missionMongoId: runtimeScan.missionMongoId,
+        missionMongoId: runtimeScan.missionMongoId,
 
-  scanType: runtimeScan.type ?? "recon",
+        scanType: runtimeScan.type ?? "recon",
 
-  status: runtimeScan.status,
+        status: runtimeScan.status,
 
-  currentStage: runtimeScan.status,
+        currentStage: runtimeScan.status,
 
-  runtimeState: "active",
+        runtimeState: "active",
 
-  progress: runtimeScan.progress,
+        progress: runtimeScan.progress,
 
-  findingsCount: runtimeScan.findingsCount,
+        findingsCount: runtimeScan.findingsCount,
 
-  startedAt: runtimeScan.startedAt,
-});
+        startedAt: runtimeScan.startedAt,
+      });
 
       runtimeScan.mongoId = response?.data?._id ?? response?._id ?? null;
     } catch (error) {
@@ -191,7 +193,7 @@ class ScanRuntimeEngine {
 
     return runtimeScan;
   }
-  
+
   removeScan(scanId) {
     const removedScan = this.scans.find((scan) => scan.id === scanId);
 
@@ -230,6 +232,17 @@ class ScanRuntimeEngine {
         scanId: cancelledScan.id,
       });
 
+      if (cancelledScan.mongoId) {
+        updateScan(cancelledScan.mongoId, {
+          status: "cancelled",
+          runtimeState: "completed",
+        }).catch((error) => {
+          console.error("Failed to update cancelled scan:", error);
+        });
+      }
+
+      this.synchronizeMission(cancelledScan, "cancelled");
+
       return cancelledScan;
     });
 
@@ -260,21 +273,21 @@ class ScanRuntimeEngine {
         scanId: resumedScan.id,
       });
 
-    if (resumedScan.mongoId) {
-      updateScan(resumedScan.mongoId, {
-        status: resumedScan.status,
+      if (resumedScan.mongoId) {
+        updateScan(resumedScan.mongoId, {
+          status: resumedScan.status,
 
-        currentStage: resumedScan.currentStage,
+          currentStage: resumedScan.currentStage,
 
-        runtimeState: "active",
+          runtimeState: "active",
 
-        progress: resumedScan.progress,
+          progress: resumedScan.progress,
 
-        findingsCount: resumedScan.findingsCount,
-      }).catch((error) => {
-        console.error("Failed to update resumed scan:", error);
-      });
-    }
+          findingsCount: resumedScan.findingsCount,
+        }).catch((error) => {
+          console.error("Failed to update resumed scan:", error);
+        });
+      }
 
       return resumedScan;
     });
@@ -317,23 +330,29 @@ class ScanRuntimeEngine {
           },
         );
 
-      if (failedScan.mongoId) {
-        updateScan(failedScan.mongoId, {
-          status: failedScan.status,
+        this.synchronizeMission(failedScan, "failed");
 
-          currentStage: scan.status,
+   if (failedScan.mongoId) {
+     createAlert({
+       title: "Runtime Scan Failure",
 
-          runtimeState: "completed",
+       description: `Operational runtime failure detected on ${failedScan.target}`,
 
-          progress: failedScan.progress,
+       severity: "high",
 
-          findingsCount: failedScan.findingsCount,
+       target: failedScan.target,
 
-          completedAt: null,
-        }).catch((error) => {
-          console.error("Failed to update failed scan:", error);
-        });
-      }
+       scanId: failedScan.mongoId,
+
+       missionId: failedScan.missionId,
+
+       source: "runtime-engine",
+
+       status: "open",
+     }).catch((error) => {
+       console.error("Failed to create runtime alert:", error);
+     });
+   }
 
         return failedScan;
       }
@@ -346,11 +365,14 @@ class ScanRuntimeEngine {
 
       let currentState = scan.status;
 
-      if (
-        currentMetadata &&
-        progress >= currentMetadata.progressMax &&
-        scan.status !== "reporting"
-      ) {
+      if (currentMetadata && progress >= currentMetadata.progressMax) {
+        console.log(
+          "ADVANCING:",
+          scan.status,
+          "->",
+          getNextScanState(scan.status),
+        );
+
         currentState = getNextScanState(scan.status);
       }
 
@@ -401,76 +423,80 @@ class ScanRuntimeEngine {
 
       scanEventBus.emitProgressUpdated(updatedScan);
 
-    if (findingsIncrease > 0 && updatedScan.mongoId && updatedScan.missionId) {
-      for (let i = 0; i < findingsIncrease; i += 1) {
-        createFinding({
-          scanId: updatedScan.mongoId,
+      if (
+        findingsIncrease > 0 &&
+        updatedScan.mongoId &&
+        updatedScan.missionId
+      ) {
+        for (let i = 0; i < findingsIncrease; i += 1) {
+          createFinding({
+            scanId: updatedScan.mongoId,
 
-          missionId: updatedScan.missionId,
+            missionId: updatedScan.missionId,
 
-          target: updatedScan.target,
+            target: updatedScan.target,
 
-          title: `${currentState.toUpperCase()} Discovery`,
+            title: `${currentState.toUpperCase()} Discovery`,
 
-          description: `Runtime finding generated during ${currentState} stage`,
+            description: `Runtime finding generated during ${currentState} stage`,
 
-          severity: updatedScan.severity,
+            severity: updatedScan.severity,
 
-          category: currentState,
+            category: currentState,
 
-          status: "open",
-        })
-          .then(() => {
-            const severity = updatedScan.severity?.toLowerCase();
-
-            if (severity === "critical" || severity === "high") {
-              return createAlert({
-                title:
-                  severity === "critical"
-                    ? "Critical Security Finding"
-                    : "High Severity Security Finding",
-
-                description: `${currentState.toUpperCase()} discovery detected on ${updatedScan.target}`,
-
-                severity,
-
-                target: updatedScan.target,
-
-                scanId: updatedScan.mongoId,
-
-                missionId: updatedScan.missionId,
-
-                source: "finding-engine",
-
-                status: "open",
-              });
-            }
-
-            return null;
+            status: "open",
           })
-          .catch((error) => {
-            console.error("Failed to persist finding or alert:", error);
-          });
+            .then(() => {
+              const severity = updatedScan.severity?.toLowerCase();
+
+              if (severity === "critical" || severity === "high") {
+                return createAlert({
+                  title:
+                    severity === "critical"
+                      ? "Critical Security Finding"
+                      : "High Severity Security Finding",
+
+                  description: `${currentState.toUpperCase()} discovery detected on ${updatedScan.target}`,
+
+                  severity,
+
+                  target: updatedScan.target,
+
+                  scanId: updatedScan.mongoId,
+
+                  missionId: updatedScan.missionId,
+
+                  source: "finding-engine",
+
+                  status: "open",
+                });
+              }
+
+              return null;
+            })
+            .catch((error) => {
+              console.error("Failed to persist finding or alert:", error);
+            });
+        }
+
+        scanEventBus.emitFindingDiscovered(
+          {
+            value: findingsIncrease,
+            total: updatedScan.findingsCount,
+          },
+          updatedScan.severity,
+          updatedScan,
+        );
+
+        scanEventBus.emitTelemetry(
+          `${findingsIncrease} findings discovered on ${updatedScan.target}`,
+          {
+            scanId: updatedScan.id,
+            severity: updatedScan.severity,
+            findings: updatedScan.findingsCount,
+          },
+        );
       }
-
-      scanEventBus.emitFindingDiscovered(
-        {
-          value: findingsIncrease,
-          total: updatedScan.findingsCount,
-        },
-        updatedScan.severity,
-        updatedScan,
-      );
-
-      scanEventBus.emitTelemetry(
-        `${findingsIncrease} findings discovered on ${updatedScan.target}`,
-        {
-          scanId: updatedScan.id,
-          severity: updatedScan.severity,
-          findings: updatedScan.findingsCount,
-        },
-      );
-    }
 
       if (scan.status !== currentState && currentState === "initializing") {
         scanEventBus.emitScanStarted(updatedScan);
@@ -487,6 +513,8 @@ class ScanRuntimeEngine {
 
         scanEventBus.emitScanCompleted(updatedScan);
 
+        this.synchronizeMission(updatedScan, "completed");
+
         scanEventBus.emitTelemetry(
           `Operational scan completed for ${updatedScan.target}`,
           {
@@ -496,35 +524,59 @@ class ScanRuntimeEngine {
         );
       }
 
-    if (updatedScan.mongoId) {
-      updateScan(updatedScan.mongoId, {
-        status: updatedScan.status,
+      if (updatedScan.mongoId) {
+        updateScan(updatedScan.mongoId, {
+          status: updatedScan.status,
 
-        currentStage: updatedScan.currentStage,
+          currentStage: updatedScan.currentStage,
 
-        runtimeState:
-          updatedScan.status === "completed" ||
-          updatedScan.status === "failed" ||
-          updatedScan.status === "cancelled"
-            ? "completed"
-            : "active",
+          runtimeState:
+            updatedScan.status === "completed" ||
+            updatedScan.status === "failed" ||
+            updatedScan.status === "cancelled"
+              ? "completed"
+              : "active",
 
-        progress: updatedScan.progress,
+          progress: updatedScan.progress,
 
-        findingsCount: updatedScan.findingsCount,
+          findingsCount: updatedScan.findingsCount,
 
-        completedAt: updatedScan.completedAt ?? null,
-      }).catch((error) => {
-        console.error("Failed to update persisted scan:", error);
-      });
-    }
+          completedAt: updatedScan.completedAt ?? null,
+        }).catch((error) => {
+          console.error("Failed to update persisted scan:", error);
+        });
+      }
 
-    return updatedScan;
-      });
+      return updatedScan;
+    });
 
     this.scans = updatedScans;
 
     this.emit();
+  }
+
+  async synchronizeMission(scan, missionState) {
+    if (!scan.missionMongoId) {
+      return;
+    }
+
+    try {
+      await updateMission(scan.missionMongoId, {
+        state: missionState,
+        progress: 100,
+      });
+
+      if (scan.missionId) {
+        missionStore.updateMission(scan.missionId, {
+          state: missionState,
+          progress: 100,
+        });
+      }
+
+      console.log(`[Mission Sync] ${scan.target} -> ${missionState}`);
+    } catch (error) {
+      console.error("[Mission Sync] Failed to update mission:", error);
+    }
   }
 
   generateFindings(state) {

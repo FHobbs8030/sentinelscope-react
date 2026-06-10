@@ -1,0 +1,165 @@
+.alert-intelligence-card {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.75rem;
+
+  padding: 1.25rem;
+
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.03),
+      rgba(255,255,255,0.01)
+    );
+
+  border: 1px solid rgba(255,255,255,0.06);
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.alert-intelligence-card:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(59,130,246,0.3);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.25);
+}
+
+.alert-intelligence-card h3 {
+  margin: 0;
+
+  font-size: 0.8rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+
+  color: rgba(255,255,255,0.65);
+}
+
+.alert-intelligence-card p {
+  margin: 0;
+
+  font-size: 1.35rem;
+
+  font-weight: 700;
+
+  color: #ffffff;
+}
+
+/* Severity */
+
+.alert-severity-critical {
+  color: #ff4d4f !important;
+
+  text-shadow:
+    0 0 12px rgba(255,77,79,0.4);
+}
+
+.alert-severity-high {
+  color: #ff9f43 !important;
+}
+
+.alert-severity-medium {
+  color: #f6c343 !important;
+}
+
+.alert-severity-low {
+  color: #22c55e !important;
+}
+
+/* Status */
+
+.alert-status-open {
+  color: #ff4d4f !important;
+}
+
+.alert-status-acknowledged {
+  color: #f6c343 !important;
+}
+
+.alert-status-resolved {
+  color: #22c55e !important;
+}
+
+.alert-status-closed {
+  color: #60a5fa !important;
+}
+
+.alert-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: fit-content;
+
+  padding:
+    0.45rem
+    0.9rem;
+
+  border-radius: 999px;
+
+  font-size: 0.85rem;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+/* Severity */
+
+.severity-critical {
+  color: #ff4d4f;
+
+  background: rgba(255,77,79,0.15);
+}
+
+.severity-high {
+  color: #ff9f43;
+
+  background: rgba(255,159,67,0.15);
+}
+
+.severity-medium {
+  color: #f6c343;
+
+  background: rgba(246,195,67,0.15);
+}
+
+.severity-low {
+  color: #22c55e;
+
+  background: rgba(34,197,94,0.15);
+}
+
+/* Status */
+
+.status-open {
+  color: #ff4d4f;
+
+  background: rgba(255,77,79,0.15);
+}
+
+.status-acknowledged {
+  color: #f6c343;
+
+  background: rgba(246,195,67,0.15);
+}
+
+.status-resolved {
+  color: #22c55e;
+
+  background: rgba(34,197,94,0.15);
+}

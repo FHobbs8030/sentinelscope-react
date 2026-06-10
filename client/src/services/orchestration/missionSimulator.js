@@ -82,13 +82,6 @@ export async function simulateMissionLifecycle(mission) {
     scanMongoId: scan.mongoId,
   });
 
-  await delay(15000);
-
-  await synchronizeMission(mission, {
-    state: MISSION_STATES.COMPLETED,
-    progress: 100,
-  });
-
   scanEventBus.emitTelemetry(
     `Mission handed to runtime engine for ${mission.target}`,
     {

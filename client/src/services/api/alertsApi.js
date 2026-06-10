@@ -49,3 +49,35 @@ export async function updateAlert(id, updates) {
 
   return response.json();
 }
+
+export async function acknowledgeAlert(id) {
+  const response = await fetch(`${API_URL}/${id}/acknowledge`, {
+    method: "PATCH",
+  });
+
+  return response.json();
+}
+
+export async function investigateAlert(id) {
+  const response = await fetch(`${API_URL}/${id}/investigate`, {
+    method: "PATCH",
+  });
+
+  return response.json();
+}
+
+export async function resolveAlert(id) {
+  const response = await fetch(`${API_URL}/${id}/resolve`, {
+    method: "PATCH",
+  });
+
+  return response.json();
+}
+
+export async function closeAlert(id) {
+  const response = await fetch(`${API_URL}/${id}/close`, {
+    method: "PATCH",
+  });
+
+  return response.json();
+}

@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { getAlerts } from "../services/api/alertsApi";
+import {
+  getAlerts,
+  acknowledgeAlert,
+  investigateAlert,
+  resolveAlert,
+  closeAlert,
+} from "../services/api/alertsApi";
 
 export default function useAlerts() {
   const [alerts, setAlerts] = useState([]);
@@ -27,6 +33,42 @@ export default function useAlerts() {
     }
   }, []);
 
+  const acknowledge = useCallback(
+    async (alertId) => {
+      await acknowledgeAlert(alertId);
+
+      await refreshAlerts();
+    },
+    [refreshAlerts],
+  );
+
+  const investigate = useCallback(
+    async (alertId) => {
+      await investigateAlert(alertId);
+
+      await refreshAlerts();
+    },
+    [refreshAlerts],
+  );
+
+  const resolve = useCallback(
+    async (alertId) => {
+      await resolveAlert(alertId);
+
+      await refreshAlerts();
+    },
+    [refreshAlerts],
+  );
+
+  const close = useCallback(
+    async (alertId) => {
+      await closeAlert(alertId);
+
+      await refreshAlerts();
+    },
+    [refreshAlerts],
+  );
+
   useEffect(() => {
     async function hydrateAlerts() {
       await refreshAlerts();
@@ -43,5 +85,13 @@ export default function useAlerts() {
     error,
 
     refreshAlerts,
+
+    acknowledge,
+
+    investigate,
+
+    resolve,
+
+    close,
   };
 }

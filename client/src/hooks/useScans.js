@@ -8,6 +8,8 @@ import { getScans } from "../services/api/scansApi";
 
 import { rebuildRuntimeScans } from "./runtimeRecovery";
 
+import { bootstrapRuntime } from "../services/runtime/runtimeBootstrap";
+
 const ACTIVE_SCAN_STATES = [
   "queued",
   "initializing",
@@ -39,11 +41,9 @@ const useScans = () => {
 
       const runtimeScans = rebuildRuntimeScans(persistedScans);
 
-      scanRuntimeEngine.initialize(runtimeScans);
+    bootstrapRuntime(runtimeScans);
 
-      setScans(scanRuntimeEngine.getScans());
-
-      scanRuntimeEngine.start();
+    setScans(scanRuntimeEngine.getScans());
     } catch (err) {
       console.error("Failed to load scans:", err);
 
