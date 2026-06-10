@@ -8,7 +8,6 @@ function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
   const activeAlerts = alerts
     .filter((alert) => alert.status !== "closed")
     .slice(0, 12);
-    console.log("Active Alerts", activeAlerts);
 
   return (
     <section className="alert-operations-section">

@@ -46,8 +46,14 @@ function getStatusClass(status) {
     case "acknowledged":
       return "alert-badge alert-badge--acknowledged";
 
+    case "investigating":
+      return "alert-badge alert-badge--investigating";
+
     case "resolved":
       return "alert-badge alert-badge--resolved";
+
+    case "closed":
+      return "alert-badge alert-badge--closed";
 
     default:
       return "alert-badge";
@@ -55,6 +61,7 @@ function getStatusClass(status) {
 }
 
 function AlertIntelligenceDrawer({ alert }) {
+
   if (!alert) {
     return (
       <section className="alert-intelligence-drawer">
@@ -97,12 +104,80 @@ function AlertIntelligenceDrawer({ alert }) {
           <span>Source</span>
           <strong>{alert.source || "N/A"}</strong>
         </div>
+
+        <div className="alert-intelligence-drawer__card">
+          <span>Risk Score</span>
+          <strong>{alert.riskScore ?? 0}</strong>
+        </div>
+
+        <div className="alert-intelligence-drawer__card">
+          <span>Affected Asset</span>
+          <strong>{alert.affectedAsset || "N/A"}</strong>
+        </div>
       </div>
 
       <div className="alert-intelligence-drawer__insight">
         <h3>Risk Assessment</h3>
 
         <p>{getRiskAssessment(alert.severity)}</p>
+      </div>
+
+      <div className="alert-intelligence-drawer__insight">
+        <h3>Evidence</h3>
+
+        {alert.evidence?.length ? (
+          <ul>
+            {alert.evidence.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No evidence available.</p>
+        )}
+      </div>
+
+      <div className="alert-intelligence-drawer__insight">
+        <h3>Threat Context</h3>
+
+        {alert.threatContext ? (
+          <>
+            <p>Category: {alert.threatContext.category || "N/A"}</p>
+
+            <p>Confidence: {alert.threatContext.confidence || "N/A"}</p>
+
+            <p>Stage: {alert.threatContext.stage || "N/A"}</p>
+          </>
+        ) : (
+          <p>No threat context available.</p>
+        )}
+      </div>
+
+      <div className="alert-intelligence-drawer__insight">
+        <h3>Recommended Actions</h3>
+
+        {alert.recommendedActions?.length ? (
+          <ul>
+            {alert.recommendedActions.map((action, index) => (
+              <li key={index}>{action}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No recommendations available.</p>
+        )}
+      </div>
+
+      <div className="alert-intelligence-drawer__insight">
+        <h3>Related Findings</h3>
+
+        {alert.relatedFindings?.length ? (
+          <ul>
+            {alert.relatedFindings.map((findingId) => (
+              <li key={findingId}>{findingId}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No related findings linked.</p>
+        )}
       </div>
 
       <div className="alert-intelligence-drawer__actions">
