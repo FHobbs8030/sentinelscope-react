@@ -602,6 +602,16 @@ class ScanRuntimeEngine {
   }
 
   async synchronizeMission(scan, missionState) {
+    console.log(
+      "[Mission Sync Attempt]",
+      scan.target,
+      missionState,
+      scan.missionMongoId,
+    );
+
+    if (!scan.missionMongoId) {
+      return;
+    }
     if (!scan.missionMongoId) {
       return;
     }

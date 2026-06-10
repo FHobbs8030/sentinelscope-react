@@ -225,12 +225,6 @@ export const generateStageProgress = (state) => {
   );
 };
 
-export const shouldFailScan = (state, failureRate = 0.08) => {
-  const metadata = getScanStateMetadata(state);
-
-  if (!metadata?.canFail) {
-    return false;
-  }
-
-  return Math.random() < failureRate;
+export const shouldFailScan = () => {
+  return false;
 };
