@@ -376,6 +376,8 @@ class ScanRuntimeEngine {
 
             threatContext: intelligence.threatContext,
 
+            threatNarrative: intelligence.threatNarrative,
+
             relatedFindings: [],
           }).catch((error) => {
             console.error("Failed to create runtime alert:", error);
@@ -525,6 +527,8 @@ class ScanRuntimeEngine {
                     ...intelligence.threatContext,
                     stage: currentState,
                   },
+
+                  threatNarrative: intelligence.threatNarrative,
 
                   relatedFindings: findingId ? [findingId] : [],
                 });
