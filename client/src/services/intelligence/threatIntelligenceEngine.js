@@ -1,5 +1,7 @@
 import { THREAT_CONTEXT_TEMPLATES } from "./threatContextTemplates";
 import { generateThreatNarrative } from "./threatNarrativeEngine";
+import { generateBusinessImpact } from "./businessImpactEngine";
+import { generateThreatActor } from "./threatActorEngine";
 
 export function generateThreatIntelligence({ stage, severity, source }) {
   const template =
@@ -16,18 +18,24 @@ export function generateThreatIntelligence({ stage, severity, source }) {
   }
 
   const narrative = generateThreatNarrative(stage);
+  const businessImpact = generateBusinessImpact(stage);
+  const threatActor = generateThreatActor(stage);
 
-  return {
-    threatContext: {
-      category: template.category,
-      attackStage: template.attackStage,
-      impact: template.impact,
-      confidence,
-      source,
-    },
+ return {
+   threatContext: {
+     category: template.category,
+     attackStage: template.attackStage,
+     impact: template.impact,
+     confidence,
+     source,
+   },
 
-    recommendedActions: template.recommendedActions,
+   recommendedActions: template.recommendedActions,
 
-    threatNarrative: narrative,
-  };
+   threatNarrative: narrative,
+
+   businessImpact,
+
+   threatActor,
+ };
 }
