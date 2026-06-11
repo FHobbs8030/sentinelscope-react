@@ -12,6 +12,8 @@ import { createScan, updateScan } from "../api/scansApi";
 import { createFinding } from "../api/findingsApi";
 import { createAlert } from "../api/alertsApi";
 import { updateMission } from "../api/missionsApi";
+import { generateThreatIntelligence } from "../intelligence/threatIntelligenceEngine";
+import { calculateRiskScore } from "../intelligence/riskAssessmentEngine";
 
 const RUNTIME_INTERVAL = 2000;
 
@@ -333,6 +335,17 @@ class ScanRuntimeEngine {
         this.synchronizeMission(failedScan, "failed");
 
         if (failedScan.mongoId) {
+          const intelligence = generateThreatIntelligence({
+            stage: "failure",
+            severity: "high",
+            source: "runtime-engine",
+          });
+
+          const riskScore = calculateRiskScore({
+            severity: "high",
+            stage: "failure",
+          });
+
           createAlert({
             title: "Runtime Scan Failure",
 
@@ -355,20 +368,13 @@ class ScanRuntimeEngine {
               `Scan terminated during ${failedScan.status} stage`,
             ],
 
-            riskScore: 75,
+            riskScore,
 
             affectedAsset: failedScan.target,
 
-            recommendedActions: [
-              "Review runtime telemetry",
-              "Validate scan execution path",
-              "Investigate service availability",
-            ],
+            recommendedActions: intelligence.recommendedActions,
 
-            threatContext: {
-              category: "Operational Failure",
-              confidence: "High",
-            },
+            threatContext: intelligence.threatContext,
 
             relatedFindings: [],
           }).catch((error) => {
@@ -470,6 +476,17 @@ class ScanRuntimeEngine {
           })
             .then((findingResponse) => {
               const severity = updatedScan.severity?.toLowerCase();
+              const intelligence = generateThreatIntelligence({
+                stage: currentState,
+                severity,
+                source: "finding-engine",
+              });
+
+              const riskScore = calculateRiskScore({
+                severity,
+                stage: currentState,
+                findingsCount: updatedScan.findingsCount,
+              });
               const findingId =
                 findingResponse?.data?._id ?? findingResponse?._id ?? null;
               if (severity === "critical" || severity === "high") {
@@ -498,19 +515,14 @@ class ScanRuntimeEngine {
                     `Finding generated during ${currentState} stage`,
                   ],
 
-                  riskScore: severity === "critical" ? 90 : 70,
+                  riskScore,
 
                   affectedAsset: updatedScan.target,
 
-                  recommendedActions: [
-                    "Investigate exposed services",
-                    "Review attack surface",
-                    "Validate finding accuracy",
-                  ],
+                  recommendedActions: intelligence.recommendedActions,
 
                   threatContext: {
-                    category: "External Reconnaissance",
-                    confidence: "High",
+                    ...intelligence.threatContext,
                     stage: currentState,
                   },
 
