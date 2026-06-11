@@ -1,4 +1,5 @@
 import { THREAT_CONTEXT_TEMPLATES } from "./threatContextTemplates";
+import { generateThreatNarrative } from "./threatNarrativeEngine";
 
 export function generateThreatIntelligence({ stage, severity, source }) {
   const template =
@@ -14,6 +15,8 @@ export function generateThreatIntelligence({ stage, severity, source }) {
     confidence = "Low";
   }
 
+  const narrative = generateThreatNarrative(stage);
+
   return {
     threatContext: {
       category: template.category,
@@ -24,5 +27,7 @@ export function generateThreatIntelligence({ stage, severity, source }) {
     },
 
     recommendedActions: template.recommendedActions,
+
+    threatNarrative: narrative,
   };
 }
