@@ -109,7 +109,7 @@ Dashboard Intelligence
 <table>
 <tr>
 
-<td width="50%" align="center" valign="top">
+<td width="50%" valign="top">
 
 ### Version 1.0
 
@@ -137,7 +137,7 @@ Current Operational Platform
 
 </td>
 
-<td width="50%" align="center" valign="top">
+<td width="50%" valign="top">
 
 ### Version 2.0
 
