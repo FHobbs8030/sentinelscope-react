@@ -145,6 +145,8 @@ Future Executive Security Workspace
 
 
 
+
+
 --------------------------
 
 
@@ -159,7 +161,6 @@ Future Executive Security Workspace
 * Incident Response Intelligence
 * Executive Reporting
 * Enhanced Visualization Framework
-
 </td>
 
 </tr>
