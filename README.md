@@ -121,7 +121,7 @@ Current Operational Platform
 
 <hr>
 
-#### Current Capabilities
+<h4 align="center">Current Capabilities</h4>
 
 <ul>
   <li>Mission Orchestration</li>
@@ -149,7 +149,7 @@ Future Executive Security Workspace
 
 <hr>
 
-#### Planned Enhancements
+<h4 align="center">Planned Enhancements</h4>
 
 <ul>
   <li>Customizable Widgets</li>
