@@ -115,7 +115,9 @@ Dashboard Intelligence
 
 Current Operational Platform
 
-<img src="client/public/images/Dashboard1.png" alt="SentinelScope Version 1 Dashboard" width="100%" />
+<img src="client/public/images/Dashboard1.png"
+     alt="SentinelScope Version 1 Dashboard"
+     width="90%" />
 
 #### Current Capabilities
 
@@ -137,7 +139,9 @@ Current Operational Platform
 
 Future Executive Security Workspace
 
-<img src="client/public/images/dashboard-preview2.png" alt="SentinelScope Version 2 Dashboard" width="100%" />
+<img src="client/public/images/dashboard-preview2.png"
+     alt="SentinelScope Version 2 Dashboard"
+     width="90%" />
 
 #### Planned Enhancements
 
