@@ -20,6 +20,8 @@ import ActivityFeed from "../../components/ActivityFeed";
 
 import useTelemetry from "../../hooks/useTelemetry";
 
+import ExecutiveIntelligenceSection from "./components/ExecutiveIntelligenceSection";
+
 function Dashboard() {
   const telemetryLogs = useTelemetry();
 
@@ -39,6 +41,8 @@ function Dashboard() {
         <FindingsOverviewSection />
 
         <AlertIntelligenceSection />
+
+        <ExecutiveIntelligenceSection />
 
         <AlertOperationsSection
           selectedAlert={selectedAlert}

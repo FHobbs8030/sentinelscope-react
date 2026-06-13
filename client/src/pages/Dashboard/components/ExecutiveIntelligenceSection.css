@@ -1,0 +1,49 @@
+.executive-intelligence-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.executive-intelligence-section__title {
+  margin: 0;
+}
+
+.executive-intelligence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.executive-intelligence-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  padding: 16px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.executive-intelligence-card .label {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.executive-intelligence-card .value {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.executive-intelligence-section__empty {
+  padding: 16px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
