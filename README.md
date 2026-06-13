@@ -123,7 +123,7 @@ Current Operational Platform
 
 #### Current Capabilities
 
-<ul align="left">
+<ul>
   <li>Mission Orchestration</li>
   <li>Scan Intelligence</li>
   <li>Findings Intelligence</li>
@@ -151,7 +151,7 @@ Future Executive Security Workspace
 
 #### Planned Enhancements
 
-<ul align="left">
+<ul>
   <li>Customizable Widgets</li>
   <li>Drag-and-Drop Dashboard Layouts</li>
   <li>Executive Intelligence Center</li>
@@ -164,6 +164,8 @@ Future Executive Security Workspace
 </ul>
 
 </td>
+
+</tr>
 </table>
 
 ---
