@@ -139,6 +139,7 @@ Current Operational Platform
 
 Future Executive Security Workspace
 
+
 <img src="client/public/images/dashboard-preview2.png"
      alt="SentinelScope Version 2 Dashboard"
      width="90%" />
