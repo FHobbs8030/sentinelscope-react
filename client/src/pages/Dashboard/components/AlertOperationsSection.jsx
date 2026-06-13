@@ -4,11 +4,7 @@ import useAlerts from "../../../hooks/useAlerts";
 
 function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
   const { alerts, acknowledge, investigate, resolve, close } = useAlerts();
-  console.log(
-    "ALERT OPERATIONS DATA",
-    alerts.map((alert) => alert.target),
-  );
-
+ 
   const activeAlerts = alerts
     .filter((alert) => alert.status !== "closed")
     .slice(0, 12);

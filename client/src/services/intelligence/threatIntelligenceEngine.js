@@ -3,6 +3,7 @@ import { generateThreatNarrative } from "./threatNarrativeEngine";
 import { generateBusinessImpact } from "./businessImpactEngine";
 import { generateThreatActor } from "./threatActorEngine";
 import { generateMitreAttack } from "./mitreAttackEngine";
+import { generateIntelligenceConfidence } from "./intelligenceConfidenceEngine";
 
 export function generateThreatIntelligence({ stage, severity, source }) {
   const template =
@@ -22,6 +23,10 @@ export function generateThreatIntelligence({ stage, severity, source }) {
   const businessImpact = generateBusinessImpact(stage);
   const threatActor = generateThreatActor(stage);
   const mitreAttack = generateMitreAttack(stage);
+  const intelligenceConfidence = generateIntelligenceConfidence({
+    severity,
+    stage,
+  });
 
   return {
     threatContext: {
@@ -41,5 +46,7 @@ export function generateThreatIntelligence({ stage, severity, source }) {
     threatActor,
 
     mitreAttack,
+
+    intelligenceConfidence,
   };
 }

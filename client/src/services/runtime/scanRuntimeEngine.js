@@ -384,6 +384,8 @@ class ScanRuntimeEngine {
 
             mitreAttack: intelligence.mitreAttack,
 
+            intelligenceConfidence: intelligence.intelligenceConfidence,
+
             relatedFindings: [],
           }).catch((error) => {
             console.error("Failed to create runtime alert:", error);
@@ -542,6 +544,8 @@ class ScanRuntimeEngine {
 
                   mitreAttack: intelligence.mitreAttack,
 
+                  intelligenceConfidence: intelligence.intelligenceConfidence,
+
                   relatedFindings: findingId ? [findingId] : [],
                 });
               }
@@ -637,9 +641,6 @@ class ScanRuntimeEngine {
       scan.missionMongoId,
     );
 
-    if (!scan.missionMongoId) {
-      return;
-    }
     if (!scan.missionMongoId) {
       return;
     }
