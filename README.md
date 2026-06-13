@@ -147,6 +147,9 @@ Future Executive Security Workspace
      alt="SentinelScope Version 2 Dashboard"
      width="90%" />
 
+
+
+
 <hr>
 
 <h4 align="center">Planned Enhancements</h4>
