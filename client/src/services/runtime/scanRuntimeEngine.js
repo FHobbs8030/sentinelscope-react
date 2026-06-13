@@ -386,6 +386,8 @@ class ScanRuntimeEngine {
 
             intelligenceConfidence: intelligence.intelligenceConfidence,
 
+            executiveRisk: intelligence.executiveRisk,
+
             relatedFindings: [],
           }).catch((error) => {
             console.error("Failed to create runtime alert:", error);
@@ -545,6 +547,8 @@ class ScanRuntimeEngine {
                   mitreAttack: intelligence.mitreAttack,
 
                   intelligenceConfidence: intelligence.intelligenceConfidence,
+
+                  executiveRisk: intelligence.executiveRisk,
 
                   relatedFindings: findingId ? [findingId] : [],
                 });

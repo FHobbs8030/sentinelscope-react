@@ -4,6 +4,8 @@ import { generateBusinessImpact } from "./businessImpactEngine";
 import { generateThreatActor } from "./threatActorEngine";
 import { generateMitreAttack } from "./mitreAttackEngine";
 import { generateIntelligenceConfidence } from "./intelligenceConfidenceEngine";
+import { generateExecutiveRisk } from "./executiveRiskEngine";
+import { generateRiskAssessment } from "./riskAssessmentEngine";
 
 export function generateThreatIntelligence({ stage, severity, source }) {
   const template =
@@ -20,12 +22,27 @@ export function generateThreatIntelligence({ stage, severity, source }) {
   }
 
   const narrative = generateThreatNarrative(stage);
+
   const businessImpact = generateBusinessImpact(stage);
+
   const threatActor = generateThreatActor(stage);
+
   const mitreAttack = generateMitreAttack(stage);
+
+  const riskAssessment = generateRiskAssessment({
+    severity,
+    stage,
+  });
+
   const intelligenceConfidence = generateIntelligenceConfidence({
     severity,
     stage,
+  });
+
+  const executiveRisk = generateExecutiveRisk({
+    riskAssessment,
+    businessImpact,
+    intelligenceConfidence,
   });
 
   return {
@@ -47,6 +64,10 @@ export function generateThreatIntelligence({ stage, severity, source }) {
 
     mitreAttack,
 
+    riskAssessment,
+
     intelligenceConfidence,
+
+    executiveRisk,
   };
 }

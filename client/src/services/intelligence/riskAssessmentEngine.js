@@ -25,3 +25,26 @@ export function calculateRiskScore({ severity, stage, findingsCount = 0 }) {
 
   return Math.min(riskScore, 100);
 }
+
+export function generateRiskAssessment({ severity, stage, findingsCount = 0 }) {
+  const score = calculateRiskScore({
+    severity,
+    stage,
+    findingsCount,
+  });
+
+  let level = "Low";
+
+  if (score >= 90) {
+    level = "Critical";
+  } else if (score >= 75) {
+    level = "High";
+  } else if (score >= 50) {
+    level = "Medium";
+  }
+
+  return {
+    score,
+    level,
+  };
+}
