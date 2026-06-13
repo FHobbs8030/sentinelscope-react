@@ -119,17 +119,21 @@ Current Operational Platform
      alt="SentinelScope Version 1 Dashboard"
      width="90%" />
 
+<hr>
+
 #### Current Capabilities
 
-* Mission Orchestration
-* Scan Intelligence
-* Findings Intelligence
-* Alert Intelligence
-* Threat Intelligence
-* Executive Risk Intelligence
-* Runtime Recovery
-* Operational Telemetry
-* Dashboard Analytics
+<ul align="left">
+  <li>Mission Orchestration</li>
+  <li>Scan Intelligence</li>
+  <li>Findings Intelligence</li>
+  <li>Alert Intelligence</li>
+  <li>Threat Intelligence</li>
+  <li>Executive Risk Intelligence</li>
+  <li>Runtime Recovery</li>
+  <li>Operational Telemetry</li>
+  <li>Dashboard Analytics</li>
+</ul>
 
 </td>
 
@@ -139,36 +143,27 @@ Current Operational Platform
 
 Future Executive Security Workspace
 
-
 <img src="client/public/images/dashboard-preview2.png"
      alt="SentinelScope Version 2 Dashboard"
      width="90%" />
 
-
-
-
-
-
-
---------------------------
-
-
-
+<hr>
 
 #### Planned Enhancements
 
-* Customizable Widgets
-* Drag-and-Drop Dashboard Layouts
-* Executive Intelligence Center
-* Saved User Workspaces
-* Advanced Analytics
-* Asset Correlation Intelligence
-* Incident Response Intelligence
-* Executive Reporting
-* Enhanced Visualization Framework
-</td>
+<ul align="left">
+  <li>Customizable Widgets</li>
+  <li>Drag-and-Drop Dashboard Layouts</li>
+  <li>Executive Intelligence Center</li>
+  <li>Saved User Workspaces</li>
+  <li>Advanced Analytics</li>
+  <li>Asset Correlation Intelligence</li>
+  <li>Incident Response Intelligence</li>
+  <li>Executive Reporting</li>
+  <li>Enhanced Visualization Framework</li>
+</ul>
 
-</tr>
+</td>
 </table>
 
 ---
