@@ -1,28 +1,46 @@
 # 🛡️ SentinelScope
 
+![React](https://img.shields.io/badge/Frontend-React-61DAFB?logo=react)
+![Node.js](https://img.shields.io/badge/Backend-Node.js-339933?logo=node.js)
+![Express](https://img.shields.io/badge/API-Express-000000?logo=express)
+![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb)
+![Status](https://img.shields.io/badge/Status-Active_Development-success)
+![Phase](https://img.shields.io/badge/Phase-3B.4_COMPLETE-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 > Tactical cybersecurity intelligence and reconnaissance platform built with React, Vite, Node.js, Express, MongoDB Atlas, and a modular dashboard architecture.
 
 ---
 
 ## 🚀 Project Overview
 
-SentinelScope has evolved into a persistent cybersecurity operations platform featuring mission management, scan orchestration, findings intelligence, alert intelligence, runtime recovery, operational telemetry, MongoDB-backed persistence, and responsive dashboard analytics.
+SentinelScope has evolved into a persistent cybersecurity operations and intelligence platform featuring mission management, scan orchestration, findings intelligence, alert intelligence, runtime recovery, operational telemetry, threat intelligence enrichment, MongoDB-backed persistence, and responsive dashboard analytics.
 
-### Verified Intelligence Workflow
+### Verified Intelligence Pipeline
 
 ```text
 Mission
-  ↓
-Scan
-  ↓
-Finding
-  ↓
-Alert
-  ↓
-MongoDB
-  ↓
-Hydration
-  ↓
+   ↓
+Scan Runtime Engine
+   ↓
+Finding Generation
+   ↓
+Alert Generation
+   ↓
+Threat Context Intelligence
+   ↓
+Threat Narrative Intelligence
+   ↓
+Business Impact Intelligence
+   ↓
+Threat Actor Intelligence
+   ↓
+MITRE ATT&CK Mapping
+   ↓
+Risk Assessment
+   ↓
+MongoDB Persistence
+   ↓
 Dashboard Intelligence
 ```
 
@@ -75,39 +93,54 @@ Dashboard Intelligence
 ## 🧠 Core Features
 
 ### 🎯 Mission Operations
-- Mission persistence
-- Mission hydration
-- Mission ownership tracking
-- Mission-to-scan relationships
+
+- Mission Persistence
+- Mission Hydration
+- Mission Ownership Tracking
+- Mission-to-Scan Relationships
+- Mission Synchronization
+- Operational Lifecycle Management
 
 ### 🌐 Scan Intelligence
-- Scan orchestration
-- Duplicate scan prevention
-- Runtime persistence
-- Runtime recovery
-- True scan resume
 
-### 🛡️ Findings & Alert Intelligence
-- Findings persistence
-- Severity classification
-- Risk scoring
-- Alert generation
-- Alert lifecycle tracking
-- Alert intelligence dashboards
+- Scan Orchestration
+- Runtime Persistence
+- Runtime Recovery
+- True Scan Resume
+- Duplicate Scan Prevention
+- Scan State Intelligence
 
-### 📡 Operational Telemetry
-- Scan lifecycle monitoring
-- Runtime event tracking
-- Operational visibility
-- Dashboard analytics
+### 🛡️ Findings & Alert Operations
 
-### 🚨 Intelligence Operations
-- Findings intelligence
-- Alert intelligence
-- Severity metrics
-- Risk scoring metrics
-- Alert hydration
-- Status tracking
+- Findings Persistence
+- Alert Persistence
+- Severity Classification
+- Alert Lifecycle Tracking
+- Related Findings Correlation
+- Operational Alert Management
+
+### 🧠 Intelligence Engine
+
+#### Threat Intelligence
+
+- Threat Context Generation
+- Threat Narrative Generation
+- Business Impact Assessment
+- Threat Actor Profiling
+- MITRE ATT&CK Mapping
+- Dynamic Risk Scoring
+- Recommended Actions
+- Related Findings Correlation
+
+#### Operational Intelligence
+
+- Mission Intelligence
+- Scan Intelligence
+- Findings Intelligence
+- Alert Intelligence
+- Runtime Telemetry
+- Activity Monitoring
+- Recovery Intelligence
 
 ---
 
@@ -119,6 +152,7 @@ Dashboard Intelligence
 - Responsive Dashboard Architecture
 - Tactical Dark Theme UI
 - Modular Component System
+- Event-Driven Runtime Integration
 
 ---
 
@@ -129,12 +163,12 @@ Dashboard Intelligence
 - MongoDB Atlas
 - Mongoose
 - REST APIs
-- Scan Persistence Services
 - Mission Persistence Services
+- Scan Persistence Services
 - Findings Persistence Services
 - Alert Persistence Services
 - Runtime Recovery Services
-- Intelligence APIs
+- Threat Intelligence Services
 
 ---
 
@@ -142,40 +176,42 @@ Dashboard Intelligence
 
 ### ✅ Completed
 
-- Scan Persistence
 - Mission Persistence
+- Scan Persistence
 - Findings Persistence
 - Alert Persistence
 - Runtime Recovery
-- True Scan Resume
-- Mission ↔ Scan Ownership
+- Mission Synchronization
 - Duplicate Scan Prevention
-- Findings Intelligence Dashboard
-- Alert Intelligence Dashboard
-- Severity Metrics Engine
-- Risk Scoring Engine
-- Alert Status Tracking
+- Findings Intelligence
+- Alert Intelligence
+- Threat Context Intelligence
+- Threat Narrative Intelligence
+- Business Impact Intelligence
+- Threat Actor Intelligence
+- MITRE ATT&CK Intelligence
+- Dynamic Risk Scoring
+- Alert Lifecycle Operations
 - MongoDB Atlas Integration
-- Responsive Dashboard System
+- Operational Telemetry
+- Dashboard Intelligence
 
-### 🚧 In Progress
+### 🚧 Current Phase
 
-- Alert Details Panel
-- Alert Acknowledgement Workflow
-- Alert Resolution Workflow
-- Alert Timeline Tracking
-- Alert Operations Dashboard
+**Phase 3B.5 — Intelligence Confidence Scoring**
 
 ### 🔮 Planned
 
-- Telemetry Persistence
+- Executive Risk Intelligence
 - Incident Management
 - Reporting Engine
 - PDF Export Generation
-- Interactive Topology Mapping
 - Asset Correlation
 - Attack Surface Intelligence
 - Scan Scheduling
+- Multi-User Support
+- Role-Based Access Control
+- Administrative Intelligence Center
 
 ---
 
@@ -183,21 +219,20 @@ Dashboard Intelligence
 
 | Area | Completion |
 |--------|--------|
-| Frontend Dashboard | 95% |
-| Responsive Design | 98% |
-| Backend Services | 90% |
-| Runtime Recovery | 100% |
+| Frontend Dashboard | 96% |
+| Backend Services | 95% |
+| Runtime Engine | 100% |
 | Persistence Layer | 100% |
+| Mission Management | 100% |
 | Findings Intelligence | 100% |
-| Alert Intelligence | 90% |
-| Scan Engine | 80% |
-| Reporting Engine | 40% |
+| Alert Intelligence | 100% |
+| Threat Intelligence | 100% |
+| MITRE ATT&CK Intelligence | 100% |
+| Reporting Engine | 45% |
 
-## **~88% Complete**
+## ~92% Complete
 
-SentinelScope now provides a complete operational intelligence workflow from mission creation through alert generation and dashboard intelligence.
-
-Current development is focused on alert operations workflows, incident management, reporting systems, topology visualization, and advanced intelligence correlation.
+SentinelScope now provides a complete operational intelligence workflow from mission creation through threat-enriched alert generation and dashboard intelligence.
 
 ---
 
@@ -237,11 +272,6 @@ https://github.com/FHobbs8030/sentinelscope-express
 
 ## 🛰️ Future Vision
 
-SentinelScope is being developed into a unified cybersecurity operations platform capable of managing reconnaissance, findings intelligence, alert operations, incident management, reporting, and attack surface intelligence through a modern web interface.
+SentinelScope is evolving into a cybersecurity operations and intelligence platform that combines scan orchestration, threat intelligence, risk assessment, operational telemetry, incident response workflows, and executive reporting into a unified security operations environment.
 
----
-
-## 🛰️ SentinelScope
-
-> "Make it clear first.
-> Structured systems naturally become powerful."
+Future releases will expand intelligence correlation, executive risk reporting, attack surface management, multi-user operations, and advanced threat analysis capabilities while maintaining a modular, scalable architecture.
