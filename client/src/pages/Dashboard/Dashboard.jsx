@@ -22,6 +22,8 @@ import useTelemetry from "../../hooks/useTelemetry";
 
 import ExecutiveIntelligenceSection from "./components/ExecutiveIntelligenceSection";
 
+import PredictiveIntelligenceSection from "./components/PredictiveIntelligenceSection";
+
 function Dashboard() {
   const telemetryLogs = useTelemetry();
 
@@ -43,6 +45,10 @@ function Dashboard() {
         <AlertIntelligenceSection />
 
         <ExecutiveIntelligenceSection />
+
+        <PredictiveIntelligenceSection
+          alerts={selectedAlert ? [selectedAlert] : []}
+        />
 
         <AlertOperationsSection
           selectedAlert={selectedAlert}

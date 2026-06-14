@@ -1,0 +1,53 @@
+.predictive-intelligence-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.predictive-intelligence-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.predictive-intelligence-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.prediction-card,
+.prediction-forecast-card {
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.prediction-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.prediction-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.prediction-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.prediction-score {
+  font-size: 0.875rem;
+}
+
+.prediction-forecast-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.predictive-intelligence-empty {
+  padding: 1rem;
+}
