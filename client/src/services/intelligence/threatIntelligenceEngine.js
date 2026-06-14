@@ -5,6 +5,7 @@ import { generateThreatActor } from "./threatActorEngine";
 import { generateMitreAttack } from "./mitreAttackEngine";
 import { generateIntelligenceConfidence } from "./intelligenceConfidenceEngine";
 import { generateExecutiveRisk } from "./executiveRiskEngine";
+import { generateExecutiveDecision } from "./executiveDecisionEngine";
 import { generateRiskAssessment } from "./riskAssessmentEngine";
 
 export function generateThreatIntelligence({ stage, severity, source }) {
@@ -45,6 +46,15 @@ export function generateThreatIntelligence({ stage, severity, source }) {
     intelligenceConfidence,
   });
 
+  const decisionIntelligence = generateExecutiveDecision({
+    executiveRisk,
+    businessImpact,
+    threatActor,
+    mitreAttack,
+    intelligenceConfidence,
+    riskAssessment,
+  });
+
   return {
     threatContext: {
       category: template.category,
@@ -69,5 +79,7 @@ export function generateThreatIntelligence({ stage, severity, source }) {
     intelligenceConfidence,
 
     executiveRisk,
+
+    decisionIntelligence,
   };
 }

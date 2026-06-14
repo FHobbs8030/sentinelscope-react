@@ -1,0 +1,31 @@
+.executive-assessment-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  margin-bottom: 24px;
+}
+
+.assessment-block {
+  padding: 16px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.assessment-block h3 {
+  margin: 0 0 8px;
+
+  font-size: 0.95rem;
+}
+
+.assessment-block p {
+  margin: 0;
+
+  line-height: 1.6;
+
+  opacity: 0.9;
+}

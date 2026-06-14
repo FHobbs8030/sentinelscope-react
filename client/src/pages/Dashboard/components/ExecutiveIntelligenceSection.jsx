@@ -1,6 +1,6 @@
 import "./ExecutiveIntelligenceSection.css";
 import useAlerts from "../../../hooks/useAlerts";
-
+import ExecutiveAssessmentPanel from "./ExecutiveAssessmentPanel";
 function ExecutiveIntelligenceSection() {
   const { alerts } = useAlerts();
   const latestAlert = alerts.length > 0 ? alerts[0] : null;
@@ -30,6 +30,7 @@ function ExecutiveIntelligenceSection() {
       <h2 className="executive-intelligence-section__title">
         Executive Intelligence
       </h2>
+      <ExecutiveAssessmentPanel alert={latestAlert} />
 
       <div className="executive-intelligence-grid">
         <div className="executive-intelligence-card">
