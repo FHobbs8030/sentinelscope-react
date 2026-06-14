@@ -13,6 +13,7 @@ import { createFinding } from "../api/findingsApi";
 import { createAlert } from "../api/alertsApi";
 import { updateMission } from "../api/missionsApi";
 import { generateThreatIntelligence } from "../intelligence/threatIntelligenceEngine";
+import { generateThreatPrediction } from "../intelligence/threatPredictionEngine";
 import { calculateRiskScore } from "../intelligence/riskAssessmentEngine";
 
 const RUNTIME_INTERVAL = 2000;
@@ -341,9 +342,18 @@ class ScanRuntimeEngine {
             source: "runtime-engine",
           });
 
-          const riskScore = calculateRiskScore({
+           const riskScore = calculateRiskScore({
+             severity: "high",
+             stage: "failure",
+           });
+
+          const prediction = generateThreatPrediction({
+            riskScore,
             severity: "high",
-            stage: "failure",
+            threatContext: intelligence.threatContext,
+            threatActor: intelligence.threatActor,
+            intelligenceConfidence: intelligence.intelligenceConfidence,
+            executiveRisk: intelligence.executiveRisk,
           });
 
           createAlert({
@@ -389,6 +399,9 @@ class ScanRuntimeEngine {
             executiveRisk: intelligence.executiveRisk,
 
             decisionIntelligence: intelligence.decisionIntelligence,
+
+            prediction,
+
             relatedFindings: [],
           }).catch((error) => {
             console.error("Failed to create runtime alert:", error);
@@ -500,6 +513,16 @@ class ScanRuntimeEngine {
                 stage: currentState,
                 findingsCount: updatedScan.findingsCount,
               });
+
+              const prediction = generateThreatPrediction({
+                riskScore,
+                severity,
+                threatContext: intelligence.threatContext,
+                threatActor: intelligence.threatActor,
+                intelligenceConfidence: intelligence.intelligenceConfidence,
+                executiveRisk: intelligence.executiveRisk,
+              });
+
               const findingId =
                 findingResponse?.data?._id ?? findingResponse?._id ?? null;
               if (severity === "critical" || severity === "high") {
@@ -552,7 +575,9 @@ class ScanRuntimeEngine {
                   executiveRisk: intelligence.executiveRisk,
 
                   decisionIntelligence: intelligence.decisionIntelligence,
-                  
+
+                  prediction,
+
                   relatedFindings: findingId ? [findingId] : [],
                 });
               }
