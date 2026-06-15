@@ -24,6 +24,8 @@ import ExecutiveIntelligenceSection from "./components/ExecutiveIntelligenceSect
 
 import PredictiveIntelligenceSection from "./components/PredictiveIntelligenceSection";
 
+import CorrelationIntelligenceSection from "./components/CorrelationIntelligenceSection";
+
 function Dashboard() {
   const telemetryLogs = useTelemetry();
 
@@ -44,6 +46,8 @@ function Dashboard() {
 
         <AlertIntelligenceSection />
 
+        <CorrelationIntelligenceSection />
+        
         <ExecutiveIntelligenceSection />
 
         <PredictiveIntelligenceSection

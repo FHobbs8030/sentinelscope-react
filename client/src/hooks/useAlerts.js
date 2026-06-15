@@ -8,8 +8,12 @@ import {
   closeAlert,
 } from "../services/api/alertsApi";
 
+import { generateCorrelationAssessment } from "../services/intelligence/correlationEngine";
+
 export default function useAlerts() {
   const [alerts, setAlerts] = useState([]);
+
+  const [campaignAssessment, setCampaignAssessment] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +27,14 @@ export default function useAlerts() {
 
       const data = await getAlerts();
 
-      setAlerts(Array.isArray(data) ? data : []);
+      const alertData = Array.isArray(data) ? data : [];
+
+      setAlerts(alertData);
+
+      const assessment = generateCorrelationAssessment(alertData);
+
+      setCampaignAssessment(assessment);
+
     } catch (err) {
       console.error("Failed to hydrate alerts:", err);
 
@@ -79,6 +90,8 @@ export default function useAlerts() {
 
   return {
     alerts,
+
+    campaignAssessment,
 
     loading,
 

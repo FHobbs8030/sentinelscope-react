@@ -8,6 +8,7 @@ import { generateExecutiveRisk } from "./executiveRiskEngine";
 import { generateExecutiveDecision } from "./executiveDecisionEngine";
 import { generateRiskAssessment } from "./riskAssessmentEngine";
 
+
 export function generateThreatIntelligence({ stage, severity, source }) {
   const template =
     THREAT_CONTEXT_TEMPLATES[stage] ?? THREAT_CONTEXT_TEMPLATES.failure;
