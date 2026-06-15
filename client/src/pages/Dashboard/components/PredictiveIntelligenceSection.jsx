@@ -11,17 +11,27 @@ function PredictiveIntelligenceSection({ alerts = [] }) {
     return (
       <section className="predictive-intelligence-section">
         <div className="predictive-intelligence-empty">
-          No predictive intelligence available.
+          Select an alert to view predictive intelligence forecasts.
         </div>
       </section>
     );
   }
 
+  const trendClass = `prediction-value prediction-trend prediction-trend-${prediction.predictedRiskTrend.toLowerCase()}`;
+
   return (
     <section className="predictive-intelligence-section">
       <div className="predictive-intelligence-header">
         <h2>Predictive Intelligence</h2>
+
         <p>Forward-looking threat assessment and escalation forecasting</p>
+
+        <div className="prediction-target">Target: {latestAlert.target}</div>
+
+        <p className="prediction-confidence-summary">
+          Forecast Confidence: {prediction.confidence?.level} (
+          {prediction.confidence?.score})
+        </p>
       </div>
 
       <div className="predictive-intelligence-grid">
@@ -36,9 +46,7 @@ function PredictiveIntelligenceSection({ alerts = [] }) {
         <div className="prediction-card">
           <span className="prediction-label">Risk Trend</span>
 
-          <span className="prediction-value">
-            {prediction.predictedRiskTrend}
-          </span>
+          <span className={trendClass}>{prediction.predictedRiskTrend}</span>
         </div>
 
         <div className="prediction-card">
@@ -62,10 +70,16 @@ function PredictiveIntelligenceSection({ alerts = [] }) {
         </div>
       </div>
 
-      <div className="prediction-forecast-card">
+      <div className="executive-forecast-card">
         <h3>Executive Forecast</h3>
 
         <p>{prediction.executiveForecast}</p>
+      </div>
+
+      <div className="prediction-rationale">
+        <h4>Forecast Rationale</h4>
+
+        <p>{prediction.rationale}</p>
       </div>
     </section>
   );
