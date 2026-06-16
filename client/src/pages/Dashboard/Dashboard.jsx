@@ -3,26 +3,25 @@ import { useState } from "react";
 import "./Dashboard.css";
 
 import KpiSummarySection from "./components/KpiSummarySection";
-import MissionQueueSection from "./components/MissionQueueSection";
-import NetworkOverviewSection from "./components/NetworkOverviewSection";
-import ScanOperationsSection from "./components/ScanOperationsSection";
-import FindingsOverviewSection from "./components/FindingsOverviewSection";
-import AlertIntelligenceSection from "./components/AlertIntelligenceSection";
+
+import OperationalWorkspace from "./components/OperationalWorkspace";
+import AnalyticsWorkspace from "./components/AnalyticsWorkspace";
+
 import AlertOperationsSection from "./components/AlertOperationsSection";
 import AlertDetailsPanel from "./components/AlertDetailsPanel";
 import AlertTimelineViewer from "./components/AlertTimelineViewer";
 import AlertIntelligenceDrawer from "./components/AlertIntelligenceDrawer";
+
 import AnalyticsSection from "./components/AnalyticsSection/AnalyticsSection";
-
-import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
-
-import ActivityFeed from "../../components/ActivityFeed";
-
-import useTelemetry from "../../hooks/useTelemetry";
 
 import ExecutiveIntelligenceSection from "./components/ExecutiveIntelligenceSection";
 import PredictiveIntelligenceSection from "./components/PredictiveIntelligenceSection";
 import CorrelationIntelligenceSection from "./components/CorrelationIntelligenceSection";
+
+import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
+import ActivityFeed from "../../components/ActivityFeed";
+
+import useTelemetry from "../../hooks/useTelemetry";
 
 function Dashboard() {
   const telemetryLogs = useTelemetry();
@@ -32,23 +31,21 @@ function Dashboard() {
   return (
     <div className="dashboard-shell">
       <div className="dashboard-main">
-        {/* Operations Zone */}
+        {/* KPI Workspace */}
+        <KpiSummarySection />
+
+        {/* Operations Workspace */}
         <section className="dashboard-zone">
-          <KpiSummarySection />
-
-          <MissionQueueSection />
-
-          <NetworkOverviewSection />
+          <OperationalWorkspace />
         </section>
 
-        {/* Intelligence Zone */}
+        {/* Analytics Workspace */}
         <section className="dashboard-zone">
-          <ScanOperationsSection />
+          <AnalyticsWorkspace />
+        </section>
 
-          <FindingsOverviewSection />
-
-          <AlertIntelligenceSection />
-
+        {/* Intelligence Workspace */}
+        <section className="dashboard-zone">
           <CorrelationIntelligenceSection />
 
           <ExecutiveIntelligenceSection />
@@ -58,7 +55,7 @@ function Dashboard() {
           />
         </section>
 
-        {/* Investigation Zone */}
+        {/* Investigation Workspace */}
         <section className="dashboard-zone">
           <AlertOperationsSection
             selectedAlert={selectedAlert}
@@ -72,12 +69,12 @@ function Dashboard() {
           <AlertIntelligenceDrawer alert={selectedAlert} />
         </section>
 
-        {/* Analytics Zone */}
+        {/* Reporting Workspace */}
         <section className="dashboard-zone">
           <AnalyticsSection />
         </section>
 
-        {/* Terminal Zone */}
+        {/* Terminal Workspace */}
         <section className="dashboard-zone">
           <TerminalPanel
             title="Network Operations Terminal"

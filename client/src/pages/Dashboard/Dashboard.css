@@ -20,20 +20,13 @@
   display: flex;
   flex-direction: column;
 
-  gap: var(--space-5);
+  gap: 0;
 
   min-width: 0;
 }
 
-.kpi-summary-section {
-  margin-top: var(--space-5);
-}
-
 .dashboard-zone {
-  display: flex;
-  flex-direction: column;
-
-  gap: var(--space-5);
+  position: relative;
 
   padding: var(--space-5);
 
@@ -50,6 +43,67 @@
   border-radius: 24px;
 
   backdrop-filter: blur(6px);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 12px 32px rgba(0,0,0,0.25);
+}
+
+.dashboard-zone + .dashboard-zone {
+  margin-top: var(--space-5);
+}
+
+.operations-grid {
+  display: grid;
+
+  grid-template-columns:
+    1.5fr
+    1fr;
+
+  gap: var(--space-5);
+}
+
+.operations-grid {
+  display: grid;
+
+  grid-template-columns:
+    2fr
+    1fr;
+
+  gap: var(--space-5);
+}
+
+.operations-primary {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.operations-secondary {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.analytics-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: var(--space-5);
+}
+
+@media (max-width: 1199px) {
+  .operations-grid {
+    grid-template-columns: 1fr;
+  }
+
+   .analytics-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* =========================
@@ -136,6 +190,15 @@
 
     border-radius: 20px;
   }
+
+  .operations-primary,
+  .operations-secondary {
+    gap: var(--space-4);
+  }
+
+   .analytics-grid {
+    gap: var(--space-4);
+  }
 }
 
 /* =========================
@@ -169,12 +232,21 @@
     gap: var(--space-3);
   }
 
-   .dashboard-zone {
+  .dashboard-zone {
     gap: var(--space-3);
 
     padding: var(--space-3);
 
     border-radius: 16px;
+  }
+
+    .operations-primary,
+  .operations-secondary {
+    gap: var(--space-3);
+  }
+
+  .analytics-grid {
+    gap: var(--space-3);
   }
 }
 
@@ -211,7 +283,7 @@
     margin-top: var(--space-4);
   }
 
-   .dashboard-zone {
+  .dashboard-zone {
     gap: var(--space-3);
 
     padding: var(--space-2);
