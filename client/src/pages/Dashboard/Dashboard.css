@@ -215,8 +215,8 @@
   }
 
   .kpi-summary-section {
-    margin-top: var(--space-5);
-  }
+  margin-top: 0;
+}
 }
 
 /* =========================

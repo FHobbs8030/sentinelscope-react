@@ -31,8 +31,11 @@ function Dashboard() {
   return (
     <div className="dashboard-shell">
       <div className="dashboard-main">
+        
         {/* KPI Workspace */}
-        <KpiSummarySection />
+        <section className="dashboard-zone">
+          <KpiSummarySection />
+        </section>
 
         {/* Operations Workspace */}
         <section className="dashboard-zone">
