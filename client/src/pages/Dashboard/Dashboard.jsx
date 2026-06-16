@@ -21,9 +21,7 @@ import ActivityFeed from "../../components/ActivityFeed";
 import useTelemetry from "../../hooks/useTelemetry";
 
 import ExecutiveIntelligenceSection from "./components/ExecutiveIntelligenceSection";
-
 import PredictiveIntelligenceSection from "./components/PredictiveIntelligenceSection";
-
 import CorrelationIntelligenceSection from "./components/CorrelationIntelligenceSection";
 
 function Dashboard() {
@@ -34,44 +32,59 @@ function Dashboard() {
   return (
     <div className="dashboard-shell">
       <div className="dashboard-main">
-        <KpiSummarySection />
+        {/* Operations Zone */}
+        <section className="dashboard-zone">
+          <KpiSummarySection />
 
-        <MissionQueueSection />
+          <MissionQueueSection />
 
-        <NetworkOverviewSection />
+          <NetworkOverviewSection />
+        </section>
 
-        <ScanOperationsSection />
+        {/* Intelligence Zone */}
+        <section className="dashboard-zone">
+          <ScanOperationsSection />
 
-        <FindingsOverviewSection />
+          <FindingsOverviewSection />
 
-        <AlertIntelligenceSection />
+          <AlertIntelligenceSection />
 
-        <CorrelationIntelligenceSection />
-        
-        <ExecutiveIntelligenceSection />
+          <CorrelationIntelligenceSection />
 
-        <PredictiveIntelligenceSection
-          alerts={selectedAlert ? [selectedAlert] : []}
-        />
+          <ExecutiveIntelligenceSection />
 
-        <AlertOperationsSection
-          selectedAlert={selectedAlert}
-          onSelectAlert={setSelectedAlert}
-        />
+          <PredictiveIntelligenceSection
+            alerts={selectedAlert ? [selectedAlert] : []}
+          />
+        </section>
 
-        <AlertDetailsPanel alert={selectedAlert} />
+        {/* Investigation Zone */}
+        <section className="dashboard-zone">
+          <AlertOperationsSection
+            selectedAlert={selectedAlert}
+            onSelectAlert={setSelectedAlert}
+          />
 
-        <AlertTimelineViewer alert={selectedAlert} />
+          <AlertDetailsPanel alert={selectedAlert} />
 
-        <AlertIntelligenceDrawer alert={selectedAlert} />
+          <AlertTimelineViewer alert={selectedAlert} />
 
-        <AnalyticsSection />
+          <AlertIntelligenceDrawer alert={selectedAlert} />
+        </section>
 
-        <TerminalPanel
-          title="Network Operations Terminal"
-          status="LIVE"
-          logs={telemetryLogs}
-        />
+        {/* Analytics Zone */}
+        <section className="dashboard-zone">
+          <AnalyticsSection />
+        </section>
+
+        {/* Terminal Zone */}
+        <section className="dashboard-zone">
+          <TerminalPanel
+            title="Network Operations Terminal"
+            status="LIVE"
+            logs={telemetryLogs}
+          />
+        </section>
       </div>
 
       <ActivityFeed />

@@ -29,6 +29,29 @@
   margin-top: var(--space-5);
 }
 
+.dashboard-zone {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+
+  padding: var(--space-5);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.025),
+      rgba(255,255,255,0.008)
+    );
+
+  border:
+    1px solid rgba(255,255,255,0.06);
+
+  border-radius: 24px;
+
+  backdrop-filter: blur(6px);
+}
+
 /* =========================
    Ultra Wide / Desktop
 ========================= */
@@ -105,6 +128,14 @@
   .kpi-summary-section {
     margin-top: var(--space-4);
   }
+
+  .dashboard-zone {
+    gap: var(--space-4);
+
+    padding: var(--space-4);
+
+    border-radius: 20px;
+  }
 }
 
 /* =========================
@@ -137,19 +168,13 @@
   .dashboard-main {
     gap: var(--space-3);
   }
-}
 
-@media (max-width: 480px) {
-  .dashboard-shell {
+   .dashboard-zone {
     gap: var(--space-3);
-  }
 
-  .dashboard-main {
-    gap: var(--space-3);
-  }
+    padding: var(--space-3);
 
-  .kpi-summary-section {
-    margin-top: var(--space-4);
+    border-radius: 16px;
   }
 }
 
@@ -164,5 +189,33 @@
 
   .kpi-summary-section {
     margin-top: var(--space-3);
+  }
+
+  .dashboard-zone {
+    gap: var(--space-3);
+
+    padding: var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-shell {
+    gap: var(--space-3);
+  }
+
+  .dashboard-main {
+    gap: var(--space-3);
+  }
+
+  .kpi-summary-section {
+    margin-top: var(--space-4);
+  }
+
+   .dashboard-zone {
+    gap: var(--space-3);
+
+    padding: var(--space-2);
+
+    border-radius: 14px;
   }
 }
