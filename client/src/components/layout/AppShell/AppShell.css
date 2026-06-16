@@ -5,6 +5,8 @@
 
   position: relative;
 
+  overflow-x: hidden;
+
   background:
     radial-gradient(
       circle at top left,
@@ -18,8 +20,7 @@
     ),
     var(--color-bg-primary);
 
-  color:
-    var(--color-text-primary);
+  color: var(--color-text-primary);
 }
 
 .app-shell-main {
@@ -94,9 +95,6 @@
 }
 
 @media (max-width: 992px) {
-  .app-shell {
-    overflow-x: hidden;
-  }
 
   .app-shell-main {
     width: 100%;
