@@ -1,0 +1,17 @@
+.operations-workspace {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 3fr)
+    minmax(320px, 1fr);
+
+  gap: var(--space-4);
+
+  align-items: start;
+}
+
+@media (max-width: 1200px) {
+  .operations-workspace {
+    grid-template-columns: 1fr;
+  }
+}

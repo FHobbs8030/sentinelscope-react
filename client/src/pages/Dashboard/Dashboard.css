@@ -1,11 +1,5 @@
 .dashboard-shell {
-  display: grid;
-
-  grid-template-columns:
-    minmax(0, 1fr)
-    300px;
-
-  gap: var(--space-5);
+  display: block;
 
   min-width: 0;
 }
@@ -57,16 +51,6 @@
   display: grid;
 
   grid-template-columns:
-    1.5fr
-    1fr;
-
-  gap: var(--space-5);
-}
-
-.operations-grid {
-  display: grid;
-
-  grid-template-columns:
     2fr
     1fr;
 
@@ -101,68 +85,8 @@
     grid-template-columns: 1fr;
   }
 
-   .analytics-grid {
+  .analytics-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-/* =========================
-   Ultra Wide / Desktop
-========================= */
-
-@media (min-width: 1441px) {
-  .dashboard-shell {
-    grid-template-columns:
-      minmax(0, 1fr)
-      320px;
-  }
-}
-
-/* =========================
-   Large Laptop
-========================= */
-
-@media (max-width: 1440px) {
-  .dashboard-shell {
-    grid-template-columns:
-      minmax(0, 1fr)
-      280px;
-  }
-}
-
-/* =========================
-   Laptop Refinement
-========================= */
-
-@media (max-width: 1280px) {
-  .dashboard-shell {
-    grid-template-columns:
-      minmax(0, 1fr)
-      250px;
-
-    gap: var(--space-4);
-  }
-
-  .dashboard-main {
-    gap: var(--space-4);
-  }
-}
-
-/* =========================
-   Sidebar Collapse Transition
-========================= */
-
-@media (max-width: 1199px) {
-  .dashboard-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .activity-feed {
-    display: none;
-  }
-
-  .dashboard-main {
-    width: 100%;
   }
 }
 
@@ -171,23 +95,12 @@
 ========================= */
 
 @media (max-width: 992px) {
-  .dashboard-shell {
-    gap: var(--space-4);
-  }
-
-  .dashboard-main {
-    gap: var(--space-4);
-  }
-
   .kpi-summary-section {
     margin-top: var(--space-4);
   }
 
   .dashboard-zone {
-    gap: var(--space-4);
-
     padding: var(--space-4);
-
     border-radius: 20px;
   }
 
@@ -206,17 +119,9 @@
 ========================= */
 
 @media (max-width: 768px) {
-  .dashboard-shell {
-    gap: var(--space-4);
-  }
-
-  .dashboard-main {
-    gap: var(--space-4);
-  }
-
   .kpi-summary-section {
-  margin-top: 0;
-}
+    margin-top: 0;
+  }
 }
 
 /* =========================
@@ -224,29 +129,9 @@
 ========================= */
 
 @media (max-width: 640px) {
-  .dashboard-shell {
-    gap: var(--space-3);
-  }
-
-  .dashboard-main {
-    gap: var(--space-3);
-  }
-
   .dashboard-zone {
-    gap: var(--space-3);
-
     padding: var(--space-3);
-
     border-radius: 16px;
-  }
-
-    .operations-primary,
-  .operations-secondary {
-    gap: var(--space-3);
-  }
-
-  .analytics-grid {
-    gap: var(--space-3);
   }
 }
 
@@ -255,37 +140,21 @@
 ========================= */
 
 @media (max-height: 600px) {
-  .dashboard-main {
-    gap: var(--space-3);
-  }
-
   .kpi-summary-section {
     margin-top: var(--space-3);
   }
 
   .dashboard-zone {
-    gap: var(--space-3);
-
     padding: var(--space-3);
   }
 }
 
 @media (max-width: 480px) {
-  .dashboard-shell {
-    gap: var(--space-3);
-  }
-
-  .dashboard-main {
-    gap: var(--space-3);
-  }
-
   .kpi-summary-section {
     margin-top: var(--space-4);
   }
 
   .dashboard-zone {
-    gap: var(--space-3);
-
     padding: var(--space-2);
 
     border-radius: 14px;

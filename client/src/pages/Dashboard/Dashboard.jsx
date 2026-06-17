@@ -19,7 +19,6 @@ import PredictiveIntelligenceSection from "./components/PredictiveIntelligenceSe
 import CorrelationIntelligenceSection from "./components/CorrelationIntelligenceSection";
 
 import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
-import ActivityFeed from "../../components/ActivityFeed";
 
 import useTelemetry from "../../hooks/useTelemetry";
 
@@ -31,7 +30,6 @@ function Dashboard() {
   return (
     <div className="dashboard-shell">
       <div className="dashboard-main">
-        
         {/* KPI Workspace */}
         <section className="dashboard-zone">
           <KpiSummarySection />
@@ -49,13 +47,13 @@ function Dashboard() {
 
         {/* Intelligence Workspace */}
         <section className="dashboard-zone">
-          <CorrelationIntelligenceSection />
-
           <ExecutiveIntelligenceSection />
 
           <PredictiveIntelligenceSection
             alerts={selectedAlert ? [selectedAlert] : []}
           />
+
+          <CorrelationIntelligenceSection />
         </section>
 
         {/* Investigation Workspace */}
@@ -86,8 +84,6 @@ function Dashboard() {
           />
         </section>
       </div>
-
-      <ActivityFeed />
     </div>
   );
 }
