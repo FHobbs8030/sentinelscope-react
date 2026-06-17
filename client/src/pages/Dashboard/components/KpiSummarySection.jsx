@@ -119,9 +119,11 @@ function KpiSummarySection() {
             <span className="kpi-summary-card__indicator" />
           </div>
 
-          <strong className="kpi-summary-card__value">{item.value}</strong>
+          <div className="kpi-summary-card__content">
+            <strong className="kpi-summary-card__value">{item.value}</strong>
 
-          <span className="kpi-summary-card__trend">{item.trend}</span>
+            <span className="kpi-summary-card__trend">{item.trend}</span>
+          </div>
         </article>
       ))}
     </section>

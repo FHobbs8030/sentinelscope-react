@@ -38,12 +38,12 @@ function ScanOperationsSection() {
       return;
     }
 
-   launchMission({
-     target,
-     type: scanType,
-     profile,
-     severity,
-   });
+    launchMission({
+      target,
+      type: scanType,
+      profile,
+      severity,
+    });
 
     setTarget("");
   };
