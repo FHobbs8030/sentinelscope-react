@@ -342,10 +342,10 @@ class ScanRuntimeEngine {
             source: "runtime-engine",
           });
 
-           const riskScore = calculateRiskScore({
-             severity: "high",
-             stage: "failure",
-           });
+          const riskScore = calculateRiskScore({
+            severity: "high",
+            stage: "failure",
+          });
 
           const prediction = generateThreatPrediction({
             riskScore,
@@ -420,12 +420,6 @@ class ScanRuntimeEngine {
       let currentState = scan.status;
 
       if (currentMetadata && progress >= currentMetadata.progressMax) {
-        console.log(
-          "ADVANCING:",
-          scan.status,
-          "->",
-          getNextScanState(scan.status),
-        );
 
         currentState = getNextScanState(scan.status);
       }
@@ -666,13 +660,6 @@ class ScanRuntimeEngine {
   }
 
   async synchronizeMission(scan, missionState) {
-    console.log(
-      "[Mission Sync Attempt]",
-      scan.target,
-      missionState,
-      scan.missionMongoId,
-    );
-
     if (!scan.missionMongoId) {
       return;
     }
@@ -689,8 +676,6 @@ class ScanRuntimeEngine {
           progress: 100,
         });
       }
-
-      console.log(`[Mission Sync] ${scan.target} -> ${missionState}`);
     } catch (error) {
       console.error("[Mission Sync] Failed to update mission:", error);
     }

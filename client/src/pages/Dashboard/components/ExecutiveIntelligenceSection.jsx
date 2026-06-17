@@ -3,11 +3,24 @@ import useAlerts from "../../../hooks/useAlerts";
 import ExecutiveAssessmentPanel from "./ExecutiveAssessmentPanel";
 function ExecutiveIntelligenceSection() {
   const { alerts } = useAlerts();
+
   const latestAlert = alerts.length > 0 ? alerts[0] : null;
   
   if (!latestAlert) {
     return (
+      // <section className="executive-intelligence-section">
       <section className="executive-intelligence-section">
+        <div
+          style={{
+            background: "blue",
+            color: "white",
+            padding: "12px",
+            marginBottom: "12px",
+            fontWeight: "bold",
+          }}
+        >
+          EXECUTIVE ALERTS: {alerts.length}
+        </div>
         <h2 className="executive-intelligence-section__title">
           Executive Intelligence
         </h2>

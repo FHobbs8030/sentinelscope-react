@@ -34,7 +34,6 @@ export default function useAlerts() {
       const assessment = generateCorrelationAssessment(alertData);
 
       setCampaignAssessment(assessment);
-
     } catch (err) {
       console.error("Failed to hydrate alerts:", err);
 

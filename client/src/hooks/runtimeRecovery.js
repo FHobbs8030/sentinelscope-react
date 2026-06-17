@@ -8,6 +8,10 @@ export function rebuildRuntimeScan(scan) {
 
     mongoId: scan._id || scan.mongoId || null,
 
+    missionId: scan.missionId ?? null,
+
+    missionMongoId: scan.missionMongoId ?? null,
+
     name: scan.name ?? scan.target,
 
     target: scan.target,

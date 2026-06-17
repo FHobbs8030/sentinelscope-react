@@ -4,17 +4,36 @@ import useAlerts from "../../../hooks/useAlerts";
 
 function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
   const { alerts, acknowledge, investigate, resolve, close } = useAlerts();
- 
   const activeAlerts = alerts
     .filter((alert) => alert.status !== "closed")
     .slice(0, 12);
-
+  
   return (
     <section className="alert-operations-section">
+      <div
+        style={{
+          background: "red",
+          color: "white",
+          padding: "12px",
+          marginBottom: "12px",
+          fontWeight: "bold",
+        }}
+      >
+        ALERTS FOUND: {activeAlerts.length}
+      </div>
       <header className="alert-operations-section__header">
         <h2 className="alert-operations-section__title">Alert Operations</h2>
       </header>
-
+      <div
+        style={{
+          background: "red",
+          color: "white",
+          padding: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        ALERTS: {activeAlerts.length}
+      </div>
       <div className="alert-operations-list">
         {activeAlerts.map((alert) => {
           const isSelected = selectedAlert?._id === alert._id;
@@ -28,7 +47,10 @@ function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
               onClick={() => onSelectAlert(alert)}
             >
               <div className="alert-operations-card__content">
-                <h3>{alert.title}</h3>
+                {/* <h3>{alert.title}</h3> */}
+                <h3 style={{ color: "red", fontSize: "24px" }}>
+                  ALERT FOUND: {alert.title}
+                </h3>
 
                 <p>{alert.target}</p>
 
