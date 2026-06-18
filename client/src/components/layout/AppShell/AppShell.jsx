@@ -1,12 +1,26 @@
 import { useEffect, useState } from "react";
-
+import "./AppShell.css";
 import Sidebar from "../Sidebar/Sidebar";
 import Topbar from "../Topbar/Topbar";
-
-import "./AppShell.css";
+import WorkspaceHeader from "../../WorkspaceHeader/WorkspaceHeader";
 
 function AppShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const toggleSidebarCollapse = () => {
+    console.log("Sidebar Toggle");
+    setSidebarCollapsed((current) => !current);
+  };
+
+  const handleMenuToggle = () => {
+    if (window.innerWidth > 992) {
+      toggleSidebarCollapse();
+    } else {
+      openSidebar();
+    }
+  };
 
   const openSidebar = () => {
     setSidebarOpen(true);
@@ -16,19 +30,19 @@ function AppShell({ children }) {
     setSidebarOpen(false);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 992) {
-        setSidebarOpen(false);
-      }
-    };
+ useEffect(() => {
+   const handleResize = () => {
+     if (window.innerWidth > 992) {
+       setSidebarOpen(false);
+     }
+   };
 
-    window.addEventListener("resize", handleResize);
+   window.addEventListener("resize", handleResize);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+   return () => {
+     window.removeEventListener("resize", handleResize);
+   };
+ }, []);
 
   useEffect(() => {
     if (sidebarOpen) {
@@ -43,9 +57,18 @@ function AppShell({ children }) {
   }, [sidebarOpen]);
 
   return (
-    <div className="app-shell">
+    <div
+      className="app-shell"
+      data-sidebar={sidebarCollapsed ? "collapsed" : "expanded"}
+    >
       <Sidebar
-        className={sidebarOpen ? "sidebar sidebar--open" : "sidebar"}
+        className={[
+          "sidebar",
+          sidebarOpen && "sidebar--open",
+          sidebarCollapsed && "sidebar--collapsed",
+        ]
+          .filter(Boolean)
+          .join(" ")}
         onClose={closeSidebar}
       />
 
@@ -60,9 +83,13 @@ function AppShell({ children }) {
       />
 
       <div className="app-shell-main">
-        <Topbar onMenuToggle={openSidebar} />
+        <Topbar onMenuToggle={handleMenuToggle} />
 
-        <main className="page-container">{children}</main>
+        <main className="page-container">
+          <WorkspaceHeader />
+
+          {children}
+        </main>
       </div>
     </div>
   );

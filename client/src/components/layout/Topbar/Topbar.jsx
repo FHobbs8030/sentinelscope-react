@@ -4,15 +4,6 @@ function Topbar({ onMenuToggle }) {
   return (
     <header className="topbar">
       <div className="topbar-left">
-        <button
-          className="topbar-menu-toggle"
-          type="button"
-          onClick={onMenuToggle}
-          aria-label="Open navigation menu"
-        >
-          ☰
-        </button>
-
         <div className="topbar-search">
           <input
             type="text"
@@ -49,6 +40,15 @@ function Topbar({ onMenuToggle }) {
             <span className="topbar-user-role">Administrator</span>
           </div>
         </div>
+
+        <button
+          className="topbar-menu-toggle"
+          type="button"
+          onClick={onMenuToggle}
+          aria-label="Toggle sidebar"
+        >
+          ☰
+        </button>
       </div>
     </header>
   );

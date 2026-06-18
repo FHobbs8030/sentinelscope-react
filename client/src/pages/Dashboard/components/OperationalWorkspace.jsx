@@ -2,17 +2,22 @@ import "./OperationalWorkspace.css";
 
 import ScanLaunchPanel from "./ScanLaunchPanel";
 import RecentScansPanel from "./RecentScansPanel";
+import FindingsSeverityPanel from "./FindingsSeverityPanel";
 
 import ActivityFeed from "../../../components/ActivityFeed";
 
 function OperationalWorkspace() {
   return (
     <div className="operations-workspace">
-      <ScanLaunchPanel />
+      <div className="workspace-row">
+        <ScanLaunchPanel />
+        <RecentScansPanel />
+        <ActivityFeed />
+      </div>
 
-      <RecentScansPanel />
-
-      <ActivityFeed />
+      <div className="workspace-row">
+        <FindingsSeverityPanel />
+      </div>
     </div>
   );
 }

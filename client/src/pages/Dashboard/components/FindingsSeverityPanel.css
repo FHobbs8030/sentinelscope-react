@@ -1,0 +1,53 @@
+.findings-severity-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.severity-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: var(--space-3);
+}
+
+.severity-item {
+  display: flex;
+  flex-direction: column;
+
+  padding: var(--space-4);
+
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface-2);
+
+  border: 1px solid var(--color-border);
+}
+
+.severity-item span {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.severity-item strong {
+  margin-top: 6px;
+
+  font-size: 1.75rem;
+}
+
+.severity-item.critical strong {
+  color: var(--color-danger);
+}
+
+.severity-item.high strong {
+  color: var(--color-warning);
+}
+
+.severity-item.medium strong {
+  color: var(--color-info);
+}
+
+.severity-item.low strong {
+  color: var(--color-success);
+}

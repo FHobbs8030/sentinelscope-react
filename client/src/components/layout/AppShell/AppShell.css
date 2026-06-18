@@ -1,4 +1,11 @@
 .app-shell {
+  --sidebar-width: 280px;
+
+  --sidebar-width-collapsed: 72px;
+
+  --current-sidebar-width:
+    var(--sidebar-width);
+
   display: flex;
 
   min-height: 100vh;
@@ -21,6 +28,16 @@
     var(--color-bg-primary);
 
   color: var(--color-text-primary);
+}
+
+.app-shell[data-sidebar="expanded"] {
+  --current-sidebar-width:
+    var(--sidebar-width);
+}
+
+.app-shell[data-sidebar="collapsed"] {
+  --current-sidebar-width:
+    var(--sidebar-width-collapsed);
 }
 
 .app-shell-main {

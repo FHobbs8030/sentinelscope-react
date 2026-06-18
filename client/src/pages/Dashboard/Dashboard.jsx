@@ -31,7 +31,7 @@ function Dashboard() {
     <div className="dashboard-shell">
       <div className="dashboard-main">
         {/* KPI Workspace */}
-        <section className="dashboard-zone">
+        <section className="dashboard-zone dashboard-zone--kpi">
           <KpiSummarySection />
         </section>
 

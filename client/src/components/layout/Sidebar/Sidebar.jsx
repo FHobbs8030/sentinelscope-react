@@ -3,27 +3,27 @@ import "./Sidebar.css";
 const navigation = [
   {
     section: "MAIN",
-    items: ["Dashboard", "Targets", "Scans"],
+    items: [
+      { icon: "🏠", label: "Dashboard" },
+      { icon: "🎯", label: "Targets" },
+      { icon: "🔍", label: "Scans" },
+    ],
   },
   {
     section: "RECON",
-    items: ["Recon", "Enumeration", "Port Scanning", "DNS Analysis"],
-  },
-  {
-    section: "VULNERABILITY",
-    items: ["Vulnerability Scan", "Findings", "CVEs"],
-  },
-  {
-    section: "REPORTING",
-    items: ["Reports", "Exports"],
-  },
-  {
-    section: "SYSTEM",
-    items: ["Settings", "Users", "API Keys"],
+    items: [
+      { icon: "🛰️", label: "Recon" },
+      { icon: "📡", label: "Enumeration" },
+      { icon: "🔌", label: "Port Scanning" },
+      { icon: "🌐", label: "DNS Analysis" },
+    ],
   },
 ];
 
-function Sidebar({ className = "sidebar", onClose }) {
+function Sidebar({
+  className = "sidebar",
+  onClose,
+}) {
   return (
     <aside className={className}>
       <div className="sidebar-header">
@@ -55,7 +55,7 @@ function Sidebar({ className = "sidebar", onClose }) {
             <ul className="sidebar-menu">
               {group.items.map((item, index) => (
                 <li
-                  key={item}
+                  key={item.label}
                   className={
                     index === 0 && group.section === "MAIN"
                       ? "sidebar-item active"
@@ -63,9 +63,9 @@ function Sidebar({ className = "sidebar", onClose }) {
                   }
                 >
                   <button className="sidebar-button" type="button">
-                    <span className="sidebar-indicator" />
+                    <span className="sidebar-icon">{item.icon}</span>
 
-                    <span className="sidebar-label">{item}</span>
+                    <span className="sidebar-label">{item.label}</span>
                   </button>
                 </li>
               ))}
@@ -74,15 +74,6 @@ function Sidebar({ className = "sidebar", onClose }) {
         ))}
       </nav>
 
-      <div className="sidebar-footer">
-        <button
-          className="sidebar-collapse-button"
-          type="button"
-          onClick={onClose}
-        >
-          Collapse
-        </button>
-      </div>
     </aside>
   );
 }

@@ -47,6 +47,22 @@
   margin-top: var(--space-5);
 }
 
+.dashboard-zone--kpi + .dashboard-zone {
+  margin-top: var(--space-4);
+}
+
+.dashboard-zone--kpi {
+  padding: 0;
+
+  background: transparent;
+
+  border: none;
+
+  box-shadow: none;
+
+  backdrop-filter: none;
+}
+
 .operations-grid {
   display: grid;
 

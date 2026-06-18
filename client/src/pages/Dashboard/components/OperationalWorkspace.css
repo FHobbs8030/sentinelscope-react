@@ -1,4 +1,11 @@
 .operations-workspace {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+}
+
+.workspace-row {
   display: grid;
 
   grid-template-columns:
