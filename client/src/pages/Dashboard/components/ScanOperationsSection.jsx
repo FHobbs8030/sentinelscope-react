@@ -172,95 +172,80 @@ function ScanOperationsSection() {
           </div>
         </div>
 
-        <div className="recent-scans-table-wrap">
-          <table className="recent-scans-table">
-            <thead>
-              <tr>
-                <th>Target</th>
-                <th>Status</th>
-                <th>Progress</th>
-                <th>Runtime</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
+        <div className="recent-scans-list">
+          {scans.map((scan) => {
+            const isLive = !TERMINAL_SCAN_STATES.includes(scan.status);
 
-            <tbody>
-              {scans.map((scan) => {
-                const isLive = !TERMINAL_SCAN_STATES.includes(scan.status);
+            return (
+              <div
+                key={scan.mongoId ?? scan.id ?? scan.target}
+                className="scan-card"
+              >
+                <div className="scan-card-header">
+                  <div className="scan-card-title-group">
+                    <span className="scan-target">{scan.target}</span>
 
-                return (
-                  <tr key={scan.mongoId ?? scan.id ?? scan.target}>
-                    <td>
-                      <div className="scan-target-cell">
-                        <span className="scan-target">{scan.target}</span>
-
-                        {scan.severity && (
-                          <span
-                            className={`scan-severity scan-severity--${scan.severity.toLowerCase()}`}
-                          >
-                            {scan.severity}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-
-                    <td>
-                      <div className="scan-status-wrapper">
-                        {isLive && <span className="scan-live-indicator" />}
-
-                        <span
-                          className={`scan-status scan-status--${scan.status}`}
-                        >
-                          {formatStatusLabel(scan.status)}
-                        </span>
-                      </div>
-                    </td>
-
-                    <td>
-                      <div className="scan-progress">
-                        <div className="scan-progress-track">
-                          <div
-                            className={`scan-progress-bar scan-progress-bar--${scan.status}`}
-                            style={{
-                              width: `${scan.progress ?? 0}%`,
-                            }}
-                          />
-                        </div>
-
-                        <span className="scan-progress-label">
-                          {scan.progress ?? 0}%
-                        </span>
-                      </div>
-                    </td>
-
-                    <td>
-                      <span className="scan-runtime">
-                        {formatElapsedTime(scan.elapsedTime)}
+                    {scan.severity && (
+                      <span
+                        className={`scan-severity scan-severity--${scan.severity.toLowerCase()}`}
+                      >
+                        {scan.severity}
                       </span>
-                    </td>
+                    )}
+                  </div>
 
-                    <td>
-                      <div className="scan-actions">
-                        {scan.status === "interrupted" && (
-                          <button
-                            className="scan-action-button"
-                            type="button"
-                            onClick={() =>
-                              scanRuntimeEngine.resumeScan(
-                                scan.mongoId ?? scan.id,
-                              )
-                            }
-                          >
-                            Resume
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                  <div className="scan-status-wrapper">
+                    {isLive && <span className="scan-live-indicator" />}
+
+                    <span className={`scan-status scan-status--${scan.status}`}>
+                      {formatStatusLabel(scan.status)}
+                    </span>
+                  </div>
+                </div>
+
+                {!TERMINAL_SCAN_STATES.includes(scan.status) && (
+                  <div className="scan-card-stage">
+                    {scan.currentStage || "Queued"}
+                  </div>
+                )}
+
+                <div className="scan-progress">
+                  <div className="scan-progress-track">
+                    <div
+                      className={`scan-progress-bar scan-progress-bar--${scan.status}`}
+                      style={{
+                        width: `${scan.progress ?? 0}%`,
+                      }}
+                    />
+                  </div>
+
+                  <span className="scan-progress-label">
+                    {scan.progress ?? 0}%
+                  </span>
+                </div>
+
+                <div className="scan-card-metrics">
+                  <span>Runtime: {formatElapsedTime(scan.elapsedTime)}</span>
+
+                  <span>Findings: {scan.findingsCount ?? 0}</span>
+                </div>
+
+                {scan.status === "interrupted" && (
+                  <div className="scan-actions">
+                    <button
+                      className="scan-action-button"
+                      type="button"
+                      onClick={() =>
+                        scanRuntimeEngine.resumeScan(scan.mongoId ?? scan.id)
+                      }
+                    >
+                      Resume
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
