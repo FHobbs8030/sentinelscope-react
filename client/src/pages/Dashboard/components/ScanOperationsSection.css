@@ -274,3 +274,74 @@
 
   font-size: 0.78rem;
 }
+
+/* =========================================
+   SCAN LAUNCH PANEL
+========================================= */
+
+.scan-launch-panel {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.scan-panel-header {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.scan-form-grid {
+  display: flex;
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+.scan-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.scan-field-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  color: var(--color-text-secondary);
+}
+
+.scan-select {
+  width: 100%;
+
+  min-height: 42px;
+
+  padding: 0 12px;
+
+  background: var(--color-surface-1);
+
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+
+  color: var(--color-text-primary);
+}
+
+.scan-panel-actions {
+  display: flex;
+
+  gap: 12px;
+}
+
+.scan-secondary-action {
+  background: transparent;
+
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+
+  padding: 0 16px;
+
+  color: var(--color-text-secondary);
+}

@@ -11,12 +11,12 @@
   /* =========================================
      SURFACES
   ========================================= */
-  --color-surface-primary: #111b2d;
-  --color-surface-secondary: #172338;
-  --color-surface-hover: #1d2d47;
-  --color-surface-active: #243858;
+  --color-surface-primary: #08111c;
+  --color-surface-secondary: #0d1726;
+  --color-surface-hover: #122033;
+  --color-surface-active: #18304d;
 
-    /* =========================================
+  /* =========================================
      LEGACY SURFACE COMPATIBILITY
   ========================================= */
 
@@ -27,8 +27,8 @@
   /* =========================================
      BORDERS
   ========================================= */
-  --color-border-primary: #24324d;
-  --color-border-secondary: #31415f;
+  --color-border-primary: rgba(59, 130, 246, 0.18);
+  --color-border-secondary: rgba(59, 130, 246, 0.28);
   --color-border-accent: #3b82f6;
 
   /* =========================================
