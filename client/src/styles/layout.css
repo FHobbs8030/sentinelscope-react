@@ -43,18 +43,13 @@
 ========================================= */
 
 .page-container {
-  width: 100%;
-
-  max-width: 1700px;
-
-  margin: 0 auto;
-
-  padding: 24px;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 24px;
+    width: 100%;
+    max-width: 1700px;
+    margin: 0 auto;
+    padding: 0 24px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 /* =========================================

@@ -3,12 +3,7 @@
 ========================================= */
 
 .topbar {
-  display: grid;
-
-  grid-template-columns:
-    360px
-    minmax(240px, 320px)
-    1fr;
+  display: flex;
 
   align-items: center;
 
@@ -59,9 +54,11 @@
 
   justify-content: center;
 
+  width: 320px;
   height: 100%;
 
   min-width: 0;
+  flex-shrink: 0;
 }
 
 .topbar-workspace-title {
@@ -97,16 +94,22 @@
 ========================================= */
 
 .topbar-search {
-  width: 100%;
+  display: flex;
 
-  max-width: 320px;
+  align-items: center;
 
-  justify-self: center;
-  margin-left: 32px;
+  gap: 8px;
+
+  flex: 1;
+
+  max-width: 700px;
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .topbar-search-input {
-  width: 100%;
+  flex: 1;
 
   height: 42px;
 
@@ -124,8 +127,7 @@
   transition:
     border-color 160ms ease,
     background 160ms ease,
-    box-shadow 160ms ease,
-    transform 160ms ease;
+    box-shadow 160ms ease;
 }
 
 .topbar-search-input::placeholder {
@@ -148,6 +150,45 @@
     0 0 24px rgba(59, 130, 246, 0.12);
 }
 
+.topbar-search-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  border: 1px solid rgba(148, 163, 184, 0.08);
+  border-radius: 12px;
+
+  background: rgba(15, 23, 42, 0.72);
+
+  color: var(--color-text-primary);
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.topbar-search-button:hover {
+  background: rgba(59, 130, 246, 0.12);
+
+  border-color: rgba(59, 130, 246, 0.4);
+
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.12);
+}
+
+.topbar-search-button:active {
+  transform: scale(0.96);
+}
+
 /* =========================================
    RIGHT SECTION
 ========================================= */
@@ -157,11 +198,11 @@
 
   align-items: center;
 
-  justify-content: flex-end;
-
   gap: var(--space-4);
 
-  min-width: 0;
+  flex-shrink: 0;
+
+  white-space: nowrap;
 }
 
 .topbar-icon-button {
