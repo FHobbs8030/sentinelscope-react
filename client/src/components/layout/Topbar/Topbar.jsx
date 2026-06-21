@@ -3,15 +3,21 @@ import "./Topbar.css";
 function Topbar({ onMenuToggle }) {
   return (
     <header className="topbar">
-      <div className="topbar-left">
-        <div className="topbar-search">
-          <input
-            type="text"
-            className="topbar-search-input"
-            placeholder="Search targets, scans, IPs..."
-            aria-label="Search targets scans and IP addresses"
-          />
-        </div>
+      <div className="topbar-workspace">
+        <h1 className="topbar-workspace-title">Dashboard</h1>
+
+        <p className="topbar-workspace-description">
+          Unified Overview of Your Attack Surface, Operations and Intelligence
+        </p>
+      </div>
+
+      <div className="topbar-search">
+        <input
+          type="text"
+          className="topbar-search-input"
+          placeholder="Search targets, scans, findings, missions..."
+          aria-label="Search platform"
+        />
       </div>
 
       <div className="topbar-right">
@@ -28,7 +34,7 @@ function Topbar({ onMenuToggle }) {
           type="button"
           aria-label="Settings"
         >
-          ⚙
+          ⚙️
         </button>
 
         <div className="topbar-user">

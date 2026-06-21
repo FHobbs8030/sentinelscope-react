@@ -86,7 +86,6 @@ function AppShell({ children }) {
         <Topbar onMenuToggle={handleMenuToggle} />
 
         <main className="page-container">
-          <WorkspaceHeader />
 
           {children}
         </main>

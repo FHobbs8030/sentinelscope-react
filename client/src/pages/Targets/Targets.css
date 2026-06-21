@@ -1,0 +1,23 @@
+.targets-workspace {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-4);
+}
+
+.targets-top-row,
+.targets-bottom-row {
+  display: grid;
+
+  grid-template-columns:
+    2fr 1fr;
+
+  gap: var(--space-4);
+}
+
+@media (max-width: 1200px) {
+  .targets-top-row,
+  .targets-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}

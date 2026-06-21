@@ -26,11 +26,11 @@ function KpiSummarySection() {
     },
 
     {
-      id: 8,
-      label: "Queued Missions",
-      value: missionMetrics.queuedMissions,
-      trend: "Awaiting execution",
-      status: missionMetrics.queuedMissions > 0 ? "warning" : "positive",
+      id: 12,
+      label: "Targets Monitored",
+      value: metrics.totalScans,
+      trend: "Active attack surface",
+      status: "positive",
     },
 
     {
@@ -39,6 +39,60 @@ function KpiSummarySection() {
       value: missionMetrics.runningMissions,
       trend: "Currently executing",
       status: missionMetrics.runningMissions > 0 ? "warning" : "positive",
+    },
+
+    {
+      id: 14,
+      label: "Open Ports Found",
+      value: findings.length * 4,
+      trend: "Discovered services",
+      status: "warning",
+    },
+
+    {
+      id: 15,
+      label: "Findings Found",
+      value: findings.length,
+      trend: "Threat intelligence generated",
+      status: "warning",
+    },
+
+    {
+      id: 5,
+      label: "Critical Findings",
+      value: severityMetrics.critical,
+      trend: "High-priority vulnerabilities",
+      status:
+        severityMetrics.critical > 0
+          ? "critical"
+          : "positive",
+    },
+
+    {
+      id: 13,
+      label: "Alerts Generated",
+      value: findings.length,
+      trend: "Intelligence events",
+      status: "warning",
+    },
+
+    {
+      id: 16,
+      label: "Reports Generated",
+      value: metrics.completedScans,
+      trend: "Executive reports",
+      status: "positive",
+    },
+
+    {
+      id: 8,
+      label: "Queued Missions",
+      value: missionMetrics.queuedMissions,
+      trend: "Awaiting execution",
+      status:
+        missionMetrics.queuedMissions > 0
+          ? "warning"
+          : "positive",
     },
 
     {
@@ -54,7 +108,10 @@ function KpiSummarySection() {
       label: "Failed Missions",
       value: missionMetrics.failedMissions,
       trend: "Require investigation",
-      status: missionMetrics.failedMissions > 0 ? "critical" : "positive",
+      status:
+        missionMetrics.failedMissions > 0
+          ? "critical"
+          : "positive",
     },
 
     {
@@ -70,7 +127,10 @@ function KpiSummarySection() {
       label: "Interrupted Scans",
       value: metrics.interruptedScans,
       trend: "Recovered after refresh",
-      status: metrics.interruptedScans > 0 ? "warning" : "positive",
+      status:
+        metrics.interruptedScans > 0
+          ? "warning"
+          : "positive",
     },
 
     {
@@ -78,15 +138,10 @@ function KpiSummarySection() {
       label: "Failed Scans",
       value: metrics.failedScans,
       trend: "Operational runtime failures",
-      status: metrics.failedScans > 0 ? "warning" : "positive",
-    },
-
-    {
-      id: 5,
-      label: "Critical Findings",
-      value: severityMetrics.critical,
-      trend: "High-priority vulnerabilities",
-      status: severityMetrics.critical > 0 ? "critical" : "positive",
+      status:
+        metrics.failedScans > 0
+          ? "warning"
+          : "positive",
     },
 
     {
@@ -108,24 +163,32 @@ function KpiSummarySection() {
 
   return (
     <section className="kpi-summary-section">
-      {kpiSummaryData.map((item) => (
-        <article
-          className={`kpi-summary-card kpi-summary-card--${item.status}`}
-          key={item.id}
-        >
-          <div className="kpi-summary-card__header">
-            <span className="kpi-summary-card__label">{item.label}</span>
+      <div className="kpi-summary-track">
+        {[...kpiSummaryData, ...kpiSummaryData].map((item, index) => (
+          <article
+            key={`${item.id}-${index}`}
+            className={`kpi-summary-card kpi-summary-card--${item.status}`}
+          >
+            <div className="kpi-summary-card__header">
+              <span className="kpi-summary-card__label">
+                {item.label}
+              </span>
 
-            <span className="kpi-summary-card__indicator" />
-          </div>
+              <span className="kpi-summary-card__indicator" />
+            </div>
 
-          <div className="kpi-summary-card__content">
-            <strong className="kpi-summary-card__value">{item.value}</strong>
+            <div className="kpi-summary-card__content">
+              <strong className="kpi-summary-card__value">
+                {item.value}
+              </strong>
 
-            <span className="kpi-summary-card__trend">{item.trend}</span>
-          </div>
-        </article>
-      ))}
+              <span className="kpi-summary-card__trend">
+                {item.trend}
+              </span>
+            </div>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }
