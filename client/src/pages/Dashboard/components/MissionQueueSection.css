@@ -169,7 +169,7 @@
   }
 
   .mission-queue-table__row {
-    padding: var(--space-4);
+    padding: var(--space-3);
 
     background: rgba(255, 255, 255, 0.03);
 

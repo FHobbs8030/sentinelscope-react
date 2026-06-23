@@ -43,7 +43,7 @@
 .activity-empty {
   text-align: center;
 
-  padding: var(--space-4);
+  padding: var(--space-3);
 
   color: var(--color-text-secondary);
 }

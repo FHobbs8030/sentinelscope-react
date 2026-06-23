@@ -19,98 +19,92 @@
 }
 
 /* =========================================
-   SCAN LIST
+   OPERATIONS TABLE
 ========================================= */
 
-.recent-scans-list {
-  display: flex;
-  flex-direction: column;
-
-  gap: var(--space-3);
-
+.operations-table-container {
+  width: 100%;
   min-width: 0;
+
+  overflow-x: auto;
+}
+
+.recent-scans-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
 }
 
 /* =========================================
-   SCAN CARD
+   TABLE HEADER
 ========================================= */
 
-.scan-card {
-  display: flex;
-  flex-direction: column;
+.scan-table-header th {
+  padding: 12px 14px;
 
-  gap: var(--space-4);
+  text-align: left;
 
-  padding: var(--space-4);
+  font-size: 0.72rem;
+  font-weight: 700;
 
-  background: var(--color-surface-1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 14px;
-
-  transition:
-    border-color 0.2s ease,
-    transform 0.2s ease;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.scan-card:hover {
-  border-color: rgba(59, 130, 246, 0.35);
+.scan-table-header th {
+  white-space: nowrap;
+}
 
-  transform: translateY(-1px);
+.scan-table-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* =========================================
-   CARD HEADER
+   TABLE ROWS
 ========================================= */
 
-.scan-card-header {
-  display: flex;
+.scan-table-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 
-  justify-content: space-between;
-  align-items: center;
-
-  gap: var(--space-3);
+  transition: background 0.15s ease;
 }
 
-.scan-card-title-group {
-  display: flex;
-
-  align-items: center;
-
-  gap: var(--space-2);
-
-  flex-wrap: wrap;
+.scan-table-row:hover {
+  background: rgba(255, 255, 255, 0.025);
 }
 
-.scan-target {
+.scan-table-cell {
+  padding: 12px 14px;
+
+  vertical-align: middle;
+
   color: var(--color-text-primary);
 
-  font-weight: 700;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.target-cell {
+  font-weight: 600;
 }
 
 /* =========================================
-   STAGE
+   STATUS CHIPS
 ========================================= */
 
-.scan-card-stage {
-  color: var(--color-text-secondary);
-
-  font-size: 0.8rem;
-
-  text-transform: capitalize;
-}
-
-/* =========================================
-   SEVERITY
-========================================= */
-
-.scan-severity {
+.status-chip {
   display: inline-flex;
 
   align-items: center;
-  justify-content: center;
 
-  padding: 4px 8px;
+  padding: 2px 8px;
 
   border-radius: 999px;
 
@@ -120,123 +114,55 @@
   text-transform: uppercase;
 }
 
-.scan-severity--low {
-  color: #22c55e;
-  background: rgba(34, 197, 94, 0.12);
+.status-running {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.15);
 }
 
-.scan-severity--medium {
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.12);
+.status-queued {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.15);
 }
 
-.scan-severity--high {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.12);
+.status-completed {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.15);
 }
 
-.scan-severity--critical {
-  color: #f8fafc;
-  background: rgba(220, 38, 38, 0.9);
+.status-failed {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.15);
 }
 
-/* =========================================
-   STATUS
-========================================= */
-
-.scan-status-wrapper {
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-}
-
-.scan-live-indicator {
-  width: 8px;
-  height: 8px;
-
-  border-radius: 50%;
-
-  background: #22c55e;
-
-  box-shadow:
-    0 0 0 4px rgba(34, 197, 94, 0.15);
-}
-
-.scan-status {
-  display: inline-flex;
-
-  align-items: center;
-
-  padding: 4px 8px;
-
-  border-radius: 999px;
-
-  font-size: 0.7rem;
-  font-weight: 700;
-}
-
-.scan-status--running {
-  color: #3b82f6;
-  background: rgba(59, 130, 246, 0.12);
-}
-
-.scan-status--queued {
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.12);
-}
-
-.scan-status--completed {
-  color: #22c55e;
-  background: rgba(34, 197, 94, 0.12);
-}
-
-.scan-status--failed {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.12);
-}
-
-.scan-status--cancelled {
+.status-cancelled {
   color: #94a3b8;
-  background: rgba(148, 163, 184, 0.12);
+  background: rgba(148, 163, 184, 0.15);
 }
 
-.scan-status--interrupted {
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.12);
+.status-interrupted {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.15);
 }
 
 /* =========================================
    PROGRESS
 ========================================= */
 
-.scan-progress {
-  display: flex;
+.progress-track {
+  width: 120px;
+  max-width: 120px;
 
-  align-items: center;
-
-  gap: var(--space-3);
-}
-
-.scan-progress-track {
-  position: relative;
-
-  flex: 1;
-
-  height: 8px;
+  height: 4px;
 
   overflow: hidden;
 
-  background: rgba(255, 255, 255, 0.08);
-
   border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.scan-progress-bar {
-  position: absolute;
-
-  inset: 0 auto 0 0;
+.progress-fill {
+  height: 100%;
 
   border-radius: inherit;
 
@@ -247,32 +173,45 @@
   );
 }
 
-.scan-progress-label {
-  min-width: 40px;
+.progress-wrapper {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.progress-label {
+  width: 36px;
+
+  font-size: 0.72rem;
 
   color: var(--color-text-secondary);
-
-  font-size: 0.75rem;
-  font-weight: 600;
-
-  text-align: right;
 }
 
 /* =========================================
-   METRICS
+   ACTIONS
 ========================================= */
 
-.scan-card-metrics {
-  display: grid;
+.scan-action-button {
+  background: transparent;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
 
-  gap: var(--space-2);
+  padding: 4px 10px;
 
   color: var(--color-text-secondary);
 
-  font-size: 0.78rem;
+  font-size: 0.72rem;
+
+  cursor: pointer;
+}
+
+.scan-action-button:hover {
+  color: var(--color-text-primary);
+
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 /* =========================================
@@ -286,11 +225,42 @@
   gap: 20px;
 }
 
+.scan-launch-panel input,
+.scan-launch-panel select {
+  height: 40px;
+}
+
 .scan-panel-header {
   display: flex;
 
   justify-content: space-between;
   align-items: flex-start;
+
+  margin-bottom: 6px;
+}
+
+/* =========================================
+   PANEL TITLE / SUBTITLE
+========================================= */
+
+.scan-panel-title {
+  margin: 0;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  color: var(--color-text-primary);
+}
+
+.scan-panel-subtitle {
+  margin-top: 2px;
+  margin-bottom: 0;
+
+  font-size: 0.78rem;
+
+  color: #7c8ba1;
+
+  line-height: 1.4;
 }
 
 .scan-form-grid {
@@ -344,4 +314,120 @@
   padding: 0 16px;
 
   color: var(--color-text-secondary);
+}
+
+.scan-table-header th:nth-child(1),
+.scan-table-cell:nth-child(1) {
+  width: 28%;
+}
+
+.scan-table-header th:nth-child(2),
+.scan-table-cell:nth-child(2) {
+  width: 16%;
+}
+
+.scan-table-header th:nth-child(3),
+.scan-table-cell:nth-child(3) {
+  width: 14%;
+}
+
+.scan-table-header th:nth-child(4),
+.scan-table-cell:nth-child(4) {
+  width: 18%;
+}
+
+.scan-table-header th:nth-child(5),
+.scan-table-cell:nth-child(5) {
+  width: 14%;
+}
+
+.scan-table-header th:nth-child(6),
+.scan-table-cell:nth-child(6) {
+  width: 10%;
+}
+
+.scan-type-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 2px 8px;
+
+  border-radius: 999px;
+
+  font-size: 0.68rem;
+
+  font-weight: 700;
+}
+
+.scan-type-full {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.scan-type-recon {
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.15);
+}
+
+.scan-type-enumeration {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.15);
+}
+
+.scan-type-vulnerability {
+  color: #fb923c;
+  background: rgba(251, 146, 60, 0.15);
+}
+
+/* .scan-type-badge {
+  background: red !important;
+  color: white !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+} */
+
+.scan-type-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 2px 8px;
+
+  border-radius: 999px;
+
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+/* Full Scan */
+
+.scan-type-full {
+  color: #60a5fa !important;
+
+  background: rgba(59, 130, 246, 0.18) !important;
+}
+
+/* Recon Scan */
+
+.scan-type-recon {
+  color: #22d3ee !important;
+
+  background: rgba(34, 211, 238, 0.18) !important;
+}
+
+/* Enumeration */
+
+.scan-type-enumeration {
+  color: #c084fc !important;
+
+  background: rgba(192, 132, 252, 0.18) !important;
+}
+
+/* Vulnerability */
+
+.scan-type-vulnerability {
+  color: #fb923c !important;
+
+  background: rgba(251, 146, 60, 0.18) !important;
 }

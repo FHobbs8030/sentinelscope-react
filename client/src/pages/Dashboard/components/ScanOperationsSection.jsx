@@ -77,8 +77,6 @@ function ScanOperationsSection() {
               Configure a target and launch an operational scan.
             </p>
           </div>
-
-          <span className="scan-panel-badge">Ready</span>
         </div>
 
         <div className="scan-form-grid">
@@ -205,7 +203,7 @@ function ScanOperationsSection() {
 
                 {!TERMINAL_SCAN_STATES.includes(scan.status) && (
                   <div className="scan-card-stage">
-                    {scan.currentStage || "Queued"}
+                    Stage: {scan.currentStage || "Queued"}
                   </div>
                 )}
 

@@ -1,28 +1,14 @@
 import { useEffect, useState } from "react";
+
 import "./AppShell.css";
+
 import Sidebar from "../Sidebar/Sidebar";
 import Topbar from "../Topbar/Topbar";
-import WorkspaceHeader from "../../WorkspaceHeader/WorkspaceHeader";
 
 function AppShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
-  const toggleSidebarCollapse = () => {
-    console.log("Sidebar Toggle");
-    setSidebarCollapsed((current) => !current);
-  };
-
   const handleMenuToggle = () => {
-    if (window.innerWidth > 992) {
-      toggleSidebarCollapse();
-    } else {
-      openSidebar();
-    }
-  };
-
-  const openSidebar = () => {
     setSidebarOpen(true);
   };
 
@@ -30,19 +16,19 @@ function AppShell({ children }) {
     setSidebarOpen(false);
   };
 
- useEffect(() => {
-   const handleResize = () => {
-     if (window.innerWidth > 992) {
-       setSidebarOpen(false);
-     }
-   };
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 992) {
+        setSidebarOpen(false);
+      }
+    };
 
-   window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
 
-   return () => {
-     window.removeEventListener("resize", handleResize);
-   };
- }, []);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (sidebarOpen) {
@@ -57,15 +43,12 @@ function AppShell({ children }) {
   }, [sidebarOpen]);
 
   return (
-    <div
-      className="app-shell"
-      data-sidebar={sidebarCollapsed ? "collapsed" : "expanded"}
-    >
+    <div className="app-shell" data-sidebar="collapsed">
       <Sidebar
         className={[
           "sidebar",
           sidebarOpen && "sidebar--open",
-          sidebarCollapsed && "sidebar--collapsed",
+          !sidebarOpen && "sidebar--collapsed",
         ]
           .filter(Boolean)
           .join(" ")}
@@ -85,10 +68,7 @@ function AppShell({ children }) {
       <div className="app-shell-main">
         <Topbar onMenuToggle={handleMenuToggle} />
 
-        <main className="page-container">
-
-          {children}
-        </main>
+        <main className="page-container">{children}</main>
       </div>
     </div>
   );

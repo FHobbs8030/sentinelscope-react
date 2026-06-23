@@ -106,20 +106,17 @@
 
 @media (max-width: 1200px) {
   .page-container {
-    padding:
-      var(--space-5);
+    padding: var(--space-4);
   }
 }
 
 @media (max-width: 992px) {
-
   .app-shell-main {
     width: 100%;
   }
 
   .page-container {
-    padding:
-      var(--space-4);
+    padding: var(--space-4);
   }
 }
 
@@ -129,8 +126,7 @@
   }
 
   .page-container {
-    padding:
-      var(--space-3);
+    padding: var(--space-3);
   }
 }
 
@@ -152,7 +148,6 @@
   }
 
   .page-container {
-    padding:
-      var(--space-2);
+    padding: var(--space-2);
   }
 }

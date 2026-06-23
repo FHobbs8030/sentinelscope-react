@@ -5,15 +5,49 @@
   gap: var(--space-4);
 }
 
-.workspace-row {
+/* =========================================
+   PRIMARY OPERATIONS ROW
+========================================= */
+
+.operations-row {
   display: grid;
 
   grid-template-columns:
-    minmax(0, 1.5fr)
-    minmax(0, 1.2fr)
-    minmax(320px, 1fr);
+    280px
+    minmax(0, 1fr)
+    240px;
 
-  gap: var(--space-4);
+  gap: var(--space-3);
 
   align-items: start;
+}
+
+.operations-row > * {
+  min-width: 0;
+}
+/* =========================================
+   SECONDARY ROWS
+========================================= */
+
+.workspace-row {
+  width: 100%;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1600px) {
+  .operations-row {
+    grid-template-columns:
+      260px
+      minmax(0, 1fr)
+      220px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .operations-row {
+    grid-template-columns: 1fr;
+  }
 }

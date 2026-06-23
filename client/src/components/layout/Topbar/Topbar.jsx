@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+
+import useScans from "../../../hooks/useScans";
+import useFindings from "../../../hooks/useFindings";
+import useMissions from "../../../hooks/useMissions";
 
 import SearchResultsModal from "../../Search/SearchResultsModal";
 
@@ -9,61 +13,83 @@ function Topbar({ onMenuToggle }) {
 
   const [showSearchResults, setShowSearchResults] = useState(false);
 
-  const [searchResults, setSearchResults] = useState({
-    scans: [],
-    findings: [],
-    missions: [],
-  });
+  const { scans = [] } = useScans();
 
-  const handleSearch = () => {
-    const query = searchTerm.trim();
+  const { findings = [] } = useFindings();
+
+  const { missions = [] } = useMissions();
+
+  const searchResults = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
 
     if (!query) {
-      return;
+      return {
+        scans: [],
+        findings: [],
+        missions: [],
+      };
     }
 
-    console.log("Searching:", query);
+    return {
+      scans: scans
+        .filter((scan) =>
+          [scan?.name, scan?.target, scan?.status, scan?.currentStage]
+            .join(" ")
+            .toLowerCase()
+            .includes(query),
+        )
+        .map((scan) => ({
+          id: scan.id,
+          type: "scan",
+          title: scan.name,
+          subtitle: scan.target,
+          status: scan.status,
+          raw: scan,
+        })),
 
-    setSearchResults({
-      scans: [
-        {
-          id: 1,
-          title: "Walmart.com",
-          status: "Running",
-        },
-        {
-          id: 2,
-          title: "Google.com",
-          status: "Completed",
-        },
-      ],
+      findings: findings
+        .filter((finding) =>
+          [
+            finding?.title,
+            finding?.description,
+            finding?.severity,
+            finding?.target,
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query),
+        )
+        .map((finding) => ({
+          id: finding._id,
+          type: "finding",
+          title: finding.title,
+          subtitle: finding.target,
+          status: finding.severity,
+          raw: finding,
+        })),
 
-      findings: [
-        {
-          id: 1,
-          title: "Critical Security Finding",
-          severity: "Critical",
-        },
-        {
-          id: 2,
-          title: "High Severity Security Finding",
-          severity: "High",
-        },
-      ],
+      missions: missions
+        .filter((mission) =>
+          [mission?.name, mission?.target, mission?.state]
+            .join(" ")
+            .toLowerCase()
+            .includes(query),
+        )
+        .map((mission) => ({
+          id: mission._id,
+          type: "mission",
+          title: mission.name,
+          subtitle: mission.target,
+          status: mission.state,
+          raw: mission,
+        })),
+    };
+  }, [searchTerm, scans, findings, missions]);
 
-      missions: [
-        {
-          id: 1,
-          name: "Mission Alpha",
-          state: "Active",
-        },
-        {
-          id: 2,
-          name: "Mission Bravo",
-          state: "Queued",
-        },
-      ],
-    });
+  const handleSearch = () => {
+    if (!searchTerm.trim()) {
+      return;
+    }
 
     setShowSearchResults(true);
   };
@@ -148,7 +174,7 @@ function Topbar({ onMenuToggle }) {
         results={searchResults}
         onClose={() => setShowSearchResults(false)}
         onSelect={(item) => {
-          console.log("Selected:", item);
+          console.log("Selected Search Result:", item);
         }}
       />
     </>

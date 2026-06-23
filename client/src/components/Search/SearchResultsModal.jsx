@@ -3,11 +3,20 @@ import "./SearchResultsModal.css";
 function SearchResultsModal({
   isOpen,
   searchTerm,
-  results,
+  results = {
+    scans: [],
+    findings: [],
+    missions: [],
+  },
   onClose,
   onSelect,
 }) {
   if (!isOpen) return null;
+
+  const totalResults =
+    results.scans.length + results.findings.length + results.missions.length;
+
+  const hasResults = totalResults > 0;
 
   return (
     <div className="search-modal-overlay" onClick={onClose}>
@@ -16,7 +25,13 @@ function SearchResultsModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="search-modal-header">
-          <h3>Search Results</h3>
+          <div>
+            <h3>Global Search</h3>
+
+            <p className="search-results-count">
+              {totalResults} Result{totalResults !== 1 ? "s" : ""} Found
+            </p>
+          </div>
 
           <button type="button" onClick={onClose}>
             Close
@@ -28,55 +43,112 @@ function SearchResultsModal({
             Results for: <strong>{searchTerm}</strong>
           </p>
 
-          <h4>Scans</h4>
+          {!hasResults && (
+            <div className="search-empty-state">
+              <h4>No Results Found</h4>
 
-          {results.scans.length > 0 ? (
-            results.scans.map((scan) => (
-              <button
-                key={scan.id}
-                type="button"
-                className="search-result-item"
-                onClick={() => onSelect(scan)}
-              >
-                {scan.title}
-              </button>
-            ))
-          ) : (
-            <p>No scans found</p>
+              <p>Try searching:</p>
+
+              <ul>
+                <li>Target names</li>
+                <li>Scan statuses</li>
+                <li>Mission names</li>
+                <li>Finding severities</li>
+              </ul>
+            </div>
           )}
 
-          <h4>Findings</h4>
+          {results.scans.length > 0 && (
+            <>
+              <h4>Scans ({results.scans.length})</h4>
 
-          {results.findings.length > 0 ? (
-            results.findings.map((finding) => (
-              <button
-                key={finding.id}
-                type="button"
-                className="search-result-item"
-                onClick={() => onSelect(finding)}
-              >
-                {finding.title}
-              </button>
-            ))
-          ) : (
-            <p>No findings found</p>
+              {results.scans.map((scan) => (
+                <button
+                  key={scan.id}
+                  type="button"
+                  className="search-result-item"
+                  onClick={() => onSelect(scan)}
+                >
+                  <div className="search-result-main">
+                    <span className="search-result-title">{scan.title}</span>
+
+                    {scan.subtitle && (
+                      <span className="search-result-subtitle">
+                        {scan.subtitle}
+                      </span>
+                    )}
+                  </div>
+
+                  {scan.status && (
+                    <span className="search-result-status">{scan.status}</span>
+                  )}
+                </button>
+              ))}
+            </>
           )}
 
-          <h4>Missions</h4>
+          {results.findings.length > 0 && (
+            <>
+              <h4>Findings ({results.findings.length})</h4>
 
-          {results.missions.length > 0 ? (
-            results.missions.map((mission) => (
-              <button
-                key={mission.id}
-                type="button"
-                className="search-result-item"
-                onClick={() => onSelect(mission)}
-              >
-                {mission.name}
-              </button>
-            ))
-          ) : (
-            <p>No missions found</p>
+              {results.findings.map((finding) => (
+                <button
+                  key={finding.id}
+                  type="button"
+                  className="search-result-item"
+                  onClick={() => onSelect(finding)}
+                >
+                  <div className="search-result-main">
+                    <span className="search-result-title">{finding.title}</span>
+
+                    {finding.subtitle && (
+                      <span className="search-result-subtitle">
+                        {finding.subtitle}
+                      </span>
+                    )}
+                  </div>
+
+                  {finding.status && (
+                    <span className="search-result-status">
+                      {finding.status}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </>
+          )}
+
+          {results.missions.length > 0 && (
+            <>
+              <h4>Missions ({results.missions.length})</h4>
+
+              {results.missions.map((mission) => (
+                <button
+                  key={mission.id}
+                  type="button"
+                  className="search-result-item"
+                  onClick={() => onSelect(mission)}
+                >
+                  <div className="search-result-main">
+                    <span className="search-result-title">
+                      {mission.title || mission.name}
+                    </span>
+
+                    {mission.subtitle && (
+                      <span className="search-result-subtitle">
+                        {mission.subtitle}
+                      </span>
+                    )}
+                  </div>
+
+                  {mission.status && (
+                    <span className="search-result-status">
+                      {mission.status}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </>
           )}
         </div>
       </div>

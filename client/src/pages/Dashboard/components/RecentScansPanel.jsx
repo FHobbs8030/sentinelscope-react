@@ -1,21 +1,60 @@
 import "./ScanOperationsSection.css";
 
 import useScans from "../../../hooks/useScans";
-import scanRuntimeEngine from "../../../services/runtime/scanRuntimeEngine";
-
-const TERMINAL_SCAN_STATES = ["completed", "failed", "cancelled"];
 
 function RecentScansPanel() {
-  const { scans, metrics, isLoading, error } = useScans();
-  const formatElapsedTime = (seconds = 0) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-
-    return `${mins}m ${secs}s`;
-  };
+  const { scans, isLoading, error } = useScans();
 
   const formatStatusLabel = (status = "") => {
     return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  const formatScanType = (type = "") => {
+    switch (type.toLowerCase()) {
+      case "full":
+        return "Full Recon";
+
+      case "recon":
+        return "Recon Scan";
+
+      case "enumeration":
+        return "Enumeration Scan";
+
+      case "vulnerability":
+        return "Vulnerability Scan";
+
+      default:
+        return type;
+    }
+  };
+
+  const formatStartedTime = (startedAt) => {
+    if (!startedAt) {
+      return "Just now";
+    }
+
+    const started = new Date(startedAt);
+    const now = new Date();
+
+    const diffMinutes = Math.floor((now.getTime() - started.getTime()) / 60000);
+
+    if (diffMinutes < 1) {
+      return "Just now";
+    }
+
+    if (diffMinutes < 60) {
+      return `${diffMinutes} min ago`;
+    }
+
+    const diffHours = Math.floor(diffMinutes / 60);
+
+    if (diffHours < 24) {
+      return `${diffHours} hour ago`;
+    }
+
+    const diffDays = Math.floor(diffHours / 24);
+
+    return `${diffDays} day ago`;
   };
 
   if (isLoading) {
@@ -29,104 +68,84 @@ function RecentScansPanel() {
   if (error) {
     return (
       <div className="recent-scans-panel">
-        <div className="scan-error-state">{error}</div>
+        <div className="scan-error-state">Failed to load scan telemetry.</div>
       </div>
     );
   }
 
   return (
     <div className="recent-scans-panel">
-      <div className="scan-panel-header">
-        <div>
-          <h2 className="scan-panel-title">Recent Scans</h2>
+      <div className="operations-table-container">
+        <table className="recent-scans-table">
+          <thead>
+            <tr className="scan-table-header">
+              <th>Target</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Progress</th>
+              <th>Started</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
 
-          <p className="scan-panel-subtitle">
-            Live operational telemetry and runtime scan progression.
-          </p>
-        </div>
+          <tbody>
+            {scans.map((scan, index) => (
+              <tr
+                key={scan.scanId || scan._id || index}
+                className="scan-table-row"
+              >
+                <td className="scan-table-cell target-cell">{scan.target}</td>
 
-        <div className="scan-panel-metrics">
-          <span className="scan-metric">
-            Active: {metrics?.activeScans ?? 0}
-          </span>
-
-          <span className="scan-metric">
-            Critical Findings: {metrics?.criticalFindings ?? 0}
-          </span>
-        </div>
-      </div>
-      <div className="recent-scans-list">
-        {scans.map((scan) => {
-          const isLive = !TERMINAL_SCAN_STATES.includes(scan.status);
-
-          return (
-            <div
-              key={scan.mongoId ?? scan.id ?? scan.target}
-              className="scan-card"
-            >
-              <div className="scan-card-header">
-                <div className="scan-card-title-group">
-                  <span className="scan-target">{scan.target}</span>
-
-                  {scan.severity && (
-                    <span
-                      className={`scan-severity scan-severity--${scan.severity.toLowerCase()}`}
-                    >
-                      {scan.severity}
-                    </span>
-                  )}
-                </div>
-
-                <div className="scan-status-wrapper">
-                  {isLive && <span className="scan-live-indicator" />}
-
-                  <span className={`scan-status scan-status--${scan.status}`}>
-                    {formatStatusLabel(scan.status)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="scan-card-stage">
-                {scan.currentStage || "Queued"}
-              </div>
-
-              <div className="scan-progress">
-                <div className="scan-progress-track">
-                  <div
-                    className={`scan-progress-bar scan-progress-bar--${scan.status}`}
-                    style={{
-                      width: `${scan.progress ?? 0}%`,
-                    }}
-                  />
-                </div>
-
-                <span className="scan-progress-label">
-                  {scan.progress ?? 0}%
-                </span>
-              </div>
-
-              <div className="scan-card-metrics">
-                <span>Runtime: {formatElapsedTime(scan.elapsedTime)}</span>
-
-                <span>Findings: {scan.findingsCount ?? 0}</span>
-              </div>
-
-              {scan.status === "interrupted" && (
-                <div className="scan-actions">
-                  <button
-                    className="scan-action-button"
-                    type="button"
-                    onClick={() =>
-                      scanRuntimeEngine.resumeScan(scan.mongoId ?? scan.id)
-                    }
+                <td className="scan-table-cell">
+                  <span
+                    className={`scan-type-badge scan-type-${(
+                      scan.type ||
+                      scan.scanType ||
+                      "full"
+                    ).toLowerCase()}`}
                   >
-                    Resume
-                  </button>
-                </div>
-              )}
-            </div>
-          );
-        })}
+                    {formatScanType(scan.type || scan.scanType || "full")}
+                  </span>
+                </td>
+
+                <td className="scan-table-cell">
+                  <span
+                    className={`status-chip status-${(
+                      scan.status || "completed"
+                    ).toLowerCase()}`}
+                  >
+                    {formatStatusLabel(scan.status || "completed")}
+                  </span>
+                </td>
+
+                <td className="scan-table-cell">
+                  <div className="progress-wrapper">
+                    <span className="progress-label">
+                      {scan.progress || 0}%
+                    </span>
+
+                    <div className="progress-track">
+                      <div
+                        className="progress-fill"
+                        style={{
+                          width: `${scan.progress || 0}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </td>
+
+                <td className="scan-table-cell">
+                  {formatStartedTime(scan.startedAt)}
+                </td>
+
+                <td className="scan-table-cell">
+                  <button className="scan-action-button">View</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

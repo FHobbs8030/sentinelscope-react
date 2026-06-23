@@ -9,7 +9,7 @@ import ActivityFeed from "../../../components/ActivityFeed";
 function OperationalWorkspace() {
   return (
     <div className="operations-workspace">
-      <div className="workspace-row">
+      <div className="operations-row">
         <ScanLaunchPanel />
         <RecentScansPanel />
         <ActivityFeed />

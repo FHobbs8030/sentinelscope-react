@@ -38,8 +38,6 @@ function ScanLaunchPanel() {
             Configure a target and launch an operational scan.
           </p>
         </div>
-
-        <span className="scan-panel-badge">Ready</span>
       </div>
 
       <div className="scan-form-grid">
