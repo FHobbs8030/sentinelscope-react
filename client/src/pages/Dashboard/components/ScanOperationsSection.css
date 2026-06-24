@@ -34,7 +34,7 @@
 
   border-collapse: collapse;
 
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 /* =========================================
@@ -149,8 +149,8 @@
 ========================================= */
 
 .progress-track {
-  width: 120px;
-  max-width: 120px;
+  width: 100px;
+  max-width: 100px;
 
   height: 4px;
 
@@ -316,34 +316,38 @@
   color: var(--color-text-secondary);
 }
 
+/* =========================================
+   TABLE COLUMN WIDTHS
+========================================= */
+
 .scan-table-header th:nth-child(1),
 .scan-table-cell:nth-child(1) {
-  width: 28%;
+  width: 160px; /* Target */
 }
 
 .scan-table-header th:nth-child(2),
 .scan-table-cell:nth-child(2) {
-  width: 16%;
+  width: 170px; /* Type */
 }
 
 .scan-table-header th:nth-child(3),
 .scan-table-cell:nth-child(3) {
-  width: 14%;
+  width: 170px;
 }
 
 .scan-table-header th:nth-child(4),
 .scan-table-cell:nth-child(4) {
-  width: 18%;
+  width: 130px; /* Progress */
 }
 
 .scan-table-header th:nth-child(5),
 .scan-table-cell:nth-child(5) {
-  width: 14%;
+  width: 120px; /* Runtime / Started */
 }
 
 .scan-table-header th:nth-child(6),
 .scan-table-cell:nth-child(6) {
-  width: 10%;
+  width: 60px; /* Actions */
 }
 
 .scan-type-badge {
