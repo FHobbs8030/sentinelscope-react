@@ -54,16 +54,7 @@
 
   color: var(--color-text-secondary);
   border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.scan-table-header th {
-  white-space: nowrap;
-}
-
-.scan-table-cell {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+   white-space: nowrap;
 }
 
 /* =========================================
@@ -88,7 +79,12 @@
   color: var(--color-text-primary);
 
   font-size: 0.82rem;
+
   white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
 }
 
 .target-cell {
@@ -104,44 +100,100 @@
 
   align-items: center;
 
-  padding: 2px 8px;
+  padding: 3px 10px;
 
   border-radius: 999px;
 
-  font-size: 0.68rem;
+  font-size: 0.70rem;
   font-weight: 700;
 
   text-transform: uppercase;
+
+  backdrop-filter: blur(8px);
+}
+Completed
+.status-completed {
+  color: #4ade80;
+
+  background: linear-gradient(
+    180deg,
+    rgba(34, 197, 94, 0.24),
+    rgba(22, 163, 74, 0.18)
+  );
+
+  border: 1px solid rgba(74, 222, 128, 0.45);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 0 12px rgba(34,197,94,0.18);
 }
 
 .status-running {
+  background: rgba(59, 130, 246, 0.18);
+
   color: #60a5fa;
-  background: rgba(59, 130, 246, 0.15);
+
+  border: 1px solid rgba(96, 165, 250, 0.45);
+
+  box-shadow:
+    inset 0 0 12px rgba(59, 130, 246, 0.12),
+    0 0 10px rgba(59, 130, 246, 0.18);
 }
 
 .status-queued {
-  color: #fbbf24;
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(250, 204, 21, 0.16);
+
+  color: #fde047;
+
+  border: 1px solid rgba(250, 204, 21, 0.4);
+
+  box-shadow:
+    inset 0 0 12px rgba(250, 204, 21, 0.12),
+    0 0 10px rgba(250, 204, 21, 0.15);
 }
 
 .status-completed {
   color: #4ade80;
-  background: rgba(34, 197, 94, 0.15);
+
+  background: linear-gradient(
+    180deg,
+    rgba(34, 197, 94, 0.24),
+    rgba(22, 163, 74, 0.18)
+  );
+
+  border: 1px solid rgba(74, 222, 128, 0.45);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 10px rgba(34,197,94,0.18);
 }
 
 .status-failed {
   color: #f87171;
-  background: rgba(239, 68, 68, 0.15);
-}
 
-.status-cancelled {
-  color: #94a3b8;
-  background: rgba(148, 163, 184, 0.15);
+  background: linear-gradient(
+    180deg,
+    rgba(239, 68, 68, 0.24),
+    rgba(185, 28, 28, 0.18)
+  );
+
+  border: 1px solid rgba(248, 113, 113, 0.45);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 0 12px rgba(239,68,68,0.18);
 }
 
 .status-interrupted {
-  color: #fbbf24;
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(168, 85, 247, 0.18);
+
+  color: #c084fc;
+
+  border: 1px solid rgba(192, 132, 252, 0.4);
+
+  box-shadow:
+    inset 0 0 12px rgba(168, 85, 247, 0.12),
+    0 0 10px rgba(168, 85, 247, 0.18);
 }
 
 /* =========================================
@@ -149,8 +201,8 @@
 ========================================= */
 
 .progress-track {
-  width: 100px;
-  max-width: 100px;
+  width: 80px;
+  max-width: 80px;
 
   height: 4px;
 
@@ -364,74 +416,52 @@
   font-weight: 700;
 }
 
-.scan-type-full {
-  color: #60a5fa;
-  background: rgba(59, 130, 246, 0.15);
-}
-
-.scan-type-recon {
-  color: #22d3ee;
-  background: rgba(34, 211, 238, 0.15);
-}
-
-.scan-type-enumeration {
-  color: #c084fc;
-  background: rgba(192, 132, 252, 0.15);
-}
-
-.scan-type-vulnerability {
-  color: #fb923c;
-  background: rgba(251, 146, 60, 0.15);
-}
-
-/* .scan-type-badge {
-  background: red !important;
-  color: white !important;
-  padding: 4px 10px !important;
-  border-radius: 999px !important;
-} */
-
-.scan-type-badge {
-  display: inline-flex;
-
-  align-items: center;
-
-  padding: 2px 8px;
-
-  border-radius: 999px;
-
-  font-size: 0.68rem;
-  font-weight: 700;
-}
-
 /* Full Scan */
 
 .scan-type-full {
-  color: #60a5fa !important;
+  color: #93c5fd;
 
-  background: rgba(59, 130, 246, 0.18) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(59,130,246,0.24),
+    rgba(37,99,235,0.16)
+  );
+
+  border: 1px solid rgba(96,165,250,0.35);
 }
-
-/* Recon Scan */
 
 .scan-type-recon {
-  color: #22d3ee !important;
+  color: #67e8f9;
 
-  background: rgba(34, 211, 238, 0.18) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 182, 212, 0.22),
+    rgba(8, 145, 178, 0.16)
+  );
+
+  border: 1px solid rgba(34, 211, 238, 0.35);
 }
-
-/* Enumeration */
 
 .scan-type-enumeration {
-  color: #c084fc !important;
+  color: #fde68a;
 
-  background: rgba(192, 132, 252, 0.18) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(234,179,8,0.22),
+    rgba(202,138,4,0.16)
+  );
+
+  border: 1px solid rgba(250,204,21,0.35);
 }
 
-/* Vulnerability */
-
 .scan-type-vulnerability {
-  color: #fb923c !important;
+  color: #fdba74;
 
-  background: rgba(251, 146, 60, 0.18) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(251,146,60,0.24),
+    rgba(194,65,12,0.16)
+  );
+
+  border: 1px solid rgba(251,146,60,0.35);
 }
