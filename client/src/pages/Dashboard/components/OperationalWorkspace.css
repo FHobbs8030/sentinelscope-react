@@ -33,6 +33,52 @@
   width: 100%;
 }
 
+.operations-workspace-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: var(--space-4);
+}
+
+.operations-workspace-title {
+  margin: 0;
+
+  font-size: 1.05rem;
+
+  font-weight: 700;
+
+  color: var(--color-text-primary);
+}
+
+.operations-workspace-subtitle {
+  margin-top: 4px;
+
+  color: var(--color-text-secondary);
+
+  font-size: 0.85rem;
+}
+
+.operations-workspace-stats {
+  display: flex;
+
+  gap: 24px;
+
+  font-size: 0.85rem;
+
+  color: var(--color-text-secondary);
+}
+
+.operations-workspace-stats strong {
+  color: var(--color-text-primary);
+
+  margin-right: 4px;
+
+  font-weight: 700;
+}
+
 /* =========================================
    RESPONSIVE
 ========================================= */

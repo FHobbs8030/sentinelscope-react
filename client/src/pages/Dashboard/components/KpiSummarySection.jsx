@@ -3,9 +3,8 @@ import "./KpiSummarySection.css";
 import useScans from "../../../hooks/useScans";
 import useMissions from "../../../hooks/useMissions";
 import useFindings from "../../../hooks/useFindings";
+
 import {
-  Radar,
-  Target,
   Flag,
   Network,
   Shield,
@@ -30,92 +29,150 @@ function KpiSummarySection() {
       ? Math.round(findings.length / metrics.totalScans)
       : 0;
 
-  const kpiSummaryData = [
-    {
-      id: 1,
-      label: "Active Scans",
-      value: metrics.activeScans,
-      trend: `${metrics.completedScans} completed`,
-      status: "positive",
-      icon: Radar,
-      color: "blue",
-    },
+  /* =========================================
+   EXECUTIVE RISK
+========================================= */
 
-    {
-      id: 12,
-      label: "Targets Monitored",
-      value: metrics.totalScans,
-      trend: "Active attack surface",
-      status: "positive",
-      icon: Target,
-      color: "green",
-    },
+  const executiveRiskScore = Math.min(
+    100,
+    severityMetrics.critical * 10 +
+      severityMetrics.high * 5 +
+      severityMetrics.medium * 2,
+  );
 
-    {
-      id: 9,
-      label: "Running Missions",
-      value: missionMetrics.runningMissions,
-      trend: "Currently executing",
-      status: missionMetrics.runningMissions > 0 ? "warning" : "positive",
-      icon: Flag,
-      color: "blue",
-    },
+  const executiveRiskLevel =
+    executiveRiskScore >= 80
+      ? "HIGH"
+      : executiveRiskScore >= 50
+        ? "ELEVATED"
+        : executiveRiskScore >= 20
+          ? "GUARDED"
+          : "NORMAL";
 
-    {
-      id: 14,
-      label: "Open Ports Found",
-      value: findings.length * 4,
-      trend: "Discovered services",
-      status: "warning",
-      icon: Network,
-      color: "orange",
-    },
+  /* =========================================
+   INTELLIGENCE METRICS
+========================================= */
 
+  const attackSurfaceScore = Math.min(
+    100,
+    Math.round((findings.length * 4) / 40),
+  );
+
+  const threatCoverage = Math.min(
+    100,
+    Math.round((findings.length / Math.max(metrics.totalScans, 1)) * 10),
+  );
+
+  const activeAlerts =
+    severityMetrics.critical + severityMetrics.high + severityMetrics.medium;
+
+  const executiveKpis = [
     {
-      id: 15,
-      label: "Findings Found",
-      value: findings.length,
-      trend: "Threat intelligence generated",
-      status: "warning",
+      id: 100,
+      label: "RISK SCORE",
+      value: executiveRiskScore,
+      trend: executiveRiskLevel,
+      status:
+        executiveRiskScore >= 80
+          ? "critical"
+          : executiveRiskScore >= 50
+            ? "warning"
+            : "positive",
       icon: Shield,
-      color: "purple",
+      color:
+        executiveRiskScore >= 80
+          ? "red"
+          : executiveRiskScore >= 50
+            ? "orange"
+            : "green",
     },
 
     {
       id: 5,
-      label: "Critical Findings",
+      label: "CRITICAL FINDINGS",
       value: severityMetrics.critical,
-      trend: "High-priority vulnerabilities",
+      trend: "PRIORITY THREATS",
       status: severityMetrics.critical > 0 ? "critical" : "positive",
       icon: AlertTriangle,
       color: "red",
     },
 
     {
-      id: 13,
-      label: "Alerts Generated",
-      value: findings.length,
-      trend: "Intelligence events",
+      id: 15,
+      label: "THREAT COVERAGE",
+      value: `${threatCoverage}%`,
+      trend: "ASSESSMENT INDEX",
       status: "warning",
-      icon: Bell,
-      color: "red",
+      icon: Shield,
+      color: "purple",
     },
 
     {
-      id: 16,
-      label: "Reports Generated",
-      value: metrics.completedScans,
-      trend: "Executive reports",
-      status: "positive",
-      icon: FileText,
-      color: "cyan",
+      id: 13,
+      label: "ACTIVE ALERTS",
+      value: activeAlerts,
+      trend: "REQUIRES REVIEW",
+      status:
+        activeAlerts > 20
+          ? "critical"
+          : activeAlerts > 5
+            ? "warning"
+            : "positive",
+      icon: Bell,
+      color: activeAlerts > 20 ? "red" : activeAlerts > 5 ? "orange" : "green",
     },
 
+    {
+      id: 14,
+      label: "ATTACK SURFACE",
+      value: attackSurfaceScore,
+      trend: "EXPOSURE INDEX",
+      status:
+        attackSurfaceScore > 75
+          ? "critical"
+          : attackSurfaceScore > 40
+            ? "warning"
+            : "positive",
+      icon: Network,
+      color:
+        attackSurfaceScore > 75
+          ? "red"
+          : attackSurfaceScore > 40
+            ? "orange"
+            : "green",
+    },
+
+    {
+      id: 9,
+      label: "RUNNING MISSIONS",
+      value: missionMetrics.runningMissions,
+      trend: "EXECUTING NOW",
+      status: missionMetrics.runningMissions > 0 ? "warning" : "positive",
+      icon: Flag,
+      color: "blue",
+    },
+  ];
+
+  /* =========================================
+   V2.8 OPERATIONS SUMMARY PANEL
+
+   These KPIs have been intentionally
+   removed from the executive ribbon.
+
+   Planned destination:
+   - Operations Summary Panel
+   - Mission Analytics Panel
+   - Workspace Telemetry
+
+========================================= */
+
+  // eslint-disable-next-line no-unused-vars
+  const operationalKpis = [
     {
       id: 8,
-      label: "Queued Missions",
+      label: "QUEUED MISSIONS",
       value: missionMetrics.queuedMissions,
-      trend: "Awaiting execution",
+      trend: "AWAITING EXECUTION",
       status: missionMetrics.queuedMissions > 0 ? "warning" : "positive",
       icon: Clock3,
       color: "orange",
@@ -123,9 +180,9 @@ function KpiSummarySection() {
 
     {
       id: 10,
-      label: "Completed Missions",
+      label: "COMPLETED MISSIONS",
       value: missionMetrics.completedMissions,
-      trend: "Successfully orchestrated",
+      trend: "SUCCESSFUL",
       status: "positive",
       icon: CheckCircle2,
       color: "green",
@@ -133,29 +190,49 @@ function KpiSummarySection() {
 
     {
       id: 11,
-      label: "Failed Missions",
+      label: "FAILED MISSIONS",
       value: missionMetrics.failedMissions,
-      trend: "Require investigation",
+      trend: "INVESTIGATE",
       status: missionMetrics.failedMissions > 0 ? "critical" : "positive",
       icon: XCircle,
       color: "red",
     },
 
     {
+      id: 16,
+      label: "REPORTS GENERATED",
+      value: metrics.completedScans,
+      trend: "EXECUTIVE REPORTS",
+      status: "positive",
+      icon: FileText,
+      color: "cyan",
+    },
+
+    {
       id: 2,
-      label: "Total Scans",
+      label: "TOTAL SCANS",
       value: metrics.totalScans,
-      trend: `${metrics.successRate}% success rate`,
+      trend: `${metrics.successRate}% SUCCESS`,
       status: "positive",
       icon: Activity,
       color: "cyan",
     },
 
     {
+      id: 6,
+      label: "AVG FINDINGS",
+      value: averageFindingsPerScan,
+      trend: "PER SCAN",
+      status: "warning",
+      icon: Shield,
+      color: "orange",
+    },
+
+    {
       id: 3,
-      label: "Interrupted Scans",
+      label: "INTERRUPTED SCANS",
       value: metrics.interruptedScans,
-      trend: "Recovered after refresh",
+      trend: "RECOVERABLE",
       status: metrics.interruptedScans > 0 ? "warning" : "positive",
       icon: AlertTriangle,
       color: "orange",
@@ -163,29 +240,19 @@ function KpiSummarySection() {
 
     {
       id: 4,
-      label: "Failed Scans",
+      label: "FAILED SCANS",
       value: metrics.failedScans,
-      trend: "Operational runtime failures",
-      status: metrics.failedScans > 0 ? "warning" : "positive",
+      trend: "RUNTIME FAILURES",
+      status: metrics.failedScans > 0 ? "critical" : "positive",
       icon: XCircle,
       color: "red",
     },
 
     {
-      id: 6,
-      label: "Average Findings",
-      value: averageFindingsPerScan,
-      trend: "Per persisted scan",
-      status: "warning",
-      icon: Shield,
-      color: "orange",
-    },
-
-    {
       id: 7,
-      label: "Completed Scans",
+      label: "COMPLETED SCANS",
       value: metrics.completedScans,
-      trend: "Successfully processed",
+      trend: "PROCESSED",
       status: "positive",
       icon: CheckCircle2,
       color: "green",
@@ -195,26 +262,28 @@ function KpiSummarySection() {
   return (
     <section className="kpi-summary-section">
       <div className="kpi-summary-track">
-        {[...kpiSummaryData, ...kpiSummaryData].map((item, index) => (
+        {executiveKpis.map((item) => (
           <article
-            key={`${item.id}-${index}`}
+            key={item.id}
             className={`kpi-summary-card kpi-summary-card--${item.status}`}
           >
-            <div className="kpi-summary-card__icon-wrapper">
+            <div className="kpi-summary-card__top">
+              <strong className="kpi-summary-card__value">{item.value}</strong>
+
               <div
                 className={`kpi-summary-card__icon kpi-summary-card__icon--${item.color}`}
               >
-                <item.icon size={20} />
+                <item.icon size={14} />
               </div>
             </div>
 
             <span className="kpi-summary-card__label">{item.label}</span>
 
-            <div className="kpi-summary-card__content">
-              <strong className="kpi-summary-card__value">{item.value}</strong>
-
-              <span className="kpi-summary-card__trend">{item.trend}</span>
-            </div>
+            <span
+              className={`kpi-summary-card__trend kpi-summary-card__trend--${item.status}`}
+            >
+              {item.trend}
+            </span>
           </article>
         ))}
       </div>
