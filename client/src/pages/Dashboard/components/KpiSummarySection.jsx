@@ -3,6 +3,7 @@ import "./KpiSummarySection.css";
 import useScans from "../../../hooks/useScans";
 import useMissions from "../../../hooks/useMissions";
 import useFindings from "../../../hooks/useFindings";
+import useAlerts from "../../../hooks/useAlerts";
 
 import {
   Flag,
@@ -22,12 +23,12 @@ function KpiSummarySection() {
 
   const { metrics: missionMetrics } = useMissions();
 
-  const { findings, severityMetrics } = useFindings();
+  const { severityMetrics, totalFindings } = useFindings();
+
+  const { metrics: alertMetrics } = useAlerts();
 
   const averageFindingsPerScan =
-    metrics.totalScans > 0
-      ? Math.round(findings.length / metrics.totalScans)
-      : 0;
+    metrics.totalScans > 0 ? Math.round(totalFindings / metrics.totalScans) : 0;
 
   /* =========================================
    EXECUTIVE RISK
@@ -53,23 +54,17 @@ function KpiSummarySection() {
    INTELLIGENCE METRICS
 ========================================= */
 
-  const attackSurfaceScore = Math.min(
-    100,
-    Math.round((findings.length * 4) / 40),
-  );
+  const exposureIndex = Math.min(100, Math.round(totalFindings / 10));
 
-  const threatCoverage = Math.min(
+  const findingDensityIndex = Math.min(
     100,
-    Math.round((findings.length / Math.max(metrics.totalScans, 1)) * 10),
+    Math.round((totalFindings / Math.max(metrics.totalScans, 1)) * 10),
   );
-
-  const activeAlerts =
-    severityMetrics.critical + severityMetrics.high + severityMetrics.medium;
 
   const executiveKpis = [
     {
       id: 100,
-      label: "RISK SCORE",
+      label: "EXECUTIVE RISK SCORE",
       value: executiveRiskScore,
       trend: executiveRiskLevel,
       status:
@@ -99,47 +94,58 @@ function KpiSummarySection() {
 
     {
       id: 15,
-      label: "THREAT COVERAGE",
-      value: `${threatCoverage}%`,
-      trend: "ASSESSMENT INDEX",
-      status: "warning",
+      label: "FINDING DENSITY",
+      value: findingDensityIndex,
+      trend: "NORMALIZED PER-SCAN INDEX",
+      status:
+        findingDensityIndex > 75
+          ? "critical"
+          : findingDensityIndex > 40
+            ? "warning"
+            : "positive",
       icon: Shield,
-      color: "purple",
+      color:
+        findingDensityIndex > 75
+          ? "red"
+          : findingDensityIndex > 40
+            ? "orange"
+            : "green",
     },
 
     {
       id: 13,
-      label: "ACTIVE ALERTS",
-      value: activeAlerts,
+      label: "OPEN ALERTS",
+      value: alertMetrics.openAlerts,
       trend: "REQUIRES REVIEW",
       status:
-        activeAlerts > 20
+        alertMetrics.openAlerts > 20
           ? "critical"
-          : activeAlerts > 5
+          : alertMetrics.openAlerts > 5
             ? "warning"
             : "positive",
       icon: Bell,
-      color: activeAlerts > 20 ? "red" : activeAlerts > 5 ? "orange" : "green",
+      color:
+        alertMetrics.openAlerts > 20
+          ? "red"
+          : alertMetrics.openAlerts > 5
+            ? "orange"
+            : "green",
     },
 
     {
       id: 14,
-      label: "ATTACK SURFACE",
-      value: attackSurfaceScore,
-      trend: "EXPOSURE INDEX",
+      label: "EXPOSURE INDEX",
+      value: exposureIndex,
+      trend: "FINDING-BASED",
       status:
-        attackSurfaceScore > 75
+        exposureIndex > 75
           ? "critical"
-          : attackSurfaceScore > 40
+          : exposureIndex > 40
             ? "warning"
             : "positive",
       icon: Network,
       color:
-        attackSurfaceScore > 75
-          ? "red"
-          : attackSurfaceScore > 40
-            ? "orange"
-            : "green",
+        exposureIndex > 75 ? "red" : exposureIndex > 40 ? "orange" : "green",
     },
 
     {

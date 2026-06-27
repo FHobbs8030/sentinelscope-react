@@ -2,10 +2,17 @@ import "./OperationsSummaryPanel.css";
 
 import useScans from "../../../hooks/useScans";
 import useMissions from "../../../hooks/useMissions";
+import useFindings from "../../../hooks/useFindings";
 
 function OperationsSummaryPanel() {
   const { metrics } = useScans();
+
   const { metrics: missionMetrics } = useMissions();
+
+  const { totalFindings } = useFindings();
+
+  const averageFindingsPerScan =
+    metrics.totalScans > 0 ? Math.round(totalFindings / metrics.totalScans) : 0;
 
   const cards = [
     {
@@ -30,7 +37,7 @@ function OperationsSummaryPanel() {
     },
     {
       label: "Average Findings",
-      value: metrics.averageFindings,
+      value: averageFindingsPerScan,
       tone: "warning",
     },
     {

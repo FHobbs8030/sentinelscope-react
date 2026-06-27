@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   getAlerts,
@@ -9,6 +9,11 @@ import {
 } from "../services/api/alertsApi";
 
 import { generateCorrelationAssessment } from "../services/intelligence/correlationEngine";
+
+import {
+  calculateAlertMetrics,
+  calculateAlertRiskScore,
+} from "../utils/alertMetrics";
 
 export default function useAlerts() {
   const [alerts, setAlerts] = useState([]);
@@ -38,6 +43,9 @@ export default function useAlerts() {
       console.error("Failed to hydrate alerts:", err);
 
       setError(err);
+
+      setAlerts([]);
+      setCampaignAssessment(null);
     } finally {
       setLoading(false);
     }
@@ -79,16 +87,64 @@ export default function useAlerts() {
     [refreshAlerts],
   );
 
+  const metrics = useMemo(() => {
+    return calculateAlertMetrics(alerts);
+  }, [alerts]);
+
+  const alertRiskScore = useMemo(() => {
+    return calculateAlertRiskScore(alerts);
+  }, [alerts]);
+
   useEffect(() => {
+    let isCancelled = false;
+
     async function hydrateAlerts() {
-      await refreshAlerts();
+      try {
+        const data = await getAlerts();
+
+        if (isCancelled) {
+          return;
+        }
+
+        const alertData = Array.isArray(data) ? data : [];
+
+        setAlerts(alertData);
+
+        setCampaignAssessment(generateCorrelationAssessment(alertData));
+
+        setError(null);
+      } catch (err) {
+        if (isCancelled) {
+          return;
+        }
+
+        console.error("Failed to hydrate alerts:", err);
+
+        setError(err);
+
+        setAlerts([]);
+
+        setCampaignAssessment(null);
+      } finally {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      }
     }
 
-    hydrateAlerts();
-  }, [refreshAlerts]);
+    void hydrateAlerts();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   return {
     alerts,
+
+    metrics,
+
+    alertRiskScore,
 
     campaignAssessment,
 

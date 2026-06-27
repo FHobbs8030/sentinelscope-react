@@ -1,32 +1,35 @@
+const SEVERITY_WEIGHTS = {
+  critical: 10,
+  high: 7,
+  medium: 4,
+  low: 2,
+  informational: 1,
+};
+
+const normalizeSeverity = (severity) => {
+  const normalizedSeverity = String(severity ?? "")
+    .trim()
+    .toLowerCase();
+
+  return Object.hasOwn(SEVERITY_WEIGHTS, normalizedSeverity)
+    ? normalizedSeverity
+    : "informational";
+};
+
 export function calculateSeverityMetrics(findings = []) {
-  return findings.reduce(
+  const safeFindings = Array.isArray(findings) ? findings : [];
+
+  return safeFindings.reduce(
     (metrics, finding) => {
-      const severity = finding.severity?.toLowerCase();
+      const severity = normalizeSeverity(finding.severity);
 
-      switch (severity) {
-        case "critical":
-          metrics.critical += 1;
-          break;
-
-        case "high":
-          metrics.high += 1;
-          break;
-
-        case "medium":
-          metrics.medium += 1;
-          break;
-
-        case "low":
-          metrics.low += 1;
-          break;
-
-        default:
-          metrics.informational += 1;
-      }
+      metrics[severity] += 1;
+      metrics.total += 1;
 
       return metrics;
     },
     {
+      total: 0,
       critical: 0,
       high: 0,
       medium: 0,
@@ -36,18 +39,18 @@ export function calculateSeverityMetrics(findings = []) {
   );
 }
 
-export function calculateRiskScore(findings = []) {
-  const weights = {
-    critical: 10,
-    high: 7,
-    medium: 4,
-    low: 2,
-    informational: 1,
-  };
+export function calculateFindingExposureScore(findings = []) {
+  const safeFindings = Array.isArray(findings) ? findings : [];
 
-  return findings.reduce((score, finding) => {
-    const severity = finding.severity?.toLowerCase();
+  return safeFindings.reduce((score, finding) => {
+    const severity = normalizeSeverity(finding.severity);
 
-    return score + (weights[severity] ?? 0);
+    return score + SEVERITY_WEIGHTS[severity];
   }, 0);
 }
+
+/*
+ * Temporary compatibility export.
+ * Remove after all calculateRiskScore imports have been migrated.
+ */
+export const calculateRiskScore = calculateFindingExposureScore;

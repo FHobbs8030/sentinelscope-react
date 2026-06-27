@@ -4,7 +4,7 @@ import { getFindings } from "../services/api/findingsApi";
 
 import {
   calculateSeverityMetrics,
-  calculateRiskScore,
+  calculateFindingExposureScore,
 } from "../utils/findings/severityMetrics";
 
 export default function useFindings() {
@@ -15,9 +15,11 @@ export default function useFindings() {
       try {
         const data = await getFindings();
 
-        setFindings(data);
+        setFindings(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("[useFindings] Failed to hydrate findings", error);
+
+        setFindings([]);
       }
     }
 
@@ -28,14 +30,20 @@ export default function useFindings() {
     return calculateSeverityMetrics(findings);
   }, [findings]);
 
-  const riskScore = useMemo(() => {
-    return calculateRiskScore(findings);
+  const findingExposureScore = useMemo(() => {
+    return calculateFindingExposureScore(findings);
   }, [findings]);
 
   return {
     findings,
+
     setFindings,
+
     severityMetrics,
-    riskScore,
+
+    totalFindings: severityMetrics.total,
+
+    findingExposureScore,
+
   };
 }

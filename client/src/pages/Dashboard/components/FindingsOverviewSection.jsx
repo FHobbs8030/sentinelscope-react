@@ -3,15 +3,23 @@ import "./FindingsOverviewSection.css";
 import useFindings from "../../../hooks/useFindings";
 
 function FindingsOverviewSection() {
-  const { findings, severityMetrics, riskScore } = useFindings();
+  const { severityMetrics, totalFindings, findingExposureScore } =
+    useFindings();
+
+  const exposureStatus =
+    severityMetrics.critical > 0
+      ? "critical"
+      : severityMetrics.high > 0 || severityMetrics.medium > 0
+        ? "warning"
+        : "positive";
 
   const findingsData = [
     {
       id: 1,
       label: "Total Findings",
-      value: findings.length,
+      value: totalFindings,
       trend: "Persisted in MongoDB",
-      status: findings.length > 0 ? "warning" : "positive",
+      status: totalFindings > 0 ? "warning" : "positive",
     },
 
     {
@@ -35,7 +43,7 @@ function FindingsOverviewSection() {
       label: "Medium Severity",
       value: severityMetrics.medium,
       trend: "Monitor and prioritize",
-      status: "warning",
+      status: severityMetrics.medium > 0 ? "warning" : "positive",
     },
 
     {
@@ -48,11 +56,10 @@ function FindingsOverviewSection() {
 
     {
       id: 6,
-      label: "Risk Score",
-      value: riskScore,
-      trend: "Calculated threat exposure",
-      status:
-        riskScore > 50 ? "critical" : riskScore > 20 ? "warning" : "positive",
+      label: "Finding Risk Exposure",
+      value: findingExposureScore,
+      trend: "Cumulative severity-weighted exposure",
+      status: exposureStatus,
     },
   ];
 

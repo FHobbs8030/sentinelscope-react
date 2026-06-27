@@ -12,7 +12,7 @@ function getRiskAssessment(severity) {
       return "Moderate operational risk. Monitor and investigate as needed.";
 
     case "low":
-      return "Low-risk finding. Track for future review.";
+      return "Low-risk alert. Track for future review.";
 
     default:
       return "No risk assessment available.";
@@ -61,7 +61,6 @@ function getStatusClass(status) {
 }
 
 function AlertIntelligenceDrawer({ alert }) {
-
   if (!alert) {
     return (
       <section className="alert-intelligence-drawer">
@@ -83,21 +82,23 @@ function AlertIntelligenceDrawer({ alert }) {
       <div className="alert-intelligence-drawer__grid">
         <div className="alert-intelligence-drawer__card">
           <span>Target</span>
-          <strong>{alert.target}</strong>
+          <strong>{alert.target || "N/A"}</strong>
         </div>
 
         <div className="alert-intelligence-drawer__card">
           <span>Severity</span>
 
           <div className={getSeverityClass(alert.severity)}>
-            {alert.severity}
+            {alert.severity || "N/A"}
           </div>
         </div>
 
         <div className="alert-intelligence-drawer__card">
           <span>Status</span>
 
-          <div className={getStatusClass(alert.status)}>{alert.status}</div>
+          <div className={getStatusClass(alert.status)}>
+            {alert.status || "N/A"}
+          </div>
         </div>
 
         <div className="alert-intelligence-drawer__card">
@@ -106,8 +107,8 @@ function AlertIntelligenceDrawer({ alert }) {
         </div>
 
         <div className="alert-intelligence-drawer__card">
-          <span>Risk Score</span>
-          <strong>{alert.riskScore ?? 0}</strong>
+          <span>Individual Alert Risk Score</span>
+          <strong>{alert.riskScore ?? "N/A"}</strong>
         </div>
 
         <div className="alert-intelligence-drawer__card">
