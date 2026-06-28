@@ -4,6 +4,7 @@ import useScans from "../../../hooks/useScans";
 import useMissions from "../../../hooks/useMissions";
 import useFindings from "../../../hooks/useFindings";
 import useAlerts from "../../../hooks/useAlerts";
+import missionTelemetryImage from "../../../assets/dashboard/mission-telemetry.webp";
 
 import {
   Flag,
@@ -292,6 +293,11 @@ function KpiSummarySection() {
             </span>
           </article>
         ))}
+
+        <div className="kpi-mission-visual" aria-hidden="true">
+          <img src={missionTelemetryImage} alt="" />
+          <div className="kpi-mission-visual__overlay" />
+        </div>
       </div>
     </section>
   );
