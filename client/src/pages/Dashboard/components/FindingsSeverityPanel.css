@@ -14,7 +14,7 @@
 .severity-group {
   display: grid;
 
-  grid-template-columns: minmax(180px, 0.72fr) minmax(260px, 1.28fr);
+  grid-template-columns: 150px minmax(0, 1fr);
 
   min-width: 0;
 
@@ -51,13 +51,13 @@
   padding: var(--space-3);
 
   background:
-  linear-gradient(
-    135deg,
-    rgba(96, 165, 250, 0.075),
-    rgba(255, 255, 255, 0.012) 50%,
-    transparent 75%
-  ),
-  #14202d;
+    linear-gradient(
+      135deg,
+      rgba(96, 165, 250, 0.075),
+      rgba(255, 255, 255, 0.012) 50%,
+      transparent 75%
+    ),
+    #14202d;
 }
 
 .severity-item + .severity-item {
@@ -152,6 +152,17 @@
   filter: brightness(1.52) contrast(1.22) saturate(1.36);
 }
 
+.severity-group--high .severity-visual img {
+  width: 120%;
+  max-width: none;
+
+  transform: translateX(-16.67%) scale(1.05);
+}
+
+.severity-group--high:hover .severity-visual img {
+  transform: translateX(-16.67%) scale(1.09);
+}
+
 .severity-group--critical {
   box-shadow:
     inset 3px 0 0 rgba(185, 68, 72, 0.85),
@@ -170,13 +181,15 @@
   }
 
   .severity-group {
-    grid-template-columns: minmax(180px, 0.75fr) minmax(260px, 1.25fr);
+    grid-template-columns: 170px minmax(0, 1fr);
+    height: 300px;
   }
 }
 
 @media (max-width: 768px) {
   .severity-group {
     grid-template-columns: 1fr;
+    height: auto;
   }
 
   .severity-group__metrics {
@@ -190,7 +203,8 @@
   }
 
   .severity-visual {
-    min-height: 150px;
+    height: clamp(240px, 42vw, 320px);
+    min-height: 0;
 
     border-top: 1px solid var(--color-border);
     border-left: 0;
@@ -199,15 +213,37 @@
 
 @media (max-width: 480px) {
   .severity-group__metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .severity-item {
+    min-height: 82px;
+    padding: var(--space-3);
   }
 
   .severity-item + .severity-item {
+    border-top: 0;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .severity-visual {
+    display: block;
+
+    height: 190px;
+    min-height: 190px;
+
     border-top: 1px solid var(--color-border);
     border-left: 0;
   }
 
-  .severity-visual {
-    display: none;
+  .severity-group--high .severity-visual img {
+    width: 120%;
+    max-width: none;
+
+    transform: translateX(-16.67%) scale(1.05);
+  }
+
+  .severity-group--high:hover .severity-visual img {
+    transform: translateX(-16.67%) scale(1.05);
   }
 }
