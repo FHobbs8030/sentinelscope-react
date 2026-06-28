@@ -9,7 +9,7 @@ function AppShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleMenuToggle = () => {
-    setSidebarOpen(true);
+    setSidebarOpen((current) => !current);
   };
 
   const closeSidebar = () => {
@@ -18,9 +18,7 @@ function AppShell({ children }) {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 992) {
-        setSidebarOpen(false);
-      }
+      setSidebarOpen(false);
     };
 
     window.addEventListener("resize", handleResize);
@@ -31,11 +29,7 @@ function AppShell({ children }) {
   }, []);
 
   useEffect(() => {
-    if (sidebarOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = sidebarOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
@@ -47,11 +41,8 @@ function AppShell({ children }) {
       <Sidebar
         className={[
           "sidebar",
-          sidebarOpen && "sidebar--open",
-          !sidebarOpen && "sidebar--collapsed",
-        ]
-          .filter(Boolean)
-          .join(" ")}
+          sidebarOpen ? "sidebar--open" : "sidebar--collapsed",
+        ].join(" ")}
         onClose={closeSidebar}
       />
 

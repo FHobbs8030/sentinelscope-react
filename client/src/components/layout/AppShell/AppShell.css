@@ -107,6 +107,14 @@
   }
 }
 
+@media (min-width: 993px) and (max-width: 1200px) {
+  .app-shell,
+  .app-shell[data-sidebar="expanded"],
+  .app-shell[data-sidebar="collapsed"] {
+    --current-sidebar-width: var(--sidebar-width-collapsed);
+  }
+}
+
 @media (max-width: 992px) {
   .app-shell-main {
     width: 100%;
@@ -114,6 +122,12 @@
 
   .page-container {
     padding: var(--space-4);
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .app-shell-main {
+    padding-top: 122px;
   }
 }
 
