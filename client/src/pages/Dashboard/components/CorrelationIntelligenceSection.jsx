@@ -1,4 +1,4 @@
-import "./CorrelationintelligenceSection.css";
+import "./CorrelationIntelligenceSection.css";
 
 import useAlerts from "../../../hooks/useAlerts";
 
