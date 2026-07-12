@@ -1,56 +1,82 @@
+const TERMINAL_ALERT_STATUSES = new Set(["resolved", "closed"]);
+
+const ALERT_SEVERITY_WEIGHTS = {
+  critical: 10,
+  high: 6,
+  medium: 3,
+  low: 1,
+};
+
+const normalizeValue = (value = "") => {
+  return String(value).trim().toLowerCase();
+};
+
+const getAlertStatus = (alert = {}) => {
+  return normalizeValue(
+    alert.status ?? alert.state ?? alert.lifecycleStatus ?? "open",
+  );
+};
+
+const getAlertSeverity = (alert = {}) => {
+  return normalizeValue(
+    alert.severity ?? alert.priority ?? alert.riskLevel ?? "unknown",
+  );
+};
+
+const isActiveAlert = (alert = {}) => {
+  return !TERMINAL_ALERT_STATUSES.has(getAlertStatus(alert));
+};
+
 export function calculateAlertMetrics(alerts = []) {
-  const openAlerts = alerts.filter((alert) => alert.status === "open").length;
+  const safeAlerts = Array.isArray(alerts) ? alerts : [];
 
-  const acknowledgedAlerts = alerts.filter(
-    (alert) => alert.status === "acknowledged",
-  ).length;
+  const activeAlerts = safeAlerts.filter(isActiveAlert);
 
-  const resolvedAlerts = alerts.filter(
-    (alert) => alert.status === "resolved",
-  ).length;
+  const countByStatus = (status) => {
+    return safeAlerts.filter((alert) => getAlertStatus(alert) === status)
+      .length;
+  };
 
-  const criticalAlerts = alerts.filter(
-    (alert) => alert.severity === "critical",
-  ).length;
-
-  const highAlerts = alerts.filter((alert) => alert.severity === "high").length;
-
-  const mediumAlerts = alerts.filter(
-    (alert) => alert.severity === "medium",
-  ).length;
-
-  const lowAlerts = alerts.filter((alert) => alert.severity === "low").length;
+  const countActiveBySeverity = (severity) => {
+    return activeAlerts.filter((alert) => getAlertSeverity(alert) === severity)
+      .length;
+  };
 
   return {
-    totalAlerts: alerts.length,
+    totalAlerts: safeAlerts.length,
 
-    openAlerts,
+    activeAlerts: activeAlerts.length,
 
-    acknowledgedAlerts,
+    openAlerts: countByStatus("open"),
 
-    resolvedAlerts,
+    acknowledgedAlerts: countByStatus("acknowledged"),
 
-    criticalAlerts,
+    investigatingAlerts: countByStatus("investigating"),
 
-    highAlerts,
+    resolvedAlerts: countByStatus("resolved"),
 
-    mediumAlerts,
+    closedAlerts: countByStatus("closed"),
 
-    lowAlerts,
+    criticalAlerts: countActiveBySeverity("critical"),
+
+    highAlerts: countActiveBySeverity("high"),
+
+    mediumAlerts: countActiveBySeverity("medium"),
+
+    lowAlerts: countActiveBySeverity("low"),
   };
 }
 
 export function calculateAlertRiskScore(alerts = []) {
-  const severityWeights = {
-    critical: 10,
-    high: 6,
-    medium: 3,
-    low: 1,
-  };
+  const safeAlerts = Array.isArray(alerts) ? alerts : [];
 
-  const score = alerts.reduce((total, alert) => {
-    return total + (severityWeights[alert.severity] || 0);
+  const activeAlerts = safeAlerts.filter(isActiveAlert);
+
+  const weightedScore = activeAlerts.reduce((total, alert) => {
+    const severity = getAlertSeverity(alert);
+
+    return total + (ALERT_SEVERITY_WEIGHTS[severity] ?? 0);
   }, 0);
 
-  return Math.min(score, 100);
+  return Math.min(weightedScore, 100);
 }

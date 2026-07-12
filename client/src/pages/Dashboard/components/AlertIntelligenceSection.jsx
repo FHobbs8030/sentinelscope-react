@@ -2,17 +2,8 @@ import "./AlertIntelligenceSection.css";
 
 import useAlerts from "../../../hooks/useAlerts";
 
-import {
-  calculateAlertMetrics,
-  calculateAlertRiskScore,
-} from "../../../utils/alertMetrics";
-
 function AlertIntelligenceSection() {
-  const { alerts } = useAlerts();
-
-  const metrics = calculateAlertMetrics(alerts);
-
-  const riskScore = calculateAlertRiskScore(alerts);
+  const { metrics, alertRiskScore } = useAlerts();
 
   const alertData = [
     {
@@ -57,11 +48,15 @@ function AlertIntelligenceSection() {
 
     {
       id: 6,
-      label: "Risk Score",
-      value: riskScore,
-      trend: "Calculated alert exposure",
+      label: "Alert Risk Score",
+      value: alertRiskScore,
+      trend: "Severity-weighted score (0–100)",
       status:
-        riskScore > 50 ? "critical" : riskScore > 20 ? "warning" : "positive",
+        alertRiskScore >= 50
+          ? "critical"
+          : alertRiskScore >= 20
+            ? "warning"
+            : "positive",
     },
   ];
 

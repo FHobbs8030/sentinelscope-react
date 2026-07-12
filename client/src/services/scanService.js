@@ -1,6 +1,4 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:3001/api";
+import { API_BASE_URL } from "./api/apiConfig";
 
 const handleResponse = async (response) => {
   if (!response.ok) {
@@ -19,9 +17,7 @@ const getScans = async () => {
 };
 
 const getScanById = async (scanId) => {
-  const response = await fetch(
-    `${API_BASE_URL}/scans/${scanId}`,
-  );
+  const response = await fetch(`${API_BASE_URL}/scans/${scanId}`);
 
   const result = await handleResponse(response);
 
@@ -45,18 +41,15 @@ const createScan = async (scanData) => {
 };
 
 const updateScan = async (scanId, updates) => {
-  const response = await fetch(
-    `${API_BASE_URL}/scans/${scanId}`,
-    {
-      method: "PATCH",
+  const response = await fetch(`${API_BASE_URL}/scans/${scanId}`, {
+    method: "PATCH",
 
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(updates),
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+
+    body: JSON.stringify(updates),
+  });
 
   const result = await handleResponse(response);
 
@@ -64,12 +57,9 @@ const updateScan = async (scanId, updates) => {
 };
 
 const deleteScan = async (scanId) => {
-  const response = await fetch(
-    `${API_BASE_URL}/scans/${scanId}`,
-    {
-      method: "DELETE",
-    },
-  );
+  const response = await fetch(`${API_BASE_URL}/scans/${scanId}`, {
+    method: "DELETE",
+  });
 
   return handleResponse(response);
 };

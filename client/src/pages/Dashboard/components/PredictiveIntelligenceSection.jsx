@@ -1,0 +1,88 @@
+import "./PredictiveIntelligenceSection.css";
+
+function PredictiveIntelligenceSection({ alerts = [] }) {
+  const alertsWithPredictions = alerts.filter((alert) => alert.prediction);
+
+  const latestAlert = alertsWithPredictions[0];
+
+  const prediction = latestAlert?.prediction;
+
+  if (!prediction) {
+    return (
+      <section className="predictive-intelligence-section">
+        <div className="predictive-intelligence-empty">
+          Select an alert to view predictive intelligence forecasts.
+        </div>
+      </section>
+    );
+  }
+
+  const trendClass = `prediction-value prediction-trend prediction-trend-${prediction.predictedRiskTrend.toLowerCase()}`;
+
+  return (
+    <section className="predictive-intelligence-section">
+      <div className="predictive-intelligence-header">
+        <h2>Predictive Intelligence</h2>
+
+        <p>Forward-looking threat assessment and escalation forecasting</p>
+
+        <div className="prediction-target">Target: {latestAlert.target}</div>
+
+        <p className="prediction-confidence-summary">
+          Forecast Confidence: {prediction.confidence?.level} (
+          {prediction.confidence?.score})
+        </p>
+      </div>
+
+      <div className="predictive-intelligence-grid">
+        <div className="prediction-card">
+          <span className="prediction-label">Predicted Next Stage</span>
+
+          <span className="prediction-value">
+            {prediction.predictedNextStage}
+          </span>
+        </div>
+
+        <div className="prediction-card">
+          <span className="prediction-label">Risk Trend</span>
+
+          <span className={trendClass}>{prediction.predictedRiskTrend}</span>
+        </div>
+
+        <div className="prediction-card">
+          <span className="prediction-label">Escalation Window</span>
+
+          <span className="prediction-value">
+            {prediction.estimatedTimeToEscalation}
+          </span>
+        </div>
+
+        <div className="prediction-card">
+          <span className="prediction-label">Prediction Confidence</span>
+
+          <span className="prediction-value">
+            {prediction.confidence?.level}
+          </span>
+
+          <span className="prediction-score">
+            Score: {prediction.confidence?.score}
+          </span>
+        </div>
+      </div>
+
+      <div className="executive-forecast-card">
+        <h3>Executive Forecast</h3>
+
+        <p>{prediction.executiveForecast}</p>
+      </div>
+
+      <div className="prediction-rationale">
+        <h4>Forecast Rationale</h4>
+
+        <p>{prediction.rationale}</p>
+      </div>
+    </section>
+  );
+}
+
+export default PredictiveIntelligenceSection;

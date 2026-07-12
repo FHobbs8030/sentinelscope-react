@@ -1,25 +1,52 @@
+import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
 const navigation = [
   {
     section: "MAIN",
-    items: ["Dashboard", "Targets", "Scans"],
+    items: [
+      {
+        icon: "🏠",
+        label: "Dashboard",
+        path: "/",
+      },
+      {
+        icon: "🎯",
+        label: "Targets",
+        path: "/targets",
+      },
+      {
+        icon: "🔍",
+        label: "Scans",
+        path: "/scans",
+      },
+    ],
   },
+
   {
     section: "RECON",
-    items: ["Recon", "Enumeration", "Port Scanning", "DNS Analysis"],
-  },
-  {
-    section: "VULNERABILITY",
-    items: ["Vulnerability Scan", "Findings", "CVEs"],
-  },
-  {
-    section: "REPORTING",
-    items: ["Reports", "Exports"],
-  },
-  {
-    section: "SYSTEM",
-    items: ["Settings", "Users", "API Keys"],
+    items: [
+      {
+        icon: "🛰️",
+        label: "Recon",
+        path: "/recon",
+      },
+      {
+        icon: "📡",
+        label: "Enumeration",
+        path: "/enumeration",
+      },
+      {
+        icon: "🔌",
+        label: "Port Scanning",
+        path: "/port-scanning",
+      },
+      {
+        icon: "🌐",
+        label: "DNS Analysis",
+        path: "/dns-analysis",
+      },
+    ],
   },
 ];
 
@@ -53,36 +80,25 @@ function Sidebar({ className = "sidebar", onClose }) {
             <p className="sidebar-section-title">{group.section}</p>
 
             <ul className="sidebar-menu">
-              {group.items.map((item, index) => (
-                <li
-                  key={item}
-                  className={
-                    index === 0 && group.section === "MAIN"
-                      ? "sidebar-item active"
-                      : "sidebar-item"
-                  }
-                >
-                  <button className="sidebar-button" type="button">
-                    <span className="sidebar-indicator" />
+              {group.items.map((item) => (
+                <li key={item.label} className="sidebar-item">
+                  <NavLink
+                    to={item.path}
+                    className={({ isActive }) =>
+                      isActive ? "sidebar-button active" : "sidebar-button"
+                    }
+                    onClick={onClose}
+                  >
+                    <span className="sidebar-icon">{item.icon}</span>
 
-                    <span className="sidebar-label">{item}</span>
-                  </button>
+                    <span className="sidebar-label">{item.label}</span>
+                  </NavLink>
                 </li>
               ))}
             </ul>
           </div>
         ))}
       </nav>
-
-      <div className="sidebar-footer">
-        <button
-          className="sidebar-collapse-button"
-          type="button"
-          onClick={onClose}
-        >
-          Collapse
-        </button>
-      </div>
     </aside>
   );
 }

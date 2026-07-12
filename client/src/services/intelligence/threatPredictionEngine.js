@@ -9,10 +9,15 @@ const NEXT_STAGE_MAP = {
 };
 
 function predictNextStage(alert) {
-  const stage = alert?.threatContext?.attackStage || alert?.category || "recon";
+  const stage =
+    alert?.threatContext?.stage ||
+    alert?.category ||
+    alert?.currentStage ||
+    "recon";
 
   return (
-    NEXT_STAGE_MAP[stage.toLowerCase()] || "Continued Monitoring Recommended"
+    NEXT_STAGE_MAP[String(stage).toLowerCase()] ||
+    "Continued Monitoring Recommended"
   );
 }
 

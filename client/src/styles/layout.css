@@ -3,11 +3,26 @@
 ========================================= */
 
 .app-layout {
+  position: relative;
+
   display: flex;
 
   min-height: 100vh;
 
-  background: var(--color-bg-primary);
+  overflow-x: hidden;
+
+  background:
+    radial-gradient(
+      circle at top center,
+      rgba(59, 130, 246, 0.08),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(14, 165, 233, 0.04),
+      transparent 35%
+    ),
+    var(--color-bg-primary);
 }
 
 /* =========================================
@@ -28,19 +43,13 @@
 ========================================= */
 
 .page-container {
-  width: 100%;
-
-  max-width: 1600px;
-
-  margin: 0 auto;
-
-  padding:
-    var(--space-5);
-
-  display: flex;
-  flex-direction: column;
-
-  gap: var(--space-5);
+    width: 100%;
+    max-width: 1700px;
+    margin: 0 auto;
+    padding: 0 24px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 /* =========================================
@@ -61,12 +70,6 @@
 ========================================= */
 
 @media (max-width: 1024px) {
-  .page-container {
-    padding: var(--space-4);
-  }
-}
-
-@media (max-width: 768px) {
   .page-container {
     padding: var(--space-3);
   }

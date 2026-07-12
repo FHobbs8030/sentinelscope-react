@@ -247,8 +247,6 @@ const useScans = () => {
 
     return () => {
       unsubscribe();
-
-      scanRuntimeEngine.stop();
     };
   }, []);
 

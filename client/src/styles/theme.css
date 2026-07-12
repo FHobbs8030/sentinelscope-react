@@ -2,170 +2,185 @@
   /* =========================================
      CORE BACKGROUNDS
   ========================================= */
-  --color-bg-primary: #0a0f1a;
-  --color-bg-secondary: #101826;
-  --color-bg-tertiary: #162033;
-  --color-bg-elevated: #1b2840;
-  --color-bg-overlay: rgba(5, 10, 20, 0.82);
+  --color-bg-primary: #0a1118;
+  --color-bg-secondary: #0f1722;
+  --color-bg-tertiary: #16202c;
+  --color-bg-elevated: #1b2734;
+  --color-bg-overlay: rgba(10, 17, 24, 0.78);
 
   /* =========================================
      SURFACES
   ========================================= */
-  --color-surface-primary: #111b2d;
-  --color-surface-secondary: #172338;
-  --color-surface-hover: #1d2d47;
-  --color-surface-active: #243858;
+  --color-surface-primary: #101923;
+  --color-surface-secondary: #15212d;
+  --color-surface-hover: #1b2a39;
+  --color-surface-active: #223448;
+
+  /* =========================================
+     LEGACY SURFACE COMPATIBILITY
+  ========================================= */
+  --color-surface-1: var(--color-surface-primary);
+  --color-surface-2: var(--color-surface-secondary);
+  --color-surface-3: var(--color-surface-hover);
 
   /* =========================================
      BORDERS
   ========================================= */
-  --color-border-primary: #24324d;
-  --color-border-secondary: #31415f;
-  --color-border-accent: #3b82f6;
+  --color-border-primary: rgba(148, 163, 184, 0.16);
+  --color-border-secondary: rgba(148, 163, 184, 0.26);
+  --color-border-accent: #d4a94f;
 
   /* =========================================
      PRIMARY TEXT
   ========================================= */
-  --color-text-primary: #f5f7fa;
-  --color-text-secondary: #c7d2e3;
-  --color-text-muted: #8ea0bf;
-  --color-text-disabled: #5d6b86;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #d7dfeb;
+  --color-text-muted: #9daabd;
+  --color-text-disabled: #697586;
 
   /* =========================================
      BRAND / PRIMARY ACCENT
   ========================================= */
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
+  --color-primary-100: #e7f0ff;
+  --color-primary-200: #c9dcfb;
+  --color-primary-300: #9ec0f4;
+  --color-primary-400: #6fa3e8;
+  --color-primary-500: #4f86d9;
+  --color-primary-600: #376bb8;
+  --color-primary-700: #2b548f;
+
+  /* =========================================
+     LUXURY / INTELLIGENCE ACCENT
+  ========================================= */
+  --color-gold-100: #f7ecd0;
+  --color-gold-300: #e6c879;
+  --color-gold-500: #d4a94f;
+  --color-gold-700: #9e742c;
 
   /* =========================================
      SUCCESS
   ========================================= */
-  --color-success-100: #dcfce7;
-  --color-success-300: #86efac;
-  --color-success-500: #22c55e;
-  --color-success-700: #15803d;
+  --color-success-100: #d9f7ef;
+  --color-success-300: #77dcc3;
+  --color-success-500: #2fbf9f;
+  --color-success-700: #16866e;
 
   /* =========================================
      WARNING
   ========================================= */
-  --color-warning-100: #fef9c3;
-  --color-warning-300: #fde047;
-  --color-warning-500: #eab308;
-  --color-warning-700: #a16207;
+  --color-warning-100: #fff1cc;
+  --color-warning-300: #efca72;
+  --color-warning-500: #d4a94f;
+  --color-warning-700: #946a25;
 
   /* =========================================
      ERROR / DANGER
   ========================================= */
-  --color-danger-100: #fee2e2;
-  --color-danger-300: #fca5a5;
-  --color-danger-500: #ef4444;
-  --color-danger-700: #b91c1c;
+  --color-danger-100: #f9dddd;
+  --color-danger-300: #df8a8e;
+  --color-danger-500: #b9444b;
+  --color-danger-700: #7f252c;
 
   /* =========================================
      INFO
   ========================================= */
-  --color-info-100: #dbeafe;
-  --color-info-300: #93c5fd;
-  --color-info-500: #0ea5e9;
-  --color-info-700: #0369a1;
+  --color-info-100: #dcedff;
+  --color-info-300: #88baf0;
+  --color-info-500: #4f9bd8;
+  --color-info-700: #2e6d9c;
 
   /* =========================================
      SIDEBAR
   ========================================= */
-  --sidebar-bg: #0b1220;
-  --sidebar-border: #1e293b;
-  --sidebar-item-hover: #172338;
-  --sidebar-item-active: #1e3a5f;
-  --sidebar-text: #d8e1f0;
+  --sidebar-bg: #0e1620;
+  --sidebar-border: rgba(148, 163, 184, 0.14);
+  --sidebar-item-hover: #182432;
+  --sidebar-item-active: #23364a;
+  --sidebar-text: #dce3ec;
 
   /* =========================================
      TOPBAR
   ========================================= */
-  --topbar-bg: rgba(10, 15, 26, 0.92);
-  --topbar-border: #24324d;
+  --topbar-bg: rgba(14, 20, 29, 0.94);
+  --topbar-border: rgba(148, 163, 184, 0.15);
 
   /* =========================================
      TERMINAL PANELS
   ========================================= */
-  --terminal-bg: #050b14;
-  --terminal-header: #111827;
-  --terminal-border: #1f2937;
-  --terminal-text: #d1fae5;
-  --terminal-prompt: #22c55e;
+  --terminal-bg: #0d1620;
+  --terminal-header: #16212d;
+  --terminal-border: rgba(148, 163, 184, 0.14);
+  --terminal-text: #d8f6ed;
+  --terminal-prompt: #2fbf9f;
 
   /* =========================================
      STATUS COLORS
   ========================================= */
-  --status-online: #22c55e;
-  --status-offline: #ef4444;
-  --status-warning: #eab308;
-  --status-running: #3b82f6;
+  --status-online: #2fbf9f;
+  --status-offline: #b9444b;
+  --status-warning: #d4a94f;
+  --status-running: #4f86d9;
 
   /* =========================================
      CHART COLORS
   ========================================= */
-  --chart-blue: #3b82f6;
-  --chart-cyan: #06b6d4;
-  --chart-green: #22c55e;
-  --chart-yellow: #eab308;
-  --chart-red: #ef4444;
-  --chart-purple: #8b5cf6;
+  --chart-blue: #4f86d9;
+  --chart-cyan: #44b8cf;
+  --chart-green: #2fbf9f;
+  --chart-yellow: #d4a94f;
+  --chart-red: #b9444b;
+  --chart-purple: #7c6fd0;
 
   /* =========================================
      SCROLLBAR
   ========================================= */
-  --scrollbar-bg: #0f172a;
-  --scrollbar-thumb: #334155;
-  --scrollbar-thumb-hover: #475569;
+  --scrollbar-bg: #111a24;
+  --scrollbar-thumb: #3a4654;
+  --scrollbar-thumb-hover: #566272;
 
   /* =========================================
      FOCUS STATES
   ========================================= */
-  --focus-ring: rgba(59, 130, 246, 0.45);
+  --focus-ring: rgba(212, 169, 79, 0.38);
 
   /* =========================================
      GRADIENTS
   ========================================= */
-  --gradient-primary:
-    linear-gradient(
-      135deg,
-      #2563eb,
-      #1d4ed8
-    );
+  --gradient-primary: linear-gradient(
+    135deg,
+    #4f86d9,
+    #2f5f9f
+  );
 
-  --gradient-surface:
-    linear-gradient(
-      180deg,
-      rgba(23, 35, 56, 1),
-      rgba(13, 20, 34, 1)
-    );
+  --gradient-surface: linear-gradient(
+    180deg,
+    rgba(29, 42, 57, 0.98),
+    rgba(18, 28, 39, 0.98)
+  );
+
+  --gradient-covert: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.035),
+    rgba(255, 255, 255, 0.01) 45%,
+    rgba(0, 0, 0, 0.08)
+  );
 
   /* =========================================
      OVERLAY EFFECTS
   ========================================= */
-  --overlay-dark:
-    linear-gradient(
-      to bottom,
-      rgba(5, 10, 20, 0.2),
-      rgba(5, 10, 20, 0.9)
-    );
+  --overlay-dark: linear-gradient(
+    to bottom,
+    rgba(10, 17, 24, 0.08),
+    rgba(10, 17, 24, 0.74)
+  );
 
   /* =========================================
-     CYBER ACCENT GLOWS
+     GLOWS
   ========================================= */
-  --glow-primary:
-    0 0 24px rgba(59, 130, 246, 0.28);
-
-  --glow-success:
-    0 0 24px rgba(34, 197, 94, 0.25);
-
-  --glow-danger:
-    0 0 24px rgba(239, 68, 68, 0.25);
+  --glow-primary: 0 0 20px rgba(79, 134, 217, 0.18);
+  --glow-success: 0 0 18px rgba(47, 191, 159, 0.16);
+  --glow-danger: 0 0 18px rgba(185, 68, 75, 0.16);
+  --glow-gold: 0 0 18px rgba(212, 169, 79, 0.16);
 
   /* =========================================
      TRANSITIONS

@@ -1,14 +1,21 @@
+.activity-feed-item-header,
+.activity-feed-meta-row {
+  min-width: 0;
+}
+
 .activity-feed-item {
   display: flex;
   flex-direction: column;
 
-  gap: var(--space-3);
+  flex-shrink: 0;
+
+  gap: var(--space-2);
 
   padding: var(--space-3);
 
   background: var(--color-surface-2);
 
-  border-radius: 14px;
+  border-radius: 10px;
 
   border-left: 3px solid transparent;
 
@@ -62,18 +69,22 @@
 }
 
 .activity-feed-title {
-  font-size: 0.95rem;
+  margin: 0;
+
+  font-size: 0.9rem;
   font-weight: 600;
 
-  line-height: 1.4;
+  line-height: 1.35;
 
   color: var(--color-text-primary);
 }
 
 .activity-feed-description {
-  font-size: 0.82rem;
+  margin: 0;
 
-  line-height: 1.4;
+  font-size: 0.78rem;
+
+  line-height: 1.35;
 
   color: var(--color-text-secondary);
 }

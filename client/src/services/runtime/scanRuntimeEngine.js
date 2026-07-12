@@ -15,6 +15,10 @@ import { updateMission } from "../api/missionsApi";
 import { generateThreatIntelligence } from "../intelligence/threatIntelligenceEngine";
 import { generateThreatPrediction } from "../intelligence/threatPredictionEngine";
 import { calculateRiskScore } from "../intelligence/riskAssessmentEngine";
+import {
+  createMissionProfile,
+  determineMissionOutcome,
+} from "./missionOutcomeEngine";
 
 const RUNTIME_INTERVAL = 2000;
 
@@ -145,6 +149,13 @@ class ScanRuntimeEngine {
 
       severity: scan.severity ?? "low",
 
+      runtimeProfile:
+        scan.runtimeProfile ??
+        createMissionProfile({
+          scanType: scan.type,
+          severity: scan.severity,
+        }),
+
       activity: "Scan added to operational queue",
 
       live: true,
@@ -161,19 +172,19 @@ class ScanRuntimeEngine {
         target: runtimeScan.target,
 
         missionId: runtimeScan.missionId,
-
         missionMongoId: runtimeScan.missionMongoId,
 
         scanType: runtimeScan.type ?? "recon",
 
-        status: runtimeScan.status,
+        severity: runtimeScan.severity,
+        profile: runtimeScan.profile,
 
+        status: runtimeScan.status,
         currentStage: runtimeScan.status,
 
         runtimeState: "active",
 
         progress: runtimeScan.progress,
-
         findingsCount: runtimeScan.findingsCount,
 
         startedAt: runtimeScan.startedAt,
@@ -342,10 +353,10 @@ class ScanRuntimeEngine {
             source: "runtime-engine",
           });
 
-           const riskScore = calculateRiskScore({
-             severity: "high",
-             stage: "failure",
-           });
+          const riskScore = calculateRiskScore({
+            severity: "high",
+            stage: "failure",
+          });
 
           const prediction = generateThreatPrediction({
             riskScore,
@@ -420,13 +431,6 @@ class ScanRuntimeEngine {
       let currentState = scan.status;
 
       if (currentMetadata && progress >= currentMetadata.progressMax) {
-        console.log(
-          "ADVANCING:",
-          scan.status,
-          "->",
-          getNextScanState(scan.status),
-        );
-
         currentState = getNextScanState(scan.status);
       }
 
@@ -442,7 +446,10 @@ class ScanRuntimeEngine {
         }
       }
 
-      const findingsIncrease = this.generateFindings(currentState);
+      const findingsIncrease = this.generateFindings(
+        currentState,
+        scan.runtimeProfile,
+      );
 
       const updatedScan = {
         ...scan,
@@ -613,25 +620,69 @@ class ScanRuntimeEngine {
       }
 
       if (currentState === "completed") {
+        const runtimeProfile =
+          updatedScan.runtimeProfile ??
+          createMissionProfile({
+            scanType: updatedScan.scanType,
+            severity: updatedScan.severity,
+          });
+
+        const outcome = determineMissionOutcome(runtimeProfile);
+
+        updatedScan.status = outcome;
+        updatedScan.currentStage = outcome;
         updatedScan.completedAt = new Date().toISOString();
 
-        updatedScan.progress = 100;
+        if (outcome === "completed") {
+          updatedScan.progress = 100;
+        }
 
         updatedScan.live = false;
 
-        updatedScan.activity = "Scan completed successfully";
+        if (outcome === "completed") {
+          updatedScan.activity = "Scan completed successfully";
 
-        scanEventBus.emitScanCompleted(updatedScan);
+          scanEventBus.emitScanCompleted(updatedScan);
 
-        this.synchronizeMission(updatedScan, "completed");
+          this.synchronizeMission(updatedScan, "completed");
 
-        scanEventBus.emitTelemetry(
-          `Operational scan completed for ${updatedScan.target}`,
-          {
-            scanId: updatedScan.id,
-            findings: updatedScan.findingsCount,
-          },
-        );
+          scanEventBus.emitTelemetry(
+            `Operational scan completed for ${updatedScan.target}`,
+            {
+              scanId: updatedScan.id,
+              findings: updatedScan.findingsCount,
+            },
+          );
+        }
+
+        if (outcome === "failed") {
+          updatedScan.activity = "Mission failed during execution";
+
+          scanEventBus.emitScanFailed(updatedScan);
+
+          this.synchronizeMission(updatedScan, "failed");
+
+          scanEventBus.emitTelemetry(
+            `Mission failed on ${updatedScan.target}`,
+            {
+              scanId: updatedScan.id,
+            },
+          );
+        }
+
+        if (outcome === "interrupted") {
+          updatedScan.activity =
+            "Mission interrupted and awaiting operator review";
+
+          this.synchronizeMission(updatedScan, "interrupted");
+
+          scanEventBus.emitTelemetry(
+            `Mission interrupted on ${updatedScan.target}`,
+            {
+              scanId: updatedScan.id,
+            },
+          );
+        }
       }
 
       if (updatedScan.mongoId) {
@@ -643,7 +694,8 @@ class ScanRuntimeEngine {
           runtimeState:
             updatedScan.status === "completed" ||
             updatedScan.status === "failed" ||
-            updatedScan.status === "cancelled"
+            updatedScan.status === "cancelled" ||
+            updatedScan.status === "interrupted"
               ? "completed"
               : "active",
 
@@ -666,13 +718,6 @@ class ScanRuntimeEngine {
   }
 
   async synchronizeMission(scan, missionState) {
-    console.log(
-      "[Mission Sync Attempt]",
-      scan.target,
-      missionState,
-      scan.missionMongoId,
-    );
-
     if (!scan.missionMongoId) {
       return;
     }
@@ -680,35 +725,35 @@ class ScanRuntimeEngine {
     try {
       await updateMission(scan.missionMongoId, {
         state: missionState,
-        progress: 100,
+        progress: missionState === "completed" ? 100 : scan.progress,
       });
 
       if (scan.missionId) {
         missionStore.updateMission(scan.missionId, {
           state: missionState,
-          progress: 100,
+          progress: missionState === "completed" ? 100 : scan.progress,
         });
       }
-
-      console.log(`[Mission Sync] ${scan.target} -> ${missionState}`);
     } catch (error) {
       console.error("[Mission Sync] Failed to update mission:", error);
     }
   }
 
-  generateFindings(state) {
+  generateFindings(state, runtimeProfile) {
+    const multiplier = runtimeProfile?.findingsMultiplier ?? 1;
+
     switch (state) {
       case "recon":
-        return this.randomNumber(0, 1);
+        return Math.round(this.randomNumber(1, 3) * multiplier);
 
       case "enumeration":
-        return this.randomNumber(1, 3);
+        return Math.round(this.randomNumber(2, 6) * multiplier);
 
       case "analysis":
-        return this.randomNumber(2, 5);
+        return Math.round(this.randomNumber(4, 10) * multiplier);
 
       case "exploitation":
-        return this.randomNumber(1, 4);
+        return Math.round(this.randomNumber(3, 8) * multiplier);
 
       default:
         return 0;

@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3001/api/alerts";
+import { buildApiUrl } from "./apiConfig";
+
+const API_URL = buildApiUrl("alerts");
 
 export async function createAlert(alertData) {
   const response = await fetch(API_URL, {

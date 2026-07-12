@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3001/api/findings";
+import { buildApiUrl } from "./apiConfig";
+
+const API_URL = buildApiUrl("findings");
 
 export async function createFinding(findingData) {
   const response = await fetch(API_URL, {

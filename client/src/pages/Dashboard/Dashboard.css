@@ -1,13 +1,16 @@
-.dashboard-shell {
-  display: grid;
+ .dashboard-shell {
+  --dashboard-topbar-height: 72px;
+  --dashboard-control-nav-height: 94px;
+  --dashboard-content-clearance: 18px;
 
-  grid-template-columns:
-    minmax(0, 1fr)
-    300px;
-
-  gap: var(--space-5);
+  display: block;
 
   min-width: 0;
+
+  padding-top: calc(
+    var(--dashboard-control-nav-height) +
+    var(--dashboard-content-clearance)
+  );
 }
 
 .dashboard-shell > * {
@@ -20,72 +23,99 @@
   display: flex;
   flex-direction: column;
 
-  gap: var(--space-5);
+  gap: 0;
 
   min-width: 0;
 }
 
-.kpi-summary-section {
+.dashboard-zone {
+  position: relative;
+
+  padding: var(--space-5);
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.025),
+    rgba(255, 255, 255, 0.008)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  border-radius: 24px;
+
+  backdrop-filter: blur(6px);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.dashboard-zone[id] {
+  scroll-margin-top: calc(
+    var(--dashboard-topbar-height) + var(--dashboard-control-nav-height) +
+      var(--dashboard-content-clearance)
+  );
+}
+
+.dashboard-zone + .dashboard-zone {
   margin-top: var(--space-5);
 }
 
-/* =========================
-   Ultra Wide / Desktop
-========================= */
-
-@media (min-width: 1441px) {
-  .dashboard-shell {
-    grid-template-columns:
-      minmax(0, 1fr)
-      320px;
-  }
+.dashboard-zone--kpi + .dashboard-zone {
+  margin-top: var(--space-4);
 }
 
-/* =========================
-   Large Laptop
-========================= */
+.dashboard-zone--kpi {
+  padding: 0;
 
-@media (max-width: 1440px) {
-  .dashboard-shell {
-    grid-template-columns:
-      minmax(0, 1fr)
-      280px;
-  }
+  background: transparent;
+
+  border: none;
+
+  box-shadow: none;
+
+  backdrop-filter: none;
 }
 
-/* =========================
-   Laptop Refinement
-========================= */
+.operations-grid {
+  display: grid;
 
-@media (max-width: 1280px) {
-  .dashboard-shell {
-    grid-template-columns:
-      minmax(0, 1fr)
-      250px;
+  grid-template-columns:
+    2fr
+    1fr;
 
-    gap: var(--space-4);
-  }
-
-  .dashboard-main {
-    gap: var(--space-4);
-  }
+  gap: var(--space-5);
 }
 
-/* =========================
-   Sidebar Collapse Transition
-========================= */
+.operations-primary {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.operations-secondary {
+  display: flex;
+  flex-direction: column;
+
+  gap: var(--space-5);
+}
+
+.analytics-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: var(--space-5);
+}
 
 @media (max-width: 1199px) {
-  .dashboard-shell {
+  .operations-grid {
     grid-template-columns: 1fr;
   }
 
-  .activity-feed {
-    display: none;
-  }
-
-  .dashboard-main {
-    width: 100%;
+  .analytics-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -94,16 +124,22 @@
 ========================= */
 
 @media (max-width: 992px) {
-  .dashboard-shell {
-    gap: var(--space-4);
-  }
-
-  .dashboard-main {
-    gap: var(--space-4);
-  }
-
   .kpi-summary-section {
     margin-top: var(--space-4);
+  }
+
+  .dashboard-zone {
+    padding: var(--space-3);
+    border-radius: 20px;
+  }
+
+  .operations-primary,
+  .operations-secondary {
+    gap: var(--space-4);
+  }
+
+  .analytics-grid {
+    gap: var(--space-4);
   }
 }
 
@@ -112,16 +148,8 @@
 ========================= */
 
 @media (max-width: 768px) {
-  .dashboard-shell {
-    gap: var(--space-4);
-  }
-
-  .dashboard-main {
-    gap: var(--space-4);
-  }
-
   .kpi-summary-section {
-    margin-top: var(--space-5);
+    margin-top: 0;
   }
 }
 
@@ -131,25 +159,13 @@
 
 @media (max-width: 640px) {
   .dashboard-shell {
-    gap: var(--space-3);
+    --dashboard-control-nav-height: 88px;
+    --dashboard-content-clearance: 14px;
   }
 
-  .dashboard-main {
-    gap: var(--space-3);
-  }
-}
-
-@media (max-width: 480px) {
-  .dashboard-shell {
-    gap: var(--space-3);
-  }
-
-  .dashboard-main {
-    gap: var(--space-3);
-  }
-
-  .kpi-summary-section {
-    margin-top: var(--space-4);
+  .dashboard-zone {
+    padding: var(--space-3);
+    border-radius: 16px;
   }
 }
 
@@ -158,11 +174,23 @@
 ========================= */
 
 @media (max-height: 600px) {
-  .dashboard-main {
-    gap: var(--space-3);
-  }
-
   .kpi-summary-section {
     margin-top: var(--space-3);
+  }
+
+  .dashboard-zone {
+    padding: var(--space-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-summary-section {
+    margin-top: var(--space-4);
+  }
+
+  .dashboard-zone {
+    padding: var(--space-2);
+
+    border-radius: 14px;
   }
 }

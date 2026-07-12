@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   getAlerts,
@@ -8,8 +8,17 @@ import {
   closeAlert,
 } from "../services/api/alertsApi";
 
+import { generateCorrelationAssessment } from "../services/intelligence/correlationEngine";
+
+import {
+  calculateAlertMetrics,
+  calculateAlertRiskScore,
+} from "../utils/alertMetrics";
+
 export default function useAlerts() {
   const [alerts, setAlerts] = useState([]);
+
+  const [campaignAssessment, setCampaignAssessment] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
@@ -23,11 +32,20 @@ export default function useAlerts() {
 
       const data = await getAlerts();
 
-      setAlerts(Array.isArray(data) ? data : []);
+      const alertData = Array.isArray(data) ? data : [];
+
+      setAlerts(alertData);
+
+      const assessment = generateCorrelationAssessment(alertData);
+
+      setCampaignAssessment(assessment);
     } catch (err) {
       console.error("Failed to hydrate alerts:", err);
 
       setError(err);
+
+      setAlerts([]);
+      setCampaignAssessment(null);
     } finally {
       setLoading(false);
     }
@@ -69,16 +87,66 @@ export default function useAlerts() {
     [refreshAlerts],
   );
 
+  const metrics = useMemo(() => {
+    return calculateAlertMetrics(alerts);
+  }, [alerts]);
+
+  const alertRiskScore = useMemo(() => {
+    return calculateAlertRiskScore(alerts);
+  }, [alerts]);
+
   useEffect(() => {
+    let isCancelled = false;
+
     async function hydrateAlerts() {
-      await refreshAlerts();
+      try {
+        const data = await getAlerts();
+
+        if (isCancelled) {
+          return;
+        }
+
+        const alertData = Array.isArray(data) ? data : [];
+
+        setAlerts(alertData);
+
+        setCampaignAssessment(generateCorrelationAssessment(alertData));
+
+        setError(null);
+      } catch (err) {
+        if (isCancelled) {
+          return;
+        }
+
+        console.error("Failed to hydrate alerts:", err);
+
+        setError(err);
+
+        setAlerts([]);
+
+        setCampaignAssessment(null);
+      } finally {
+        if (!isCancelled) {
+          setLoading(false);
+        }
+      }
     }
 
-    hydrateAlerts();
-  }, [refreshAlerts]);
+    void hydrateAlerts();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   return {
     alerts,
+
+    metrics,
+
+    alertRiskScore,
+
+    campaignAssessment,
 
     loading,
 

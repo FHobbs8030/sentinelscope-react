@@ -1,8 +1,10 @@
+import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 
 import AppShell from "./components/layout/AppShell/AppShell";
 
 import Dashboard from "./pages/Dashboard/Dashboard";
+import Targets from "./pages/Targets/Targets";
 
 import { initializeTelemetryEmitter } from "./services/runtime/telemetry/telemetryEmitter";
 
@@ -21,7 +23,11 @@ function App() {
 
   return (
     <AppShell>
-      <Dashboard />
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+
+        <Route path="/targets" element={<Targets />} />
+      </Routes>
     </AppShell>
   );
 }

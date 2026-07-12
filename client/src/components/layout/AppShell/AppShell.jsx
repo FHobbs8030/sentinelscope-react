@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 
+import "./AppShell.css";
+
 import Sidebar from "../Sidebar/Sidebar";
 import Topbar from "../Topbar/Topbar";
-
-import "./AppShell.css";
 
 function AppShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const openSidebar = () => {
-    setSidebarOpen(true);
+  const handleMenuToggle = () => {
+    setSidebarOpen((current) => !current);
   };
 
   const closeSidebar = () => {
@@ -18,9 +18,7 @@ function AppShell({ children }) {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 992) {
-        setSidebarOpen(false);
-      }
+      setSidebarOpen(false);
     };
 
     window.addEventListener("resize", handleResize);
@@ -31,11 +29,7 @@ function AppShell({ children }) {
   }, []);
 
   useEffect(() => {
-    if (sidebarOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = sidebarOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
@@ -43,9 +37,12 @@ function AppShell({ children }) {
   }, [sidebarOpen]);
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" data-sidebar="collapsed">
       <Sidebar
-        className={sidebarOpen ? "sidebar sidebar--open" : "sidebar"}
+        className={[
+          "sidebar",
+          sidebarOpen ? "sidebar--open" : "sidebar--collapsed",
+        ].join(" ")}
         onClose={closeSidebar}
       />
 
@@ -60,7 +57,7 @@ function AppShell({ children }) {
       />
 
       <div className="app-shell-main">
-        <Topbar onMenuToggle={openSidebar} />
+        <Topbar onMenuToggle={handleMenuToggle} />
 
         <main className="page-container">{children}</main>
       </div>

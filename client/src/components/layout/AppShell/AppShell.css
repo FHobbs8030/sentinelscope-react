@@ -1,25 +1,40 @@
 .app-shell {
+  --sidebar-width: 280px;
+
+  --sidebar-width-collapsed: 72px;
+
+  --current-sidebar-width: var(--sidebar-width);
+
   display: flex;
 
   min-height: 100vh;
 
   position: relative;
 
+  overflow-x: hidden;
+
   background:
     radial-gradient(
       circle at top left,
-      rgba(59, 130, 246, 0.08),
-      transparent 28%
+      rgba(0, 255, 120, 0.03),
+      transparent 30%
     ),
     radial-gradient(
       circle at top right,
-      rgba(99, 102, 241, 0.06),
-      transparent 24%
+      rgba(255, 64, 64, 0.03),
+      transparent 30%
     ),
-    var(--color-bg-primary);
+    #050b14;
 
-  color:
-    var(--color-text-primary);
+  color: var(--color-text-primary);
+}
+
+.app-shell[data-sidebar="expanded"] {
+  --current-sidebar-width: var(--sidebar-width);
+}
+
+.app-shell[data-sidebar="collapsed"] {
+  --current-sidebar-width: var(--sidebar-width-collapsed);
 }
 
 .app-shell-main {
@@ -88,42 +103,41 @@
 
 @media (max-width: 1200px) {
   .page-container {
-    padding:
-      var(--space-5);
+    padding: var(--space-4);
+  }
+}
+
+@media (min-width: 993px) and (max-width: 1200px) {
+  .app-shell,
+  .app-shell[data-sidebar="expanded"],
+  .app-shell[data-sidebar="collapsed"] {
+    --current-sidebar-width: var(--sidebar-width-collapsed);
   }
 }
 
 @media (max-width: 992px) {
-  .app-shell {
-    overflow-x: hidden;
-  }
-
   .app-shell-main {
     width: 100%;
   }
 
   .page-container {
-    padding:
-      var(--space-4);
+    padding: var(--space-4);
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .app-shell-main {
+    padding-top: 122px;
   }
 }
 
 @media (max-width: 768px) {
-  .app-shell-main {
-    padding-top: 96px;
-  }
-
   .page-container {
-    padding:
-      var(--space-3);
+    padding: var(--space-3);
   }
 }
 
 @media (max-width: 480px) {
-  .app-shell-main {
-    padding-top: 96px;
-  }
-
   .page-container {
     padding:
       var(--space-3)
@@ -132,12 +146,7 @@
 }
 
 @media (max-width: 320px) {
-  .app-shell-main {
-    padding-top: 96px;
-  }
-
   .page-container {
-    padding:
-      var(--space-2);
+    padding: var(--space-2);
   }
 }

@@ -1,0 +1,249 @@
+.findings-severity-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.severity-layout {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: var(--space-3);
+}
+
+.severity-group {
+  display: grid;
+
+  grid-template-columns: 150px minmax(0, 1fr);
+
+  min-width: 0;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.012) 45%,
+      transparent 100%
+    ),
+    #15212e;
+
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: var(--radius-md);
+}
+
+.severity-group__metrics {
+  display: grid;
+
+  grid-template-rows: repeat(2, minmax(96px, 1fr));
+
+  min-width: 0;
+}
+
+.severity-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-width: 0;
+
+  padding: var(--space-3);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(96, 165, 250, 0.075),
+      rgba(255, 255, 255, 0.012) 50%,
+      transparent 75%
+    ),
+    #14202d;
+}
+
+.severity-item + .severity-item {
+  border-top: 1px solid var(--color-border);
+}
+
+.severity-item span {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.severity-item strong {
+  margin-top: 6px;
+
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.severity-item.critical strong {
+  color: var(--color-danger);
+}
+
+.severity-item.high strong {
+  color: var(--color-warning);
+}
+
+.severity-item.medium strong {
+  color: var(--color-info);
+}
+
+.severity-item.low strong {
+  color: var(--color-success);
+}
+
+.severity-visual {
+  position: relative;
+
+  min-width: 0;
+  min-height: 100%;
+
+  overflow: hidden;
+
+  border-left: 1px solid rgba(148, 163, 184, 0.16);
+
+  background: #0d1824;
+}
+
+.severity-visual img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+  object-position: center;
+
+  opacity: 1;
+
+  filter: brightness(1.42) contrast(1.18) saturate(1.28);
+
+  transform: scale(1.03);
+
+  transition:
+    transform 300ms ease,
+    filter 200ms ease;
+}
+
+.severity-visual__overlay {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(20, 32, 45, 0.72) 0%,
+      rgba(20, 32, 45, 0.12) 20%,
+      transparent 42%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.025),
+      transparent 55%,
+      rgba(0, 0, 0, 0.12)
+    );
+}
+
+.severity-group:hover .severity-visual img {
+  transform: scale(1.07);
+
+  filter: brightness(1.52) contrast(1.22) saturate(1.36);
+}
+
+.severity-group--high .severity-visual img {
+  width: 120%;
+  max-width: none;
+
+  transform: translateX(-16.67%) scale(1.05);
+}
+
+.severity-group--high:hover .severity-visual img {
+  transform: translateX(-16.67%) scale(1.09);
+}
+
+.severity-group--critical {
+  box-shadow:
+    inset 3px 0 0 rgba(185, 68, 72, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.severity-group--high {
+  box-shadow:
+    inset 3px 0 0 rgba(212, 169, 79, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+@media (max-width: 1200px) {
+  .severity-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .severity-group {
+    grid-template-columns: 170px minmax(0, 1fr);
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .severity-group {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .severity-group__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+  }
+
+  .severity-item + .severity-item {
+    border-top: 0;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .severity-visual {
+    height: clamp(240px, 42vw, 320px);
+    min-height: 0;
+
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .severity-group__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .severity-item {
+    min-height: 82px;
+    padding: var(--space-3);
+  }
+
+  .severity-item + .severity-item {
+    border-top: 0;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .severity-visual {
+    display: block;
+
+    height: 190px;
+    min-height: 190px;
+
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
+  }
+
+  .severity-group--high .severity-visual img {
+    width: 120%;
+    max-width: none;
+
+    transform: translateX(-16.67%) scale(1.05);
+  }
+
+  .severity-group--high:hover .severity-visual img {
+    transform: translateX(-16.67%) scale(1.05);
+  }
+}
