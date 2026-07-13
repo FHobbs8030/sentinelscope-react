@@ -10,17 +10,6 @@ function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
   
   return (
     <section className="alert-operations-section">
-      <div
-        style={{
-          background: "red",
-          color: "white",
-          padding: "12px",
-          marginBottom: "12px",
-          fontWeight: "bold",
-        }}
-      >
-        ALERTS FOUND: {activeAlerts.length}
-      </div>
       <header className="alert-operations-section__header">
         <h2 className="alert-operations-section__title">Alert Operations</h2>
       </header>
@@ -30,6 +19,8 @@ function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
           color: "white",
           padding: "10px",
           marginBottom: "10px",
+          borderRadius: "10px",
+          fontWeight: "700",
         }}
       >
         ALERTS: {activeAlerts.length}

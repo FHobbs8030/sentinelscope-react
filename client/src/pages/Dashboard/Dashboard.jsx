@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import "./Dashboard.css";
 
+import DashboardSectionNav from "./components/DashboardSectionNav";
 import KpiSummarySection from "./components/KpiSummarySection";
 
 import OperationalWorkspace from "./components/OperationalWorkspace";
@@ -29,24 +30,29 @@ function Dashboard() {
 
   return (
     <div className="dashboard-shell">
+      <DashboardSectionNav />
+
       <div className="dashboard-main">
         {/* KPI Workspace */}
-        <section className="dashboard-zone dashboard-zone--kpi">
+        <section
+          id="dashboard-overview"
+          className="dashboard-zone dashboard-zone--kpi"
+        >
           <KpiSummarySection />
         </section>
 
         {/* Operations Workspace */}
-        <section className="dashboard-zone">
+        <section id="dashboard-operations" className="dashboard-zone">
           <OperationalWorkspace />
         </section>
 
         {/* Analytics Workspace */}
-        <section className="dashboard-zone">
+        <section id="dashboard-analytics" className="dashboard-zone">
           <AnalyticsWorkspace />
         </section>
 
         {/* Intelligence Workspace */}
-        <section className="dashboard-zone">
+        <section id="dashboard-executive" className="dashboard-zone">
           <ExecutiveIntelligenceSection />
 
           <PredictiveIntelligenceSection
@@ -57,7 +63,7 @@ function Dashboard() {
         </section>
 
         {/* Investigation Workspace */}
-        <section className="dashboard-zone">
+        <section id="dashboard-alerts" className="dashboard-zone">
           <AlertOperationsSection
             selectedAlert={selectedAlert}
             onSelectAlert={setSelectedAlert}
@@ -71,12 +77,12 @@ function Dashboard() {
         </section>
 
         {/* Reporting Workspace */}
-        <section className="dashboard-zone">
+        <section id="dashboard-reports" className="dashboard-zone">
           <AnalyticsSection />
         </section>
 
         {/* Terminal Workspace */}
-        <section className="dashboard-zone">
+        <section id="dashboard-terminal" className="dashboard-zone">
           <TerminalPanel
             title="Network Operations Terminal"
             status="LIVE"
