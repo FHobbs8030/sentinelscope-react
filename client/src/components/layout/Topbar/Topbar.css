@@ -15,11 +15,7 @@
   border-bottom: 1px solid rgba(212, 169, 79, 0.18);
 
   background:
-    linear-gradient(
-      180deg,
-      rgba(20, 29, 39, 0.97),
-      rgba(13, 21, 30, 0.95)
-    ),
+    linear-gradient(180deg, rgba(20, 29, 39, 0.97), rgba(13, 21, 30, 0.95)),
     var(--topbar-bg);
 
   box-shadow:
@@ -270,12 +266,11 @@
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 50%;
 
-  background:
-    linear-gradient(
-      135deg,
-      rgba(79, 134, 217, 0.96),
-      rgba(43, 84, 143, 0.98)
-    );
+  background: linear-gradient(
+    135deg,
+    rgba(79, 134, 217, 0.96),
+    rgba(43, 84, 143, 0.98)
+  );
 
   color: #ffffff;
 
@@ -359,15 +354,10 @@
    RESPONSIVE
 ========================================= */
 
-@media (max-width: 1200px) {
-  .topbar {
-    padding: 0 var(--space-4);
-  }
-
-  .topbar-workspace-description {
-    display: none;
-  }
-}
+/* =========================================
+   SMALL LAPTOP / TABLET LANDSCAPE
+   993px–1200px
+========================================= */
 
 @media (min-width: 993px) and (max-width: 1200px) {
   .topbar {
@@ -379,11 +369,35 @@
   }
 
   .topbar-workspace {
-    display: none;
+    display: flex;
+
+    width: clamp(210px, 22vw, 260px);
+
+    flex:
+      0
+      1
+      260px;
+  }
+
+  .topbar-workspace-title {
+    font-size: 1.25rem;
+  }
+
+  .topbar-workspace-description {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 0.62rem;
+    line-height: 1.2;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .topbar-search {
-    min-width: 0;
+    min-width: 180px;
     max-width: none;
 
     margin-left: 0;
@@ -399,48 +413,318 @@
   }
 }
 
-@media (max-width: 992px) {
+/* =========================================
+   TABLET
+   561px–992px
+========================================= */
+
+@media (min-width: 561px) and (max-width: 992px) {
   .topbar {
     left: 0;
-    padding: 0 var(--space-4);
+
+    display: grid;
+
+    grid-template-areas:
+      "workspace right"
+      "search search";
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      max-content;
+
+    grid-template-rows:
+      auto
+      42px;
+
+    align-items: center;
+    align-content: center;
+
+    column-gap: 16px;
+    row-gap: 8px;
+
+    height: 116px;
+    min-height: 116px;
+
+    padding:
+      10px
+      var(--space-4);
   }
 
   .topbar-workspace {
-    display: none;
+    grid-area: workspace;
+
+    display: flex;
+
+    width: 100%;
+    min-width: 0;
+    height: auto;
+
+    flex: none;
+  }
+
+  .topbar-workspace-title {
+    font-size: 1.2rem;
+    line-height: 1.1;
+  }
+
+  .topbar-workspace-description {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 0.64rem;
+    line-height: 1.25;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .topbar-search {
-    max-width: 100%;
+    grid-area: search;
+
+    display: flex;
+
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+
+    margin: 0;
+  }
+
+  .topbar-search-input {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+  }
+
+  .topbar-search-button {
+    width: 42px;
+    height: 42px;
+
+    flex:
+      0
+      0
+      42px;
+  }
+
+   .topbar-right {
+    grid-area: right;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    width: max-content;
+    min-width: 0;
+
+    gap: 8px;
+
+    justify-self: end;
+  }
+
+  .topbar-right > * {
+    flex: 0 0 auto;
   }
 }
 
-@media (max-width: 768px) {
+/* Keep analyst details on wider tablets */
+@media (min-width: 700px) and (max-width: 992px) {
+  .topbar-user-info {
+    display: flex;
+  }
+}
+
+/* Keep avatar but hide analyst text on narrower tablets */
+@media (min-width: 561px) and (max-width: 699px) {
+  .topbar-user-info {
+    display: none;
+  }
+}
+
+/* =========================================
+   MOBILE
+   320px–560px
+========================================= */
+
+@media (max-width: 560px) {
+  .topbar {
+    left: 0;
+
+    display: grid;
+
+    grid-template-areas:
+      "workspace"
+      "search"
+      "right";
+
+    grid-template-columns:
+      minmax(0, 1fr);
+
+    grid-template-rows:
+      auto
+      42px
+      40px;
+
+    align-items: center;
+    align-content: center;
+
+    gap: 8px;
+
+    height: 158px;
+    min-height: 158px;
+
+    padding:
+      10px
+      var(--space-3);
+  }
+
+  .topbar-workspace {
+    grid-area: workspace;
+
+    display: flex;
+
+    width: 100%;
+    min-width: 0;
+    height: auto;
+
+    flex: none;
+    align-items: center;
+  }
+
+  .topbar-workspace-title {
+    font-size: 1.15rem;
+    line-height: 1.1;
+  }
+
+  .topbar-workspace-description {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 0.63rem;
+    line-height: 1.25;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-search {
+    grid-area: search;
+
+    display: flex;
+
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+
+    margin: 0;
+  }
+
+  .topbar-search-input {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+  }
+
+  .topbar-search-button {
+    width: 42px;
+    height: 42px;
+
+    flex:
+      0
+      0
+      42px;
+  }
+
+ .topbar-right {
+  grid-area: right;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  width: max-content;
+  min-width: 0;
+
+  gap: 8px;
+
+  justify-self: end;
+}
+
+.topbar-right > * {
+  flex: 0 0 auto;
+}
+
+  .topbar-user {
+    gap: 0;
+  }
+
   .topbar-user-info {
     display: none;
   }
 
-  .topbar {
-    padding: 0 var(--space-3);
-  }
-}
-
-@media (max-width: 480px) {
-  .topbar-search {
-    display: none;
-  }
-
-  .topbar-right {
-    gap: var(--space-2);
-  }
-
   .topbar-icon-button,
-  .topbar-menu-toggle {
+  .topbar-menu-toggle,
+  .topbar-avatar {
     width: 40px;
     height: 40px;
   }
 
+  .topbar-menu-toggle {
+    margin-left: 0;
+  }
+}
+
+/* =========================================
+   NARROW MOBILE
+   Up to 360px
+========================================= */
+
+@media (max-width: 360px) {
+  .topbar {
+    padding-inline: 10px;
+  }
+
+  .topbar-workspace-title {
+    font-size: 1.08rem;
+  }
+
+  .topbar-workspace-description {
+    font-size: 0.6rem;
+
+    white-space: normal;
+  }
+
+  .topbar-icon-button,
+  .topbar-menu-toggle,
   .topbar-avatar {
     width: 38px;
     height: 38px;
+  }
+}
+
+/* =========================================
+   V2.12 768PX ACTION ALIGNMENT
+========================================= */
+
+@media (min-width: 561px) and (max-width: 768px) {
+  .topbar-right {
+    width: max-content;
+    min-width: 0;
+
+    justify-self: end;
+    justify-content: flex-end;
+
+    gap: 8px;
+  }
+
+  .topbar-right > * {
+    flex: 0 0 auto;
+  }
+
+  .topbar-user-info {
+    display: none;
   }
 }
