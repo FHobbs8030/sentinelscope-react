@@ -101,7 +101,7 @@ function Topbar({ onMenuToggle }) {
           <h1 className="topbar-workspace-title">Dashboard</h1>
 
           <p className="topbar-workspace-description">
-            Unified Overview of Your Attack Surface, Operations and Intelligence
+            Attack surface operations and intelligence
           </p>
         </div>
 

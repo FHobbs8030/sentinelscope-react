@@ -1,193 +1,20 @@
 /* =========================================
-   SIDEBAR RESPONSIVE
+   GLOBAL RESPONSIVE STYLES
 ========================================= */
 
-@media (max-width: 1200px) {
-  .sidebar {
-    width: 220px;
-  }
-}
+/*
+  Responsive behavior is managed inside each
+  component's own stylesheet.
 
-@media (max-width: 992px) {
-  .sidebar {
-    position: fixed;
+  Sidebar:
+  components/layout/Sidebar/Sidebar.css
 
-    top: 0;
-    left: 0;
-    bottom: 0;
+  Topbar:
+  components/layout/Topbar/Topbar.css
 
-    z-index: 1200;
+  App shell and page spacing:
+  components/layout/AppShell/AppShell.css
 
-    width: 280px;
-    max-width: 82vw;
-
-    transform: translateX(-100%);
-
-    opacity: 0;
-
-    transition:
-      transform 240ms ease,
-      opacity 240ms ease;
-
-    display: flex;
-  }
-
-  .sidebar.sidebar--open {
-    transform: translateX(0);
-
-    opacity: 1;
-  }
-
-  .sidebar-overlay {
-    position: fixed;
-    inset: 0;
-
-    z-index: 1100;
-
-    background: rgba(2, 6, 23, 0.72);
-
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    transition: opacity 240ms ease;
-  }
-
-  .sidebar-overlay.sidebar-overlay--visible {
-    opacity: 1;
-
-    pointer-events: auto;
-  }
-}
-
-/* =========================================
-   TOPBAR RESPONSIVE
-========================================= */
-
-@media (max-width: 1440px) {
-  .topbar-search {
-    width: 360px;
-  }
-}
-
-@media (max-width: 1280px) {
-  .topbar {
-    padding-inline: var(--space-4);
-  }
-
-  .topbar-search {
-    width: 300px;
-  }
-}
-
-@media (max-width: 992px) {
-  .topbar {
-    padding-inline: var(--space-4);
-  }
-
-  .topbar-search {
-    width: 240px;
-  }
-}
-
-@media (max-width: 768px) {
-  .topbar {
-    height: auto;
-
-    display: grid;
-
-    grid-template-columns:
-      auto
-      1fr
-      auto;
-
-    align-items: center;
-
-    gap: var(--space-3);
-
-    padding: var(--space-3);
-  }
-
-  .topbar-search {
-    grid-column: 1 / -1;
-
-    order: 3;
-
-    width: 100%;
-  }
-
-  .topbar-right {
-    width: 100%;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    gap: var(--space-3);
-  }
-
-  .topbar-user-info {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .topbar {
-    padding: var(--space-3);
-  }
-
-  .topbar-right {
-    gap: var(--space-2);
-  }
-}
-
-/* =========================================
-   PAGE CONTAINER RESPONSIVE
-========================================= */
-
-@media (max-width: 1280px) {
-  .page-container {
-    padding-inline: var(--space-4);
-  }
-}
-
-@media (max-width: 992px) {
-  .page-container {
-    padding: var(--space-3);
-  }
-}
-
-@media (max-width: 768px) {
-  .page-container {
-    padding: var(--space-3);
-
-    gap: var(--space-4);
-  }
-}
-
-/* =========================================
-   APP SHELL RESPONSIVE
-========================================= */
-
-@media (min-width: 993px) {
-  .sidebar-overlay {
-    display: none;
-  }
-}
-
-/* =========================================
-   VIEWPORT HEIGHT REFINEMENTS
-========================================= */
-
-@media (max-height: 600px) {
-  .topbar {
-    min-height: 72px;
-  }
-
-  .page-container {
-    gap: var(--space-3);
-  }
-}
+  Dashboard:
+  pages/Dashboard/Dashboard.css
+*/

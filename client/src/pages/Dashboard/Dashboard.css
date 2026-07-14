@@ -1,6 +1,6 @@
- .dashboard-shell {
+.dashboard-shell {
   --dashboard-topbar-height: 72px;
-  --dashboard-control-nav-height: 94px;
+  --dashboard-control-nav-height: 100px;
   --dashboard-content-clearance: 18px;
 
   display: block;
@@ -8,8 +8,7 @@
   min-width: 0;
 
   padding-top: calc(
-    var(--dashboard-control-nav-height) +
-    var(--dashboard-content-clearance)
+    var(--dashboard-control-nav-height) + var(--dashboard-content-clearance)
   );
 }
 
@@ -159,7 +158,7 @@
 
 @media (max-width: 640px) {
   .dashboard-shell {
-    --dashboard-control-nav-height: 88px;
+    --dashboard-control-nav-height: 96px;
     --dashboard-content-clearance: 14px;
   }
 
@@ -192,5 +191,21 @@
     padding: var(--space-2);
 
     border-radius: 14px;
+  }
+}
+
+/* =========================================
+   V2.12 RESPONSIVE HEADER OFFSETS
+========================================= */
+
+@media (max-width: 992px) {
+  .dashboard-shell {
+    --dashboard-topbar-height: 116px;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard-shell {
+    --dashboard-topbar-height: 158px;
   }
 }
