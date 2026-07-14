@@ -526,6 +526,7 @@
   .topbar-right > * {
     flex: 0 0 auto;
   }
+}
 
 /* Keep analyst details on wider tablets */
 @media (min-width: 700px) and (max-width: 992px) {
