@@ -38,9 +38,11 @@
 }
 
 .app-shell-main {
-  flex: 1;
-
+  width: calc(100% - var(--current-sidebar-width));
   min-width: 0;
+  min-height: 100vh;
+
+  margin-left: var(--current-sidebar-width);
 
   display: flex;
   flex-direction: column;
@@ -48,6 +50,10 @@
   position: relative;
 
   padding-top: 72px;
+
+  transition:
+    width 200ms ease,
+    margin-left 200ms ease;
 }
 
 .page-container {
@@ -118,6 +124,7 @@
 @media (max-width: 992px) {
   .app-shell-main {
     width: 100%;
+    margin-left: 0;
   }
 
   .page-container {
@@ -148,5 +155,21 @@
 @media (max-width: 320px) {
   .page-container {
     padding: var(--space-2);
+  }
+}
+
+/* =========================================
+   V2.12 RESPONSIVE TOPBAR CLEARANCE
+========================================= */
+
+@media (min-width: 561px) and (max-width: 992px) {
+  .app-shell-main {
+    padding-top: 116px;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell-main {
+    padding-top: 158px;
   }
 }

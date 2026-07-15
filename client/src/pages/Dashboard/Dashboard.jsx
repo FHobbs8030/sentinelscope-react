@@ -4,6 +4,7 @@ import "./Dashboard.css";
 
 import DashboardSectionNav from "./components/DashboardSectionNav";
 import KpiSummarySection from "./components/KpiSummarySection";
+import SentinelPulseScanner from "./components/SentinelPulseScanner";
 
 import OperationalWorkspace from "./components/OperationalWorkspace";
 import AnalyticsWorkspace from "./components/AnalyticsWorkspace";
@@ -28,70 +29,71 @@ function Dashboard() {
 
   const [selectedAlert, setSelectedAlert] = useState(null);
 
-  return (
-    <div className="dashboard-shell">
-      <DashboardSectionNav />
+ return (
+   <div className="dashboard-shell">
+     <DashboardSectionNav />
+     <SentinelPulseScanner />
 
-      <div className="dashboard-main">
-        {/* KPI Workspace */}
-        <section
-          id="dashboard-overview"
-          className="dashboard-zone dashboard-zone--kpi"
-        >
-          <KpiSummarySection />
-        </section>
+     <div className="dashboard-main">
+       {/* KPI Workspace */}
+       <section
+         id="dashboard-overview"
+         className="dashboard-zone dashboard-zone--kpi"
+       >
+         <KpiSummarySection />
+       </section>
 
-        {/* Operations Workspace */}
-        <section id="dashboard-operations" className="dashboard-zone">
-          <OperationalWorkspace />
-        </section>
+       {/* Operations Workspace */}
+       <section id="dashboard-operations" className="dashboard-zone">
+         <OperationalWorkspace />
+       </section>
 
-        {/* Analytics Workspace */}
-        <section id="dashboard-analytics" className="dashboard-zone">
-          <AnalyticsWorkspace />
-        </section>
+       {/* Analytics Workspace */}
+       <section id="dashboard-analytics" className="dashboard-zone">
+         <AnalyticsWorkspace />
+       </section>
 
-        {/* Intelligence Workspace */}
-        <section id="dashboard-executive" className="dashboard-zone">
-          <ExecutiveIntelligenceSection />
+       {/* Intelligence Workspace */}
+       <section id="dashboard-executive" className="dashboard-zone">
+         <ExecutiveIntelligenceSection />
 
-          <PredictiveIntelligenceSection
-            alerts={selectedAlert ? [selectedAlert] : []}
-          />
+         <PredictiveIntelligenceSection
+           alerts={selectedAlert ? [selectedAlert] : []}
+         />
 
-          <CorrelationIntelligenceSection />
-        </section>
+         <CorrelationIntelligenceSection />
+       </section>
 
-        {/* Investigation Workspace */}
-        <section id="dashboard-alerts" className="dashboard-zone">
-          <AlertOperationsSection
-            selectedAlert={selectedAlert}
-            onSelectAlert={setSelectedAlert}
-          />
+       {/* Investigation Workspace */}
+       <section id="dashboard-alerts" className="dashboard-zone">
+         <AlertOperationsSection
+           selectedAlert={selectedAlert}
+           onSelectAlert={setSelectedAlert}
+         />
 
-          <AlertDetailsPanel alert={selectedAlert} />
+         <AlertDetailsPanel alert={selectedAlert} />
 
-          <AlertTimelineViewer alert={selectedAlert} />
+         <AlertTimelineViewer alert={selectedAlert} />
 
-          <AlertIntelligenceDrawer alert={selectedAlert} />
-        </section>
+         <AlertIntelligenceDrawer alert={selectedAlert} />
+       </section>
 
-        {/* Reporting Workspace */}
-        <section id="dashboard-reports" className="dashboard-zone">
-          <AnalyticsSection />
-        </section>
+       {/* Reporting Workspace */}
+       <section id="dashboard-reports" className="dashboard-zone">
+         <AnalyticsSection />
+       </section>
 
-        {/* Terminal Workspace */}
-        <section id="dashboard-terminal" className="dashboard-zone">
-          <TerminalPanel
-            title="Network Operations Terminal"
-            status="LIVE"
-            logs={telemetryLogs}
-          />
-        </section>
-      </div>
-    </div>
-  );
+       {/* Terminal Workspace */}
+       <section id="dashboard-terminal" className="dashboard-zone">
+         <TerminalPanel
+           title="Network Operations Terminal"
+           status="LIVE"
+           logs={telemetryLogs}
+         />
+       </section>
+     </div>
+   </div>
+ );
 }
 
 export default Dashboard;

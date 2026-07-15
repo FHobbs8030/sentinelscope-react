@@ -1,6 +1,7 @@
- .dashboard-shell {
+.dashboard-shell {
   --dashboard-topbar-height: 72px;
-  --dashboard-control-nav-height: 94px;
+  --dashboard-control-nav-height: 100px;
+  --dashboard-scanner-height: 38px;
   --dashboard-content-clearance: 18px;
 
   display: block;
@@ -8,8 +9,8 @@
   min-width: 0;
 
   padding-top: calc(
-    var(--dashboard-control-nav-height) +
-    var(--dashboard-content-clearance)
+    var(--dashboard-control-nav-height) + var(--dashboard-scanner-height) +
+      var(--dashboard-content-clearance)
   );
 }
 
@@ -50,19 +51,36 @@
     0 12px 32px rgba(0, 0, 0, 0.25);
 }
 
+.dashboard-zone {
+  position: relative;
+
+  padding: var(--space-5);
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.025),
+    rgba(255, 255, 255, 0.008)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+
+  backdrop-filter: blur(6px);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
 .dashboard-zone[id] {
   scroll-margin-top: calc(
     var(--dashboard-topbar-height) + var(--dashboard-control-nav-height) +
-      var(--dashboard-content-clearance)
+      var(--dashboard-scanner-height) + var(--dashboard-content-clearance)
   );
 }
 
 .dashboard-zone + .dashboard-zone {
   margin-top: var(--space-5);
-}
-
-.dashboard-zone--kpi + .dashboard-zone {
-  margin-top: var(--space-4);
 }
 
 .dashboard-zone--kpi {
@@ -159,7 +177,8 @@
 
 @media (max-width: 640px) {
   .dashboard-shell {
-    --dashboard-control-nav-height: 88px;
+    --dashboard-control-nav-height: 96px;
+    --dashboard-scanner-height: 30px;
     --dashboard-content-clearance: 14px;
   }
 
@@ -192,5 +211,22 @@
     padding: var(--space-2);
 
     border-radius: 14px;
+  }
+}
+
+/* =========================================
+   V2.12 RESPONSIVE HEADER OFFSETS
+========================================= */
+
+@media (max-width: 992px) {
+  .dashboard-shell {
+    --dashboard-topbar-height: 116px;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard-shell {
+    --dashboard-topbar-height: 158px;
+    --dashboard-scanner-height: 26px;
   }
 }
