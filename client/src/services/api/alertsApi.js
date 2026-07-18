@@ -1,85 +1,86 @@
-import { buildApiUrl } from "./apiConfig";
+import { API_ERROR_CODES, ApiError, apiRequest } from "./apiClient";
 
-const API_URL = buildApiUrl("alerts");
+const ALERTS_PATH = "alerts";
 
-export async function createAlert(alertData) {
-  const response = await fetch(API_URL, {
+const buildAlertPath = (id, action = "") => {
+  const encodedId = encodeURIComponent(String(id));
+  const basePath = `${ALERTS_PATH}/${encodedId}`;
+
+  return action ? `${basePath}/${action}` : basePath;
+};
+
+const normalizeAlertCollection = (responseData) => {
+  if (Array.isArray(responseData)) {
+    return responseData;
+  }
+
+  if (Array.isArray(responseData?.alerts)) {
+    return responseData.alerts;
+  }
+
+  if (Array.isArray(responseData?.data)) {
+    return responseData.data;
+  }
+
+  throw new ApiError(
+    "SentinelScope API returned an invalid alert collection.",
+    {
+      code: API_ERROR_CODES.INVALID_RESPONSE,
+      details: responseData,
+    },
+  );
+};
+
+export async function createAlert(alertData, requestOptions = {}) {
+  return apiRequest(ALERTS_PATH, {
+    ...requestOptions,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(alertData),
+    body: alertData,
   });
-
-  return response.json();
 }
 
-export async function getAlerts() {
-  const response = await fetch(API_URL);
+export async function getAlerts(requestOptions = {}) {
+  const responseData = await apiRequest(ALERTS_PATH, requestOptions);
 
-  const data = await response.json();
-
-  if (Array.isArray(data)) {
-    return data;
-  }
-
-  if (Array.isArray(data.alerts)) {
-    return data.alerts;
-  }
-
-  if (Array.isArray(data.data)) {
-    return data.data;
-  }
-
-  return [];
+  return normalizeAlertCollection(responseData);
 }
 
-export async function getAlertById(id) {
-  const response = await fetch(`${API_URL}/${id}`);
-
-  return response.json();
+export async function getAlertById(id, requestOptions = {}) {
+  return apiRequest(buildAlertPath(id), requestOptions);
 }
 
-export async function updateAlert(id, updates) {
-  const response = await fetch(`${API_URL}/${id}`, {
+export async function updateAlert(id, updates, requestOptions = {}) {
+  return apiRequest(buildAlertPath(id), {
+    ...requestOptions,
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updates),
+    body: updates,
   });
-
-  return response.json();
 }
 
-export async function acknowledgeAlert(id) {
-  const response = await fetch(`${API_URL}/${id}/acknowledge`, {
+export async function acknowledgeAlert(id, requestOptions = {}) {
+  return apiRequest(buildAlertPath(id, "acknowledge"), {
+    ...requestOptions,
     method: "PATCH",
   });
-
-  return response.json();
 }
 
-export async function investigateAlert(id) {
-  const response = await fetch(`${API_URL}/${id}/investigate`, {
+export async function investigateAlert(id, requestOptions = {}) {
+  return apiRequest(buildAlertPath(id, "investigate"), {
+    ...requestOptions,
     method: "PATCH",
   });
-
-  return response.json();
 }
 
-export async function resolveAlert(id) {
-  const response = await fetch(`${API_URL}/${id}/resolve`, {
+export async function resolveAlert(id, requestOptions = {}) {
+  return apiRequest(buildAlertPath(id, "resolve"), {
+    ...requestOptions,
     method: "PATCH",
   });
-
-  return response.json();
 }
 
-export async function closeAlert(id) {
-  const response = await fetch(`${API_URL}/${id}/close`, {
+export async function closeAlert(id, requestOptions = {}) {
+  return apiRequest(buildAlertPath(id, "close"), {
+    ...requestOptions,
     method: "PATCH",
   });
-
-  return response.json();
 }

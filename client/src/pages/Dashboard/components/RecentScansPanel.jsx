@@ -3,7 +3,7 @@ import "./ScanOperationsSection.css";
 import useScans from "../../../hooks/useScans";
 
 function RecentScansPanel() {
-  const { scans, isLoading, error } = useScans();
+  const { scans, isLoading, error, refreshScans } = useScans();
 
   const formatStatusLabel = (status = "") => {
     return status.charAt(0).toUpperCase() + status.slice(1);
@@ -57,24 +57,54 @@ function RecentScansPanel() {
     return `${diffDays} day ago`;
   };
 
-  if (isLoading) {
+  const retryLoad = () => {
+    void refreshScans();
+  };
+
+  if (isLoading && scans.length === 0) {
     return (
       <div className="recent-scans-panel">
-        <div className="scan-loading-state">Loading scan telemetry...</div>
+        <div className="scan-loading-state" role="status" aria-live="polite">
+          Loading scan telemetry...
+        </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error && scans.length === 0) {
     return (
       <div className="recent-scans-panel">
-        <div className="scan-error-state">Failed to load scan telemetry.</div>
+        <div className="scan-error-state" role="alert" aria-live="assertive">
+          <span>{error}</span>
+
+          <button
+            type="button"
+            className="scan-action-button"
+            onClick={retryLoad}
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="recent-scans-panel">
+      {error ? (
+        <div className="scan-error-state" role="alert" aria-live="polite">
+          <span>{error} Showing the last available scan telemetry.</span>
+
+          <button
+            type="button"
+            className="scan-action-button"
+            onClick={retryLoad}
+          >
+            Retry
+          </button>
+        </div>
+      ) : null}
+
       <div className="operations-table-container">
         <table className="recent-scans-table">
           <thead>
@@ -140,7 +170,9 @@ function RecentScansPanel() {
                 </td>
 
                 <td className="scan-table-cell">
-                  <button className="scan-action-button">View</button>
+                  <button type="button" className="scan-action-button">
+                    View
+                  </button>
                 </td>
               </tr>
             ))}

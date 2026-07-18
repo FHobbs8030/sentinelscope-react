@@ -1,7 +1,9 @@
-import { Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 
 import AppShell from "./components/layout/AppShell/AppShell";
+
+import FindingsProvider from "./contexts/FindingsProvider";
 
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Targets from "./pages/Targets/Targets";
@@ -22,13 +24,15 @@ function App() {
   }, []);
 
   return (
-    <AppShell>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
+    <FindingsProvider>
+      <AppShell>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
 
-        <Route path="/targets" element={<Targets />} />
-      </Routes>
-    </AppShell>
+          <Route path="/targets" element={<Targets />} />
+        </Routes>
+      </AppShell>
+    </FindingsProvider>
   );
 }
 

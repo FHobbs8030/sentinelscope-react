@@ -1,49 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext } from "react";
 
-import { getFindings } from "../services/api/findingsApi";
-
-import {
-  calculateSeverityMetrics,
-  calculateFindingExposureScore,
-} from "../utils/findings/severityMetrics";
+import FindingsContext from "../contexts/FindingsContext";
 
 export default function useFindings() {
-  const [findings, setFindings] = useState([]);
+  const context = useContext(FindingsContext);
 
-  useEffect(() => {
-    async function hydrateFindings() {
-      try {
-        const data = await getFindings();
+  if (!context) {
+    throw new Error("useFindings must be used within a FindingsProvider.");
+  }
 
-        setFindings(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("[useFindings] Failed to hydrate findings", error);
-
-        setFindings([]);
-      }
-    }
-
-    hydrateFindings();
-  }, []);
-
-  const severityMetrics = useMemo(() => {
-    return calculateSeverityMetrics(findings);
-  }, [findings]);
-
-  const findingExposureScore = useMemo(() => {
-    return calculateFindingExposureScore(findings);
-  }, [findings]);
-
-  return {
-    findings,
-
-    setFindings,
-
-    severityMetrics,
-
-    totalFindings: severityMetrics.total,
-
-    findingExposureScore,
-
-  };
+  return context;
 }
