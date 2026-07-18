@@ -1,33 +1,27 @@
-import { buildApiUrl } from "./apiConfig";
+import { apiRequest } from "./apiClient";
 
-const API_URL = buildApiUrl("missions");
+const MISSIONS_PATH = "missions";
 
-export async function createMission(missionData) {
-  const response = await fetch(API_URL, {
+const buildMissionPath = (id) => {
+  return `${MISSIONS_PATH}/${encodeURIComponent(String(id))}`;
+};
+
+export async function createMission(missionData, requestOptions = {}) {
+  return apiRequest(MISSIONS_PATH, {
+    ...requestOptions,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(missionData),
+    body: missionData,
   });
-
-  return response.json();
 }
 
-export async function getMissions() {
-  const response = await fetch(API_URL);
-
-  return response.json();
+export async function getMissions(requestOptions = {}) {
+  return apiRequest(MISSIONS_PATH, requestOptions);
 }
 
-export async function updateMission(id, updates) {
-  const response = await fetch(`${API_URL}/${id}`, {
+export async function updateMission(id, updates, requestOptions = {}) {
+  return apiRequest(buildMissionPath(id), {
+    ...requestOptions,
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updates),
+    body: updates,
   });
-
-  return response.json();
 }

@@ -1,14 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import {
+  API_ERROR_CODES,
+  ApiError,
+  getApiErrorMessage,
+} from "../services/api/apiClient";
+
+import { getScans } from "../services/api/scansApi";
 
 import scanRuntimeEngine from "../services/runtime/scanRuntimeEngine";
 
 import { TERMINAL_SCAN_STATES } from "../services/runtime/scanStateMachine";
 
-import { getScans } from "../services/api/scansApi";
+import { bootstrapRuntime } from "../services/runtime/runtimeBootstrap";
 
 import { rebuildRuntimeScans } from "./runtimeRecovery";
-
-import { bootstrapRuntime } from "../services/runtime/runtimeBootstrap";
 
 const ACTIVE_SCAN_STATES = [
   "queued",
@@ -22,39 +28,56 @@ const ACTIVE_SCAN_STATES = [
 
 const useScans = () => {
   const [scans, setScans] = useState([]);
-
   const [selectedScan, setSelectedScan] = useState(null);
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [error, setError] = useState(null);
 
-  const runtimeInitializedRef = useRef(false);
+  const loadScans = useCallback(async (requestOptions = {}) => {
+    const { signal } = requestOptions;
 
-  const loadScans = useCallback(async () => {
     try {
-      setIsLoading(true);
+      const persistedScans = await getScans(requestOptions);
 
-      setError(null);
-
-      const persistedScans = await getScans();
+      if (signal?.aborted) {
+        return false;
+      }
 
       const runtimeScans = rebuildRuntimeScans(persistedScans);
 
-    bootstrapRuntime(runtimeScans);
+      bootstrapRuntime(runtimeScans);
 
-    setScans(scanRuntimeEngine.getScans());
+      setScans(scanRuntimeEngine.getScans());
+      setError(null);
+
+      return true;
     } catch (err) {
+      const wasCancelled =
+        signal?.aborted ||
+        (err instanceof ApiError && err.code === API_ERROR_CODES.ABORTED);
+
+      if (wasCancelled) {
+        return false;
+      }
+
       console.error("Failed to load scans:", err);
 
-      setError("Unable to load scan data.");
+      setError(
+        getApiErrorMessage(err, "Unable to load scan telemetry. Try again."),
+      );
+
+      return false;
     } finally {
-      setIsLoading(false);
+      if (!signal?.aborted) {
+        setIsLoading(false);
+      }
     }
   }, []);
 
   const refreshScans = useCallback(async () => {
-    await loadScans();
+    setIsLoading(true);
+    setError(null);
+
+    return loadScans();
   }, [loadScans]);
 
   const selectScanById = useCallback(async (scanId) => {
@@ -178,13 +201,9 @@ const useScans = () => {
 
   const metrics = useMemo(() => {
     const totalScans = scans.length;
-
     const completedCount = completedScans.length;
-
     const failedCount = failedScans.length;
-
     const activeCount = activeScans.length;
-
     const interruptedCount = interruptedScans.length;
 
     const successRate =
@@ -219,15 +238,20 @@ const useScans = () => {
     criticalFindingsCount,
   ]);
 
-  useEffect(() => {
-    if (runtimeInitializedRef.current) {
-      return;
-    }
+    useEffect(() => {
+      const requestController = new AbortController();
 
-    runtimeInitializedRef.current = true;
+      const requestTimer = window.setTimeout(() => {
+        void loadScans({
+          signal: requestController.signal,
+        });
+      }, 0);
 
-    loadScans();
-  }, [loadScans]);
+      return () => {
+        window.clearTimeout(requestTimer);
+        requestController.abort();
+      };
+    }, [loadScans]);
 
   useEffect(() => {
     const unsubscribe = scanRuntimeEngine.subscribe((updatedScans) => {

@@ -22,7 +22,12 @@ export const STATE_TRANSITIONS = {
   reporting: "completed",
 };
 
-export const TERMINAL_SCAN_STATES = ["completed", "failed", "cancelled"];
+export const TERMINAL_SCAN_STATES = [
+  "completed",
+  "failed",
+  "cancelled",
+  "interrupted",
+];
 
 export const SCAN_STATE_METADATA = {
   queued: {

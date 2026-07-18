@@ -1,47 +1,48 @@
-import { buildApiUrl } from "./apiConfig";
+import { API_ERROR_CODES, ApiError, apiRequest } from "./apiClient";
 
-const API_URL = buildApiUrl("scans");
+const SCANS_PATH = "scans";
 
-export async function createScan(scanData) {
-  const response = await fetch(API_URL, {
+const buildScanPath = (id) => {
+  return `${SCANS_PATH}/${encodeURIComponent(String(id))}`;
+};
+
+const normalizeScanCollection = (responseData) => {
+  if (Array.isArray(responseData)) {
+    return responseData;
+  }
+
+  if (Array.isArray(responseData?.scans)) {
+    return responseData.scans;
+  }
+
+  if (Array.isArray(responseData?.data)) {
+    return responseData.data;
+  }
+
+  throw new ApiError("SentinelScope API returned an invalid scan collection.", {
+    code: API_ERROR_CODES.INVALID_RESPONSE,
+    details: responseData,
+  });
+};
+
+export async function createScan(scanData, requestOptions = {}) {
+  return apiRequest(SCANS_PATH, {
+    ...requestOptions,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(scanData),
+    body: scanData,
   });
-
-  return response.json();
 }
 
-export async function updateScan(id, updates) {
-  const response = await fetch(`${API_URL}/${id}`, {
+export async function updateScan(id, updates, requestOptions = {}) {
+  return apiRequest(buildScanPath(id), {
+    ...requestOptions,
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updates),
+    body: updates,
   });
-
-  return response.json();
 }
 
-export async function getScans() {
-  const response = await fetch(API_URL);
+export async function getScans(requestOptions = {}) {
+  const responseData = await apiRequest(SCANS_PATH, requestOptions);
 
-  const data = await response.json();
-
-  if (Array.isArray(data)) {
-    return data;
-  }
-
-  if (Array.isArray(data.scans)) {
-    return data.scans;
-  }
-
-  if (Array.isArray(data.data)) {
-    return data.data;
-  }
-
-  return [];
+  return normalizeScanCollection(responseData);
 }

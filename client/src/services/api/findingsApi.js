@@ -1,53 +1,55 @@
-import { buildApiUrl } from "./apiConfig";
+import { API_ERROR_CODES, ApiError, apiRequest } from "./apiClient";
 
-const API_URL = buildApiUrl("findings");
+const FINDINGS_PATH = "findings";
 
-export async function createFinding(findingData) {
-  const response = await fetch(API_URL, {
+const buildFindingPath = (id) => {
+  return `${FINDINGS_PATH}/${encodeURIComponent(String(id))}`;
+};
+
+const normalizeFindingCollection = (responseData) => {
+  if (Array.isArray(responseData)) {
+    return responseData;
+  }
+
+  if (Array.isArray(responseData?.findings)) {
+    return responseData.findings;
+  }
+
+  if (Array.isArray(responseData?.data)) {
+    return responseData.data;
+  }
+
+  throw new ApiError(
+    "SentinelScope API returned an invalid finding collection.",
+    {
+      code: API_ERROR_CODES.INVALID_RESPONSE,
+      details: responseData,
+    },
+  );
+};
+
+export async function createFinding(findingData, requestOptions = {}) {
+  return apiRequest(FINDINGS_PATH, {
+    ...requestOptions,
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(findingData),
+    body: findingData,
   });
-
-  return response.json();
 }
 
-export async function getFindings() {
-  const response = await fetch(API_URL);
+export async function getFindings(requestOptions = {}) {
+  const responseData = await apiRequest(FINDINGS_PATH, requestOptions);
 
-  const data = await response.json();
-
-  if (Array.isArray(data)) {
-    return data;
-  }
-
-  if (Array.isArray(data.findings)) {
-    return data.findings;
-  }
-
-  if (Array.isArray(data.data)) {
-    return data.data;
-  }
-
-  return [];
+  return normalizeFindingCollection(responseData);
 }
 
-export async function getFindingById(id) {
-  const response = await fetch(`${API_URL}/${id}`);
-
-  return response.json();
+export async function getFindingById(id, requestOptions = {}) {
+  return apiRequest(buildFindingPath(id), requestOptions);
 }
 
-export async function updateFinding(id, updates) {
-  const response = await fetch(`${API_URL}/${id}`, {
+export async function updateFinding(id, updates, requestOptions = {}) {
+  return apiRequest(buildFindingPath(id), {
+    ...requestOptions,
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updates),
+    body: updates,
   });
-
-  return response.json();
 }

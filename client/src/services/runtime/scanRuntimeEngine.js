@@ -21,6 +21,7 @@ import {
 } from "./missionOutcomeEngine";
 
 const RUNTIME_INTERVAL = 2000;
+const SCAN_PERSIST_INTERVAL = 10000;
 
 class ScanRuntimeEngine {
   constructor() {
@@ -29,6 +30,11 @@ class ScanRuntimeEngine {
     this.intervalId = null;
 
     this.listeners = new Set();
+    this.lastScanPersistedAt = new Map();
+
+    this.pendingScanWrites = new Map();
+
+    this.alertedScanConditions = new Set();
   }
 
   initialize(initialScans = []) {
@@ -94,6 +100,12 @@ class ScanRuntimeEngine {
 
     this.listeners.clear();
 
+    this.lastScanPersistedAt.clear();
+
+    this.pendingScanWrites.clear();
+
+    this.alertedScanConditions.clear();
+
     scanEventBus.emitTelemetry("Runtime engine destroyed", {
       source: "runtime-engine",
     });
@@ -126,7 +138,16 @@ class ScanRuntimeEngine {
   }
 
   async addScan(scan) {
+    const createdAt = new Date().toISOString();
+
+    const normalizedType = scan.type ?? scan.scanType ?? "recon";
+    const normalizedProfile = scan.profile ?? "General";
+    const normalizedSeverity = scan.severity ?? "medium";
+    const normalizedStatus = scan.status ?? "queued";
+
     const runtimeScan = {
+      ...scan,
+
       id: scan.id ?? `scan-${crypto.randomUUID()}`,
 
       mongoId: scan.mongoId ?? null,
@@ -135,32 +156,36 @@ class ScanRuntimeEngine {
 
       missionMongoId: scan.missionMongoId ?? null,
 
-      progress: 0,
+      type: normalizedType,
 
-      findingsCount: 0,
+      profile: normalizedProfile,
 
-      elapsedTime: 0,
+      severity: normalizedSeverity,
 
-      startedAt: new Date().toISOString(),
+      progress: scan.progress ?? 0,
 
-      updatedAt: new Date().toISOString(),
+      findingsCount: scan.findingsCount ?? 0,
 
-      status: "queued",
+      elapsedTime: scan.elapsedTime ?? 0,
 
-      severity: scan.severity ?? "low",
+      startedAt: scan.startedAt ?? createdAt,
+
+      updatedAt: createdAt,
+
+      status: normalizedStatus,
+
+      currentStage: scan.currentStage ?? normalizedStatus,
 
       runtimeProfile:
         scan.runtimeProfile ??
         createMissionProfile({
-          scanType: scan.type,
-          severity: scan.severity,
+          scanType: normalizedType,
+          severity: normalizedSeverity,
         }),
 
-      activity: "Scan added to operational queue",
+      activity: scan.activity ?? "Scan added to operational queue",
 
-      live: true,
-
-      ...scan,
+      live: scan.live ?? true,
     };
 
     this.scans.unshift(runtimeScan);
@@ -222,6 +247,93 @@ class ScanRuntimeEngine {
     this.emit();
   }
 
+  buildScanPersistencePayload(scan) {
+    return {
+      status: scan.status,
+
+      currentStage: scan.currentStage,
+
+      runtimeState: isTerminalScanState(scan.status) ? "completed" : "active",
+
+      progress: scan.progress,
+
+      findingsCount: scan.findingsCount,
+
+      completedAt: scan.completedAt ?? null,
+    };
+  }
+
+  persistScan(scan, { previousScan = null, force = false } = {}) {
+    if (!scan.mongoId) {
+      return Promise.resolve(false);
+    }
+
+    const persistenceKey = scan.mongoId;
+
+    const isTerminal = isTerminalScanState(scan.status);
+
+    const stateChanged =
+      previousScan !== null &&
+      (previousScan.status !== scan.status ||
+        previousScan.currentStage !== scan.currentStage);
+
+    const requiresImmediateWrite = force || isTerminal || stateChanged;
+
+    const pendingWrite = this.pendingScanWrites.get(persistenceKey);
+
+    if (pendingWrite && !requiresImmediateWrite) {
+      return pendingWrite;
+    }
+
+    const lastPersistedAt = this.lastScanPersistedAt.get(persistenceKey) ?? 0;
+
+    const persistenceElapsed = Date.now() - lastPersistedAt;
+
+    if (!requiresImmediateWrite && persistenceElapsed < SCAN_PERSIST_INTERVAL) {
+      return Promise.resolve(false);
+    }
+
+    const writePromise = (pendingWrite ?? Promise.resolve())
+      .catch(() => false)
+      .then(async () => {
+        await updateScan(
+          persistenceKey,
+          this.buildScanPersistencePayload(scan),
+        );
+
+        this.lastScanPersistedAt.set(persistenceKey, Date.now());
+
+        return true;
+      })
+      .catch((error) => {
+        console.error(
+          `[Scan Persistence] Failed to update ${scan.target}:`,
+          error,
+        );
+
+        scanEventBus.emitTelemetry(
+          `Scan persistence failed for ${scan.target}`,
+          {
+            source: "runtime-persistence",
+            scanId: scan.id,
+            scanMongoId: scan.mongoId,
+            status: scan.status,
+          },
+        );
+
+        return false;
+      })
+      .finally(() => {
+        if (this.pendingScanWrites.get(persistenceKey) === writePromise) {
+          this.pendingScanWrites.delete(persistenceKey);
+        }
+      });
+
+    this.pendingScanWrites.set(persistenceKey, writePromise);
+
+    return writePromise;
+  }
+
   cancelScan(scanId) {
     this.scans = this.scans.map((scan) => {
       if (scan.id !== scanId) {
@@ -233,7 +345,11 @@ class ScanRuntimeEngine {
 
         status: "cancelled",
 
+        currentStage: "cancelled",
+
         live: false,
+
+        completedAt: new Date().toISOString(),
 
         activity: "Operational scan cancelled by operator",
 
@@ -246,14 +362,10 @@ class ScanRuntimeEngine {
         scanId: cancelledScan.id,
       });
 
-      if (cancelledScan.mongoId) {
-        updateScan(cancelledScan.mongoId, {
-          status: "cancelled",
-          runtimeState: "completed",
-        }).catch((error) => {
-          console.error("Failed to update cancelled scan:", error);
-        });
-      }
+      void this.persistScan(cancelledScan, {
+        previousScan: scan,
+        force: true,
+      });
 
       this.synchronizeMission(cancelledScan, "cancelled");
 
@@ -287,21 +399,10 @@ class ScanRuntimeEngine {
         scanId: resumedScan.id,
       });
 
-      if (resumedScan.mongoId) {
-        updateScan(resumedScan.mongoId, {
-          status: resumedScan.status,
-
-          currentStage: resumedScan.currentStage,
-
-          runtimeState: "active",
-
-          progress: resumedScan.progress,
-
-          findingsCount: resumedScan.findingsCount,
-        }).catch((error) => {
-          console.error("Failed to update resumed scan:", error);
-        });
-      }
+      void this.persistScan(resumedScan, {
+        previousScan: scan,
+        force: true,
+      });
 
       return resumedScan;
     });
@@ -327,7 +428,11 @@ class ScanRuntimeEngine {
 
           status: "failed",
 
+          currentStage: "failed",
+
           live: false,
+
+          completedAt: new Date().toISOString(),
 
           activity: "Operational runtime failure detected",
 
@@ -386,7 +491,7 @@ class ScanRuntimeEngine {
 
             evidence: [
               "Runtime engine failure detected",
-              `Scan terminated during ${failedScan.status} stage`,
+              `Scan terminated during ${scan.status} stage`,
             ],
 
             riskScore,
@@ -418,6 +523,11 @@ class ScanRuntimeEngine {
             console.error("Failed to create runtime alert:", error);
           });
         }
+
+        void this.persistScan(failedScan, {
+          previousScan: scan,
+          force: true,
+        });
 
         return failedScan;
       }
@@ -489,8 +599,12 @@ class ScanRuntimeEngine {
         updatedScan.mongoId &&
         updatedScan.missionId
       ) {
+        const severity = updatedScan.severity?.toLowerCase();
+
+        const findingPromises = [];
+
         for (let i = 0; i < findingsIncrease; i += 1) {
-          createFinding({
+          const findingPromise = createFinding({
             scanId: updatedScan.mongoId,
 
             missionId: updatedScan.missionId,
@@ -506,9 +620,36 @@ class ScanRuntimeEngine {
             category: currentState,
 
             status: "open",
-          })
-            .then((findingResponse) => {
-              const severity = updatedScan.severity?.toLowerCase();
+          }).catch((error) => {
+            console.error("Failed to persist finding:", error);
+
+            return null;
+          });
+
+          findingPromises.push(findingPromise);
+        }
+
+        const shouldCreateAlert =
+          severity === "critical" || severity === "high";
+
+        const alertConditionKey = `${updatedScan.mongoId}:${severity}`;
+
+        if (
+          shouldCreateAlert &&
+          !this.alertedScanConditions.has(alertConditionKey)
+        ) {
+          this.alertedScanConditions.add(alertConditionKey);
+
+          Promise.all(findingPromises)
+            .then((findingResponses) => {
+              const relatedFindings = findingResponses
+                .map((findingResponse) => {
+                  return (
+                    findingResponse?.data?._id ?? findingResponse?._id ?? null
+                  );
+                })
+                .filter(Boolean);
+
               const intelligence = generateThreatIntelligence({
                 stage: currentState,
                 severity,
@@ -530,69 +671,63 @@ class ScanRuntimeEngine {
                 executiveRisk: intelligence.executiveRisk,
               });
 
-              const findingId =
-                findingResponse?.data?._id ?? findingResponse?._id ?? null;
-              if (severity === "critical" || severity === "high") {
-                return createAlert({
-                  title:
-                    severity === "critical"
-                      ? "Critical Security Finding"
-                      : "High Severity Security Finding",
+              return createAlert({
+                title:
+                  severity === "critical"
+                    ? "Critical Security Finding"
+                    : "High Severity Security Finding",
 
-                  description: `${currentState.toUpperCase()} discovery detected on ${updatedScan.target}`,
+                description: `${currentState.toUpperCase()} discovery detected on ${updatedScan.target}`,
 
-                  severity,
+                severity,
 
-                  target: updatedScan.target,
+                target: updatedScan.target,
 
-                  scanId: updatedScan.mongoId,
+                scanId: updatedScan.mongoId,
 
-                  missionId: updatedScan.missionId,
+                missionId: updatedScan.missionId,
 
-                  source: "finding-engine",
+                source: "finding-engine",
 
-                  status: "open",
+                status: "open",
 
-                  evidence: [
-                    `${currentState.toUpperCase()} discovery detected`,
-                    `Finding generated during ${currentState} stage`,
-                  ],
+                evidence: [
+                  `${currentState.toUpperCase()} discovery detected`,
+                  `Finding generated during ${currentState} stage`,
+                ],
 
-                  riskScore,
+                riskScore,
 
-                  affectedAsset: updatedScan.target,
+                affectedAsset: updatedScan.target,
 
-                  recommendedActions: intelligence.recommendedActions,
+                recommendedActions: intelligence.recommendedActions,
 
-                  threatContext: {
-                    ...intelligence.threatContext,
-                    stage: currentState,
-                  },
+                threatContext: {
+                  ...intelligence.threatContext,
+                  stage: currentState,
+                },
 
-                  threatNarrative: intelligence.threatNarrative,
+                threatNarrative: intelligence.threatNarrative,
 
-                  businessImpact: intelligence.businessImpact,
+                businessImpact: intelligence.businessImpact,
 
-                  threatActor: intelligence.threatActor,
+                threatActor: intelligence.threatActor,
 
-                  mitreAttack: intelligence.mitreAttack,
+                mitreAttack: intelligence.mitreAttack,
 
-                  intelligenceConfidence: intelligence.intelligenceConfidence,
+                intelligenceConfidence: intelligence.intelligenceConfidence,
 
-                  executiveRisk: intelligence.executiveRisk,
+                executiveRisk: intelligence.executiveRisk,
 
-                  decisionIntelligence: intelligence.decisionIntelligence,
+                decisionIntelligence: intelligence.decisionIntelligence,
 
-                  prediction,
+                prediction,
 
-                  relatedFindings: findingId ? [findingId] : [],
-                });
-              }
-
-              return null;
+                relatedFindings,
+              });
             })
             .catch((error) => {
-              console.error("Failed to persist finding or alert:", error);
+              console.error("Failed to persist aggregated alert:", error);
             });
         }
 
@@ -674,7 +809,7 @@ class ScanRuntimeEngine {
           updatedScan.activity =
             "Mission interrupted and awaiting operator review";
 
-          this.synchronizeMission(updatedScan, "interrupted");
+          this.synchronizeMission(updatedScan, "failed");
 
           scanEventBus.emitTelemetry(
             `Mission interrupted on ${updatedScan.target}`,
@@ -685,29 +820,9 @@ class ScanRuntimeEngine {
         }
       }
 
-      if (updatedScan.mongoId) {
-        updateScan(updatedScan.mongoId, {
-          status: updatedScan.status,
-
-          currentStage: updatedScan.currentStage,
-
-          runtimeState:
-            updatedScan.status === "completed" ||
-            updatedScan.status === "failed" ||
-            updatedScan.status === "cancelled" ||
-            updatedScan.status === "interrupted"
-              ? "completed"
-              : "active",
-
-          progress: updatedScan.progress,
-
-          findingsCount: updatedScan.findingsCount,
-
-          completedAt: updatedScan.completedAt ?? null,
-        }).catch((error) => {
-          console.error("Failed to update persisted scan:", error);
-        });
-      }
+      void this.persistScan(updatedScan, {
+        previousScan: scan,
+      });
 
       return updatedScan;
     });

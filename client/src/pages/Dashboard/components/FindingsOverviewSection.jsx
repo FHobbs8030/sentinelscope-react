@@ -3,8 +3,16 @@ import "./FindingsOverviewSection.css";
 import useFindings from "../../../hooks/useFindings";
 
 function FindingsOverviewSection() {
-  const { severityMetrics, totalFindings, findingExposureScore } =
-    useFindings();
+  const {
+    findings,
+    severityMetrics,
+    totalFindings,
+    findingExposureScore,
+    isLoading,
+    hasLoaded,
+    error,
+    refreshFindings,
+  } = useFindings();
 
   const exposureStatus =
     severityMetrics.critical > 0
@@ -21,7 +29,6 @@ function FindingsOverviewSection() {
       trend: "Persisted in MongoDB",
       status: totalFindings > 0 ? "warning" : "positive",
     },
-
     {
       id: 2,
       label: "Critical Findings",
@@ -29,7 +36,6 @@ function FindingsOverviewSection() {
       trend: "Immediate remediation required",
       status: severityMetrics.critical > 0 ? "critical" : "positive",
     },
-
     {
       id: 3,
       label: "High Severity",
@@ -37,7 +43,6 @@ function FindingsOverviewSection() {
       trend: "Elevated operational risk",
       status: severityMetrics.high > 0 ? "warning" : "positive",
     },
-
     {
       id: 4,
       label: "Medium Severity",
@@ -45,7 +50,6 @@ function FindingsOverviewSection() {
       trend: "Monitor and prioritize",
       status: severityMetrics.medium > 0 ? "warning" : "positive",
     },
-
     {
       id: 5,
       label: "Low Severity",
@@ -53,7 +57,6 @@ function FindingsOverviewSection() {
       trend: "Low operational impact",
       status: "positive",
     },
-
     {
       id: 6,
       label: "Finding Risk Exposure",
@@ -63,6 +66,58 @@ function FindingsOverviewSection() {
     },
   ];
 
+  const retryLoad = () => {
+    void refreshFindings();
+  };
+
+  if (isLoading && !hasLoaded) {
+    return (
+      <section className="findings-overview-section">
+        <header className="findings-overview-section__header">
+          <h2 className="findings-overview-section__title">
+            Findings Intelligence
+          </h2>
+        </header>
+
+        <div
+          className="findings-overview-state findings-overview-state--loading"
+          role="status"
+          aria-live="polite"
+        >
+          Loading finding intelligence...
+        </div>
+      </section>
+    );
+  }
+
+  if (error && !hasLoaded) {
+    return (
+      <section className="findings-overview-section">
+        <header className="findings-overview-section__header">
+          <h2 className="findings-overview-section__title">
+            Findings Intelligence
+          </h2>
+        </header>
+
+        <div
+          className="findings-overview-state findings-overview-state--error"
+          role="alert"
+          aria-live="assertive"
+        >
+          <span>{error}</span>
+
+          <button
+            type="button"
+            className="findings-overview-state__button"
+            onClick={retryLoad}
+          >
+            Retry
+          </button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="findings-overview-section">
       <header className="findings-overview-section__header">
@@ -70,6 +125,34 @@ function FindingsOverviewSection() {
           Findings Intelligence
         </h2>
       </header>
+
+      {error ? (
+        <div
+          className="findings-overview-state findings-overview-state--error"
+          role="alert"
+          aria-live="polite"
+        >
+          <span>{error} Showing the last available finding data.</span>
+
+          <button
+            type="button"
+            className="findings-overview-state__button"
+            onClick={retryLoad}
+          >
+            Retry
+          </button>
+        </div>
+      ) : null}
+
+      {isLoading && hasLoaded ? (
+        <div
+          className="findings-overview-state findings-overview-state--loading"
+          role="status"
+          aria-live="polite"
+        >
+          Refreshing finding intelligence...
+        </div>
+      ) : null}
 
       <div className="findings-overview-grid">
         {findingsData.map((item) => (
@@ -93,6 +176,12 @@ function FindingsOverviewSection() {
           </article>
         ))}
       </div>
+
+      {hasLoaded && findings.length === 0 ? (
+        <span className="findings-overview-empty-note">
+          No persisted findings are currently available.
+        </span>
+      ) : null}
     </section>
   );
 }

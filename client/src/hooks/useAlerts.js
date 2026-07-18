@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
-  getAlerts,
   acknowledgeAlert,
+  closeAlert,
+  getAlerts,
   investigateAlert,
   resolveAlert,
-  closeAlert,
 } from "../services/api/alertsApi";
+
+import {
+  API_ERROR_CODES,
+  ApiError,
+  getApiErrorMessage,
+} from "../services/api/apiClient";
 
 import { generateCorrelationAssessment } from "../services/intelligence/correlationEngine";
 
@@ -17,74 +23,128 @@ import {
 
 export default function useAlerts() {
   const [alerts, setAlerts] = useState([]);
-
   const [campaignAssessment, setCampaignAssessment] = useState(null);
 
   const [loading, setLoading] = useState(true);
-
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState(null);
 
-  const refreshAlerts = useCallback(async () => {
+  const loadAlerts = useCallback(async (requestOptions = {}) => {
+    const { signal } = requestOptions;
+
     try {
-      setLoading(true);
+      const alertData = await getAlerts(requestOptions);
 
-      setError(null);
-
-      const data = await getAlerts();
-
-      const alertData = Array.isArray(data) ? data : [];
+      if (signal?.aborted) {
+        return false;
+      }
 
       setAlerts(alertData);
 
-      const assessment = generateCorrelationAssessment(alertData);
+      setCampaignAssessment(generateCorrelationAssessment(alertData));
 
-      setCampaignAssessment(assessment);
+      setHasLoaded(true);
+      setError(null);
+
+      return true;
     } catch (err) {
+      const wasCancelled =
+        signal?.aborted ||
+        (err instanceof ApiError && err.code === API_ERROR_CODES.ABORTED);
+
+      if (wasCancelled) {
+        return false;
+      }
+
       console.error("Failed to hydrate alerts:", err);
 
-      setError(err);
+      setError(
+        getApiErrorMessage(
+          err,
+          "Unable to load alert intelligence. Try again.",
+        ),
+      );
 
-      setAlerts([]);
-      setCampaignAssessment(null);
+      return false;
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) {
+        setLoading(false);
+      }
     }
   }, []);
 
+  const refreshAlerts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    return loadAlerts();
+  }, [loadAlerts]);
+
+  const runAlertAction = useCallback(
+    async (action, alertId, fallbackMessage) => {
+      try {
+        setIsUpdating(true);
+        setError(null);
+
+        await action(alertId);
+
+        return loadAlerts();
+      } catch (err) {
+        console.error(`Failed to update alert ${alertId}:`, err);
+
+        setError(getApiErrorMessage(err, fallbackMessage));
+
+        return false;
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [loadAlerts],
+  );
+
   const acknowledge = useCallback(
     async (alertId) => {
-      await acknowledgeAlert(alertId);
-
-      await refreshAlerts();
+      return runAlertAction(
+        acknowledgeAlert,
+        alertId,
+        "Unable to acknowledge the alert. Try again.",
+      );
     },
-    [refreshAlerts],
+    [runAlertAction],
   );
 
   const investigate = useCallback(
     async (alertId) => {
-      await investigateAlert(alertId);
-
-      await refreshAlerts();
+      return runAlertAction(
+        investigateAlert,
+        alertId,
+        "Unable to begin the alert investigation. Try again.",
+      );
     },
-    [refreshAlerts],
+    [runAlertAction],
   );
 
   const resolve = useCallback(
     async (alertId) => {
-      await resolveAlert(alertId);
-
-      await refreshAlerts();
+      return runAlertAction(
+        resolveAlert,
+        alertId,
+        "Unable to resolve the alert. Try again.",
+      );
     },
-    [refreshAlerts],
+    [runAlertAction],
   );
 
   const close = useCallback(
     async (alertId) => {
-      await closeAlert(alertId);
-
-      await refreshAlerts();
+      return runAlertAction(
+        closeAlert,
+        alertId,
+        "Unable to close the alert. Try again.",
+      );
     },
-    [refreshAlerts],
+    [runAlertAction],
   );
 
   const metrics = useMemo(() => {
@@ -96,70 +156,33 @@ export default function useAlerts() {
   }, [alerts]);
 
   useEffect(() => {
-    let isCancelled = false;
+    const requestController = new AbortController();
 
-    async function hydrateAlerts() {
-      try {
-        const data = await getAlerts();
-
-        if (isCancelled) {
-          return;
-        }
-
-        const alertData = Array.isArray(data) ? data : [];
-
-        setAlerts(alertData);
-
-        setCampaignAssessment(generateCorrelationAssessment(alertData));
-
-        setError(null);
-      } catch (err) {
-        if (isCancelled) {
-          return;
-        }
-
-        console.error("Failed to hydrate alerts:", err);
-
-        setError(err);
-
-        setAlerts([]);
-
-        setCampaignAssessment(null);
-      } finally {
-        if (!isCancelled) {
-          setLoading(false);
-        }
-      }
-    }
-
-    void hydrateAlerts();
+    const requestTimer = window.setTimeout(() => {
+      void loadAlerts({
+        signal: requestController.signal,
+      });
+    }, 0);
 
     return () => {
-      isCancelled = true;
+      window.clearTimeout(requestTimer);
+      requestController.abort();
     };
-  }, []);
+  }, [loadAlerts]);
 
   return {
     alerts,
-
     metrics,
-
     alertRiskScore,
-
     campaignAssessment,
-
     loading,
-
+    hasLoaded,
+    isUpdating,
     error,
-
     refreshAlerts,
-
     acknowledge,
-
     investigate,
-
     resolve,
-
     close,
   };
 }
