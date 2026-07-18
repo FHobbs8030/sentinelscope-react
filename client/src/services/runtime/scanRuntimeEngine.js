@@ -9,7 +9,7 @@ import {
 
 import scanEventBus from "./scanEventBus";
 import { createScan, updateScan } from "../api/scansApi";
-import { createFinding } from "../api/findingsApi";
+import { createFindingsBatch } from "../api/findingsApi";
 import { createAlert } from "../api/alertsApi";
 import { updateMission } from "../api/missionsApi";
 import { generateThreatIntelligence } from "../intelligence/threatIntelligenceEngine";
@@ -601,33 +601,40 @@ class ScanRuntimeEngine {
       ) {
         const severity = updatedScan.severity?.toLowerCase();
 
-        const findingPromises = [];
+        const findingBatch = Array.from(
+          {
+            length: findingsIncrease,
+          },
+          () => {
+            return {
+              clientFindingId: crypto.randomUUID(),
 
-        for (let i = 0; i < findingsIncrease; i += 1) {
-          const findingPromise = createFinding({
-            scanId: updatedScan.mongoId,
+              scanId: updatedScan.mongoId,
 
-            missionId: updatedScan.missionId,
+              missionId: updatedScan.missionId,
 
-            target: updatedScan.target,
+              target: updatedScan.target,
 
-            title: `${currentState.toUpperCase()} Discovery`,
+              title: `${currentState.toUpperCase()} Discovery`,
 
-            description: `Runtime finding generated during ${currentState} stage`,
+              description: `Runtime finding generated during ${currentState} stage`,
 
-            severity: updatedScan.severity,
+              severity: updatedScan.severity,
 
-            category: currentState,
+              category: currentState,
 
-            status: "open",
-          }).catch((error) => {
-            console.error("Failed to persist finding:", error);
+              status: "open",
+            };
+          },
+        );
+
+        const findingBatchPromise = createFindingsBatch(findingBatch).catch(
+          (error) => {
+            console.error("Failed to persist finding batch:", error);
 
             return null;
-          });
-
-          findingPromises.push(findingPromise);
-        }
+          },
+        );
 
         const shouldCreateAlert =
           severity === "critical" || severity === "high";
@@ -640,15 +647,21 @@ class ScanRuntimeEngine {
         ) {
           this.alertedScanConditions.add(alertConditionKey);
 
-          Promise.all(findingPromises)
-            .then((findingResponses) => {
-              const relatedFindings = findingResponses
-                .map((findingResponse) => {
-                  return (
-                    findingResponse?.data?._id ?? findingResponse?._id ?? null
-                  );
-                })
-                .filter(Boolean);
+          findingBatchPromise
+            .then((findingResponse) => {
+              if (!findingResponse) {
+                this.alertedScanConditions.delete(alertConditionKey);
+
+                return null;
+              }
+
+              const relatedFindings = Array.isArray(findingResponse?.data)
+                ? findingResponse.data
+                    .map((finding) => {
+                      return finding?._id ?? null;
+                    })
+                    .filter(Boolean)
+                : [];
 
               const intelligence = generateThreatIntelligence({
                 stage: currentState,
