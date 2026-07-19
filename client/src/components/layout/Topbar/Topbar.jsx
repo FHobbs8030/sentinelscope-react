@@ -8,7 +8,7 @@ import SearchResultsModal from "../../Search/SearchResultsModal";
 
 import "./Topbar.css";
 
-function Topbar({ onMenuToggle }) {
+function Topbar({ onMenuToggle, sidebarOpen }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -161,7 +161,9 @@ function Topbar({ onMenuToggle }) {
             className="topbar-menu-toggle"
             type="button"
             onClick={onMenuToggle}
-            aria-label="Toggle sidebar"
+            aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+            aria-expanded={sidebarOpen}
+            aria-controls="primary-sidebar"
           >
             ☰
           </button>
