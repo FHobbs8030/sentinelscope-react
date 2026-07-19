@@ -191,14 +191,9 @@ function DashboardSectionNav() {
       window.clearTimeout(selectionTimerRef.current);
     }
 
-    const navBottom = navRef.current?.getBoundingClientRect().bottom ?? 166;
-
-    const targetTop =
-      section.getBoundingClientRect().top + window.scrollY - navBottom - 16;
-
-    window.scrollTo({
-      top: Math.max(0, targetTop),
+    section.scrollIntoView({
       behavior: "smooth",
+      block: "start",
     });
 
     selectionTimerRef.current = window.setTimeout(() => {
