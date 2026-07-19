@@ -33,10 +33,12 @@
 .operations-row {
   display: grid;
 
- grid-template-columns:
-    260px
-    1fr
-    180px;
+  grid-template-columns:
+    minmax(240px, 260px)
+    minmax(0, 1fr)
+    minmax(170px, 180px);
+
+  grid-template-areas: "launch scans activity";
 
   gap: var(--space-3);
 
@@ -44,6 +46,22 @@
 }
 
 .operations-row > * {
+  min-width: 0;
+}
+
+.operations-launch-slot {
+  grid-area: launch;
+}
+
+.operations-scans-slot {
+  grid-area: scans;
+
+  min-width: 0;
+}
+
+.operations-activity-slot {
+  grid-area: activity;
+
   min-width: 0;
 }
 /* =========================================
@@ -128,18 +146,26 @@
    RESPONSIVE
 ========================================= */
 
-@media (max-width: 1600px) {
+@media (max-width: 1500px) {
   .operations-row {
     grid-template-columns:
-      260px
-      minmax(0, 1fr)
-      180px;
+      minmax(260px, 0.85fr)
+      minmax(280px, 1.15fr);
+
+    grid-template-areas:
+      "launch activity"
+      "scans scans";
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1100px) {
   .operations-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+
+    grid-template-areas:
+      "launch"
+      "scans"
+      "activity";
   }
 }
 

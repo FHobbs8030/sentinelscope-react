@@ -6,7 +6,7 @@ import missionStore from "./missionStore";
 
 import scanEventBus from "../runtime/scanEventBus";
 
-import { createMission as createMissionRecord } from "../api/missionsApi";
+import missionPersistenceReconciler from "./missionPersistenceReconciler";
 
 export function createMission({ target, type, profile, severity }) {
   return {
@@ -36,24 +36,9 @@ export async function launchMission({ target, type, profile, severity }) {
     severity,
   });
 
-  try {
-    const response = await createMissionRecord({
-      target,
-      type,
-      profile,
-      severity,
-      state: mission.state,
-      progress: mission.progress,
-    });
-
-    if (response?.data?._id) {
-      mission.mongoId = response.data._id;
-    }
-  } catch (error) {
-    console.error("[ReconOrchestrator] Failed to persist mission", error);
-  }
-
   missionStore.addMission(mission);
+
+  await missionPersistenceReconciler.persistCreate(mission);
 
   enqueueMission(mission);
 

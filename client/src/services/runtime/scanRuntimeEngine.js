@@ -9,9 +9,9 @@ import {
 
 import scanEventBus from "./scanEventBus";
 import { createScan, updateScan } from "../api/scansApi";
-import { createFinding } from "../api/findingsApi";
+import { createFindingsBatch } from "../api/findingsApi";
 import { createAlert } from "../api/alertsApi";
-import { updateMission } from "../api/missionsApi";
+import missionPersistenceReconciler from "../orchestration/missionPersistenceReconciler";
 import { generateThreatIntelligence } from "../intelligence/threatIntelligenceEngine";
 import { generateThreatPrediction } from "../intelligence/threatPredictionEngine";
 import { calculateRiskScore } from "../intelligence/riskAssessmentEngine";
@@ -33,6 +33,9 @@ class ScanRuntimeEngine {
     this.lastScanPersistedAt = new Map();
 
     this.pendingScanWrites = new Map();
+
+    this.pendingScanCreates = new Map();
+    this.scanReconcileTimers = new Map();
 
     this.alertedScanConditions = new Set();
   }
@@ -104,6 +107,14 @@ class ScanRuntimeEngine {
 
     this.pendingScanWrites.clear();
 
+    this.pendingScanCreates.clear();
+
+    this.scanReconcileTimers.forEach((timerId) => {
+      clearTimeout(timerId);
+    });
+
+    this.scanReconcileTimers.clear();
+
     this.alertedScanConditions.clear();
 
     scanEventBus.emitTelemetry("Runtime engine destroyed", {
@@ -135,6 +146,152 @@ class ScanRuntimeEngine {
     this.scans = Array.isArray(scans) ? [...scans] : [];
 
     this.emit();
+  }
+
+  getRuntimeScan(scanId) {
+    return this.scans.find((scan) => scan.id === scanId) ?? null;
+  }
+
+  buildScanCreatePayload(scan) {
+    const mission = scan.missionId
+      ? missionStore.getMission(scan.missionId)
+      : null;
+
+    return {
+      clientScanId: scan.id,
+
+      name: scan.name ?? scan.target,
+      target: scan.target,
+
+      missionId: scan.missionId,
+      missionMongoId:
+        scan.missionMongoId ?? mission?.mongoId ?? null,
+
+      scanType: scan.type ?? "recon",
+
+      severity: scan.severity,
+      profile: scan.profile,
+
+      status: scan.status,
+      currentStage: scan.currentStage ?? scan.status,
+
+      runtimeState: isTerminalScanState(scan.status)
+        ? "completed"
+        : "active",
+
+      progress: scan.progress,
+      findingsCount: scan.findingsCount,
+
+      startedAt: scan.startedAt,
+      completedAt: scan.completedAt ?? null,
+    };
+  }
+
+  scheduleScanReconciliation(scanId) {
+    if (!scanId || this.scanReconcileTimers.has(scanId)) {
+      return;
+    }
+
+    const timerId = setTimeout(async () => {
+      this.scanReconcileTimers.delete(scanId);
+
+      const latestScan = this.getRuntimeScan(scanId);
+
+      if (!latestScan) {
+        return;
+      }
+
+      if (latestScan.mongoId) {
+        await this.persistScan(latestScan, {
+          force: true,
+        });
+
+        return;
+      }
+
+      await this.persistScanCreate(latestScan);
+    }, 5000);
+
+    this.scanReconcileTimers.set(scanId, timerId);
+  }
+
+  persistScanCreate(scan) {
+    if (!scan?.id) {
+      return Promise.resolve(false);
+    }
+
+    if (scan.mongoId) {
+      return Promise.resolve(true);
+    }
+
+    const pendingCreate = this.pendingScanCreates.get(scan.id);
+
+    if (pendingCreate) {
+      return pendingCreate;
+    }
+
+    const createPromise = (async () => {
+      try {
+        const latestScan =
+          this.getRuntimeScan(scan.id) ?? scan;
+
+        const response = await createScan(
+          this.buildScanCreatePayload(latestScan),
+        );
+
+        const mongoId =
+          response?.data?._id ?? response?._id ?? null;
+
+        if (!mongoId) {
+          throw new Error(
+            "Scan create response did not include a MongoDB ID",
+          );
+        }
+
+        scan.mongoId = mongoId;
+
+        this.scans = this.scans.map((item) =>
+          item.id === scan.id
+            ? {
+                ...item,
+                mongoId,
+              }
+            : item,
+        );
+
+        const reconciledScan =
+          this.getRuntimeScan(scan.id) ?? {
+            ...scan,
+            mongoId,
+          };
+
+        this.emit();
+
+        return this.persistScan(reconciledScan, {
+          force: true,
+        });
+      } catch (error) {
+        console.error(
+          `[Scan Persistence] Failed to recover ${scan.target}:`,
+          error,
+        );
+
+        this.scheduleScanReconciliation(scan.id);
+
+        return false;
+      }
+    })().finally(() => {
+      if (
+        this.pendingScanCreates.get(scan.id) ===
+        createPromise
+      ) {
+        this.pendingScanCreates.delete(scan.id);
+      }
+    });
+
+    this.pendingScanCreates.set(scan.id, createPromise);
+
+    return createPromise;
   }
 
   async addScan(scan) {
@@ -190,35 +347,7 @@ class ScanRuntimeEngine {
 
     this.scans.unshift(runtimeScan);
 
-    try {
-      const response = await createScan({
-        name: runtimeScan.name ?? runtimeScan.target,
-
-        target: runtimeScan.target,
-
-        missionId: runtimeScan.missionId,
-        missionMongoId: runtimeScan.missionMongoId,
-
-        scanType: runtimeScan.type ?? "recon",
-
-        severity: runtimeScan.severity,
-        profile: runtimeScan.profile,
-
-        status: runtimeScan.status,
-        currentStage: runtimeScan.status,
-
-        runtimeState: "active",
-
-        progress: runtimeScan.progress,
-        findingsCount: runtimeScan.findingsCount,
-
-        startedAt: runtimeScan.startedAt,
-      });
-
-      runtimeScan.mongoId = response?.data?._id ?? response?._id ?? null;
-    } catch (error) {
-      console.error("Failed to persist scan:", error);
-    }
+    await this.persistScanCreate(runtimeScan);
 
     scanEventBus.emitScanCreated(runtimeScan);
 
@@ -248,7 +377,16 @@ class ScanRuntimeEngine {
   }
 
   buildScanPersistencePayload(scan) {
+    const mission = scan.missionId
+      ? missionStore.getMission(scan.missionId)
+      : null;
+
     return {
+      missionId: scan.missionId ?? null,
+
+      missionMongoId:
+        scan.missionMongoId ?? mission?.mongoId ?? null,
+
       status: scan.status,
 
       currentStage: scan.currentStage,
@@ -265,7 +403,7 @@ class ScanRuntimeEngine {
 
   persistScan(scan, { previousScan = null, force = false } = {}) {
     if (!scan.mongoId) {
-      return Promise.resolve(false);
+      return this.persistScanCreate(scan);
     }
 
     const persistenceKey = scan.mongoId;
@@ -306,6 +444,8 @@ class ScanRuntimeEngine {
         return true;
       })
       .catch((error) => {
+        this.scheduleScanReconciliation(scan.id);
+
         console.error(
           `[Scan Persistence] Failed to update ${scan.target}:`,
           error,
@@ -601,33 +741,40 @@ class ScanRuntimeEngine {
       ) {
         const severity = updatedScan.severity?.toLowerCase();
 
-        const findingPromises = [];
+        const findingBatch = Array.from(
+          {
+            length: findingsIncrease,
+          },
+          () => {
+            return {
+              clientFindingId: crypto.randomUUID(),
 
-        for (let i = 0; i < findingsIncrease; i += 1) {
-          const findingPromise = createFinding({
-            scanId: updatedScan.mongoId,
+              scanId: updatedScan.mongoId,
 
-            missionId: updatedScan.missionId,
+              missionId: updatedScan.missionId,
 
-            target: updatedScan.target,
+              target: updatedScan.target,
 
-            title: `${currentState.toUpperCase()} Discovery`,
+              title: `${currentState.toUpperCase()} Discovery`,
 
-            description: `Runtime finding generated during ${currentState} stage`,
+              description: `Runtime finding generated during ${currentState} stage`,
 
-            severity: updatedScan.severity,
+              severity: updatedScan.severity,
 
-            category: currentState,
+              category: currentState,
 
-            status: "open",
-          }).catch((error) => {
-            console.error("Failed to persist finding:", error);
+              status: "open",
+            };
+          },
+        );
+
+        const findingBatchPromise = createFindingsBatch(findingBatch).catch(
+          (error) => {
+            console.error("Failed to persist finding batch:", error);
 
             return null;
-          });
-
-          findingPromises.push(findingPromise);
-        }
+          },
+        );
 
         const shouldCreateAlert =
           severity === "critical" || severity === "high";
@@ -640,15 +787,21 @@ class ScanRuntimeEngine {
         ) {
           this.alertedScanConditions.add(alertConditionKey);
 
-          Promise.all(findingPromises)
-            .then((findingResponses) => {
-              const relatedFindings = findingResponses
-                .map((findingResponse) => {
-                  return (
-                    findingResponse?.data?._id ?? findingResponse?._id ?? null
-                  );
-                })
-                .filter(Boolean);
+          findingBatchPromise
+            .then((findingResponse) => {
+              if (!findingResponse) {
+                this.alertedScanConditions.delete(alertConditionKey);
+
+                return null;
+              }
+
+              const relatedFindings = Array.isArray(findingResponse?.data)
+                ? findingResponse.data
+                    .map((finding) => {
+                      return finding?._id ?? null;
+                    })
+                    .filter(Boolean)
+                : [];
 
               const intelligence = generateThreatIntelligence({
                 stage: currentState,
@@ -833,25 +986,36 @@ class ScanRuntimeEngine {
   }
 
   async synchronizeMission(scan, missionState) {
-    if (!scan.missionMongoId) {
+    if (!scan.missionId) {
       return;
     }
 
-    try {
-      await updateMission(scan.missionMongoId, {
-        state: missionState,
-        progress: missionState === "completed" ? 100 : scan.progress,
+    const updates = {
+      state: missionState,
+      progress: missionState === "completed" ? 100 : scan.progress,
+    };
+
+    missionStore.updateMission(scan.missionId, updates);
+
+    let mission = missionStore.getMission(scan.missionId);
+
+    if (!mission) {
+      return;
+    }
+
+    if (!mission.mongoId && scan.missionMongoId) {
+      missionStore.updateMission(scan.missionId, {
+        mongoId: scan.missionMongoId,
       });
 
-      if (scan.missionId) {
-        missionStore.updateMission(scan.missionId, {
-          state: missionState,
-          progress: missionState === "completed" ? 100 : scan.progress,
-        });
-      }
-    } catch (error) {
-      console.error("[Mission Sync] Failed to update mission:", error);
+      mission =
+        missionStore.getMission(scan.missionId) ?? {
+          ...mission,
+          mongoId: scan.missionMongoId,
+        };
     }
+
+    await missionPersistenceReconciler.persistLatest(mission);
   }
 
   generateFindings(state, runtimeProfile) {

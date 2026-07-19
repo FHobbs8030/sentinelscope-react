@@ -28,7 +28,7 @@ const normalizeMissionCollection = (responseData) => {
 
     return {
       ...mission,
-      id: mission.id ?? mongoId,
+      id: mission.clientMissionId ?? mission.id ?? mongoId,
       mongoId,
     };
   });

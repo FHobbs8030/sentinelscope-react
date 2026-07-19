@@ -31,10 +31,11 @@
 
 .recent-scans-table {
   width: 100%;
+  min-width: 760px;
 
   border-collapse: collapse;
 
-  table-layout: auto;
+  table-layout: fixed;
 }
 
 /* =========================================
@@ -201,8 +202,11 @@ Completed
 ========================================= */
 
 .progress-track {
-  width: 80px;
+  width: 100%;
+  min-width: 44px;
   max-width: 80px;
+
+  flex: 1 1 80px;
 
   height: 4px;
 
@@ -230,11 +234,16 @@ Completed
 
   align-items: center;
 
-  gap: 10px;
+  min-width: 0;
+
+  gap: 8px;
 }
 
 .progress-label {
-  width: 36px;
+  width: auto;
+  min-width: 34px;
+
+  flex: 0 0 auto;
 
   font-size: 0.72rem;
 
@@ -374,32 +383,32 @@ Completed
 
 .scan-table-header th:nth-child(1),
 .scan-table-cell:nth-child(1) {
-  width: 160px; /* Target */
+  width: 34%; /* Target */
 }
 
 .scan-table-header th:nth-child(2),
 .scan-table-cell:nth-child(2) {
-  width: 170px; /* Type */
+  width: 14%; /* Type */
 }
 
 .scan-table-header th:nth-child(3),
 .scan-table-cell:nth-child(3) {
-  width: 170px;
+  width: 14%; /* Status */
 }
 
 .scan-table-header th:nth-child(4),
 .scan-table-cell:nth-child(4) {
-  width: 130px; /* Progress */
+  width: 18%; /* Progress */
 }
 
 .scan-table-header th:nth-child(5),
 .scan-table-cell:nth-child(5) {
-  width: 120px; /* Runtime / Started */
+  width: 12%; /* Started */
 }
 
 .scan-table-header th:nth-child(6),
 .scan-table-cell:nth-child(6) {
-  width: 60px; /* Actions */
+  width: 8%; /* Actions */
 }
 
 .scan-type-badge {
@@ -464,4 +473,180 @@ Completed
   );
 
   border: 1px solid rgba(251,146,60,0.35);
+}
+
+/* =========================================
+   RESPONSIVE SCAN TABLE
+========================================= */
+
+.mobile-scans-list {
+  display: none;
+}
+
+@media (max-width: 1500px) {
+  .scan-table-header th,
+  .scan-table-cell {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .progress-track {
+    max-width: 64px;
+  }
+
+  .scan-action-button {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .desktop-scans-table {
+    display: none;
+  }
+
+  .mobile-scans-list {
+    display: grid;
+
+    gap: 10px;
+  }
+
+  .mobile-scan-card {
+    min-width: 0;
+
+    padding: 14px;
+
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    border-radius: 12px;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(22, 34, 47, 0.92),
+        rgba(13, 23, 33, 0.96)
+      );
+
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.025),
+      0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .mobile-scan-target {
+    margin-bottom: 10px;
+
+    padding-bottom: 10px;
+
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+
+    color: var(--color-text-primary);
+
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-scan-meta {
+    display: grid;
+
+    gap: 0;
+  }
+
+  .mobile-scan-field {
+    display: grid;
+
+    grid-template-columns: 78px minmax(0, 1fr);
+
+    align-items: center;
+
+    min-height: 40px;
+
+    gap: 10px;
+
+    border-bottom: 1px solid rgba(148, 163, 184, 0.07);
+  }
+
+  .mobile-scan-field:last-child {
+    border-bottom: 0;
+  }
+
+  .mobile-scan-label {
+    color: var(--color-text-secondary);
+
+    font-size: 0.66rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .mobile-scan-value {
+    color: var(--color-text-primary);
+
+    font-size: 0.76rem;
+  }
+
+  .mobile-scan-card .scan-type-badge,
+  .mobile-scan-card .status-chip,
+  .mobile-scan-card .scan-action-button {
+    justify-self: start;
+  }
+
+  .mobile-scan-progress-field .progress-wrapper {
+    width: 100%;
+  }
+
+  .mobile-scan-progress-field .progress-track {
+    width: 100%;
+    max-width: none;
+  }
+
+  .mobile-scans-actions {
+    display: flex;
+
+    justify-content: center;
+
+    padding-top: 4px;
+  }
+
+  .mobile-scans-toggle {
+    width: 100%;
+
+    min-height: 42px;
+
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    border-radius: 10px;
+
+    background: rgba(37, 99, 235, 0.1);
+
+    color: var(--color-text-primary);
+
+    font: inherit;
+    font-size: 0.76rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .mobile-scans-toggle:hover {
+    border-color: rgba(96, 165, 250, 0.55);
+
+    background: rgba(37, 99, 235, 0.16);
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-scan-card {
+    padding: 12px;
+  }
+
+  .mobile-scan-field {
+    grid-template-columns: 68px minmax(0, 1fr);
+
+    gap: 8px;
+  }
 }

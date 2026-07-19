@@ -1,4 +1,5 @@
 import scanRuntimeEngine from "./scanRuntimeEngine";
+import missionPersistenceReconciler from "../orchestration/missionPersistenceReconciler";
 
 let runtimeBootstrapped = false;
 
@@ -11,4 +12,5 @@ export function bootstrapRuntime(runtimeScans) {
 
   scanRuntimeEngine.initialize(runtimeScans);
   scanRuntimeEngine.start();
+  missionPersistenceReconciler.start();
 }
