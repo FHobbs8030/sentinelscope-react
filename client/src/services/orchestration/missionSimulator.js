@@ -6,7 +6,7 @@ import missionStore from "./missionStore";
 
 import { MISSION_STATES } from "./missionStates";
 
-import { updateMission as updateMissionRecord } from "../api/missionsApi";
+import missionPersistenceReconciler from "./missionPersistenceReconciler";
 
 function delay(ms) {
   return new Promise((resolve) => {
@@ -19,18 +19,7 @@ async function synchronizeMission(mission, updates) {
 
   Object.assign(mission, updates);
 
-  if (!mission.mongoId) {
-    return;
-  }
-
-  try {
-    await updateMissionRecord(mission.mongoId, updates);
-  } catch (error) {
-    console.error(
-      "[MissionSimulator] Failed to synchronize mission state",
-      error,
-    );
-  }
+  await missionPersistenceReconciler.persistLatest(mission);
 }
 
 export async function simulateMissionLifecycle(mission) {

@@ -4,7 +4,7 @@ export function rebuildRuntimeScan(scan) {
   const terminal = isTerminalScanState(scan.status);
 
   return {
-    id: scan._id || scan.id,
+    id: scan.clientScanId || scan._id || scan.id,
 
     mongoId: scan._id || scan.mongoId || null,
 
