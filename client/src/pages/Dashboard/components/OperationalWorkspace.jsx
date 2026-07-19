@@ -44,11 +44,17 @@ function OperationalWorkspace() {
       </div>
 
       <div className="operations-row">
-        <ScanLaunchPanel />
+        <div className="operations-launch-slot">
+          <ScanLaunchPanel />
+        </div>
 
-        <RecentScansPanel />
+        <div className="operations-scans-slot">
+          <RecentScansPanel />
+        </div>
 
-        <ActivityFeed />
+        <div className="operations-activity-slot">
+          <ActivityFeed />
+        </div>
       </div>
 
       <OperationsSummaryPanel />
