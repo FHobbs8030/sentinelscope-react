@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import "./Dashboard.css";
 
@@ -28,72 +29,116 @@ function Dashboard() {
   const telemetryLogs = useTelemetry();
 
   const [selectedAlert, setSelectedAlert] = useState(null);
+  const [searchParams] = useSearchParams();
 
- return (
-   <div className="dashboard-shell">
-     <DashboardSectionNav />
-     <SentinelPulseScanner />
+  const focusType = searchParams.get("focus");
+  const focusId = searchParams.get("id");
 
-     <div className="dashboard-main">
-       {/* KPI Workspace */}
-       <section
-         id="dashboard-overview"
-         className="dashboard-zone dashboard-zone--kpi"
-       >
-         <KpiSummarySection />
-       </section>
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
 
-       {/* Operations Workspace */}
-       <section id="dashboard-operations" className="dashboard-zone">
-         <OperationalWorkspace />
-       </section>
+    const hasSearchFocus = params.get("focus") && params.get("id");
 
-       {/* Analytics Workspace */}
-       <section id="dashboard-analytics" className="dashboard-zone">
-         <AnalyticsWorkspace />
-       </section>
+    if (hasSearchFocus) {
+      return;
+    }
 
-       {/* Intelligence Workspace */}
-       <section id="dashboard-executive" className="dashboard-zone">
-         <ExecutiveIntelligenceSection />
+    /*
+    A normal Dashboard load should always begin at Overview.
 
-         <PredictiveIntelligenceSection
-           alerts={selectedAlert ? [selectedAlert] : []}
-         />
+    Browsers may otherwise restore the previous scroll position after
+    refresh, which can reopen the Dashboard at Analytics, Executive,
+    Terminal, or another previously viewed workspace.
+  */
+    window.history.scrollRestoration = "manual";
 
-         <CorrelationIntelligenceSection />
-       </section>
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  }, []);
 
-       {/* Investigation Workspace */}
-       <section id="dashboard-alerts" className="dashboard-zone">
-         <AlertOperationsSection
-           selectedAlert={selectedAlert}
-           onSelectAlert={setSelectedAlert}
-         />
+  useEffect(() => {
+    const supportedFocusTypes = new Set(["scan", "finding", "mission"]);
 
-         <AlertDetailsPanel alert={selectedAlert} />
+    if (!focusType || !focusId || !supportedFocusTypes.has(focusType)) {
+      return;
+    }
 
-         <AlertTimelineViewer alert={selectedAlert} />
+    const operationsSection = document.getElementById("dashboard-operations");
 
-         <AlertIntelligenceDrawer alert={selectedAlert} />
-       </section>
+    operationsSection?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [focusType, focusId]);
 
-       {/* Reporting Workspace */}
-       <section id="dashboard-reports" className="dashboard-zone">
-         <AnalyticsSection />
-       </section>
+  return (
+    <div className="dashboard-shell">
+      <DashboardSectionNav />
+      <SentinelPulseScanner />
 
-       {/* Terminal Workspace */}
-       <section id="dashboard-terminal" className="dashboard-zone">
-         <TerminalPanel
-           title="Network Operations Terminal"
-           status="LIVE"
-           logs={telemetryLogs}
-         />
-       </section>
-     </div>
-   </div>
- );
+      <div className="dashboard-main">
+        {/* KPI Workspace */}
+        <section
+          id="dashboard-overview"
+          className="dashboard-zone dashboard-zone--kpi"
+        >
+          <KpiSummarySection />
+        </section>
+
+        {/* Operations Workspace */}
+        <section id="dashboard-operations" className="dashboard-zone">
+          <OperationalWorkspace focusType={focusType} focusId={focusId} />
+        </section>
+
+        {/* Analytics Workspace */}
+        <section id="dashboard-analytics" className="dashboard-zone">
+          <AnalyticsWorkspace />
+        </section>
+
+        {/* Intelligence Workspace */}
+        <section id="dashboard-executive" className="dashboard-zone">
+          <ExecutiveIntelligenceSection />
+
+          <PredictiveIntelligenceSection
+            alerts={selectedAlert ? [selectedAlert] : []}
+          />
+
+          <CorrelationIntelligenceSection />
+        </section>
+
+        {/* Investigation Workspace */}
+        <section id="dashboard-alerts" className="dashboard-zone">
+          <AlertOperationsSection
+            selectedAlert={selectedAlert}
+            onSelectAlert={setSelectedAlert}
+          />
+
+          <AlertDetailsPanel alert={selectedAlert} />
+
+          <AlertTimelineViewer alert={selectedAlert} />
+
+          <AlertIntelligenceDrawer alert={selectedAlert} />
+        </section>
+
+        {/* Reporting Workspace */}
+        <section id="dashboard-reports" className="dashboard-zone">
+          <AnalyticsSection />
+        </section>
+
+        {/* Terminal Workspace */}
+        <section id="dashboard-terminal" className="dashboard-zone">
+          <TerminalPanel
+            title="Network Operations Terminal"
+            status="LIVE"
+            logs={telemetryLogs}
+          />
+        </section>
+      </div>
+    </div>
+  );
 }
 
 export default Dashboard;

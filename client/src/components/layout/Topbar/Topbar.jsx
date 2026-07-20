@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 
 import useScans from "../../../hooks/useScans";
@@ -9,6 +10,7 @@ import SearchResultsModal from "../../Search/SearchResultsModal";
 import "./Topbar.css";
 
 function Topbar({ onMenuToggle, sidebarOpen }) {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -39,7 +41,7 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
             .includes(query),
         )
         .map((scan) => ({
-          id: scan.id,
+          id: scan.clientScanId || scan.scanId || scan._id || scan.id,
           type: "scan",
           title: scan.name,
           subtitle: scan.target,
@@ -60,7 +62,7 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
             .includes(query),
         )
         .map((finding) => ({
-          id: finding._id,
+          id: finding.clientFindingId || finding._id || finding.id,
           type: "finding",
           title: finding.title,
           subtitle: finding.target,
@@ -76,7 +78,11 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
             .includes(query),
         )
         .map((mission) => ({
-          id: mission._id,
+          id:
+            mission.clientMissionId ||
+            mission.missionId ||
+            mission._id ||
+            mission.id,
           type: "mission",
           title: mission.name,
           subtitle: mission.target,
@@ -92,6 +98,28 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
     }
 
     setShowSearchResults(true);
+  };
+
+  const handleSearchResultSelect = (item) => {
+    if (!item?.type || !item?.id) {
+      return;
+    }
+
+    const params = new URLSearchParams({
+      focus: item.type,
+      id: String(item.id),
+    });
+
+    setShowSearchResults(false);
+
+    navigate(`/?${params.toString()}`);
+
+    window.requestAnimationFrame(() => {
+      document.getElementById("dashboard-operations")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   };
 
   return (
@@ -175,9 +203,7 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
         searchTerm={searchTerm}
         results={searchResults}
         onClose={() => setShowSearchResults(false)}
-        onSelect={(item) => {
-          console.log("Selected Search Result:", item);
-        }}
+        onSelect={handleSearchResultSelect}
       />
     </>
   );

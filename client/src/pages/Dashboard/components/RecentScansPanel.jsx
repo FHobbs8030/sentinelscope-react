@@ -1,15 +1,117 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import "./ScanOperationsSection.css";
 
 import useScans from "../../../hooks/useScans";
+import scanEventBus, {
+  SCAN_EVENTS,
+} from "../../../services/runtime/scanEventBus";
 
 const MOBILE_SCAN_LIMIT = 10;
+const NEW_SCAN_FOCUS_DURATION_MS = 7000;
+
+const scanMatchesIdentity = (scan, scanId) => {
+  if (!scan || !scanId) {
+    return false;
+  }
+
+  return [scan.id, scan.clientScanId, scan.scanId, scan._id]
+    .filter(Boolean)
+    .some((identity) => String(identity) === String(scanId));
+};
+
+const getStableScanKey = (scan, index) => {
+  return (
+    scan.clientScanId || scan.scanId || scan._id || scan.id || `scan-${index}`
+  );
+};
 
 function RecentScansPanel() {
   const { scans, isLoading, error, refreshScans } = useScans();
 
   const [showAllMobileScans, setShowAllMobileScans] = useState(false);
+  const [focusedScanId, setFocusedScanId] = useState(null);
+
+  const panelRef = useRef(null);
+  const handledFocusIdRef = useRef(null);
+  const focusTimerRef = useRef(null);
+
+  useEffect(() => {
+    const unsubscribe = scanEventBus.subscribe(
+      SCAN_EVENTS.SCAN_CREATED,
+      (event) => {
+        const createdScanId = event.payload?.scan?.id;
+
+        if (!createdScanId) {
+          return;
+        }
+
+        if (focusTimerRef.current) {
+          window.clearTimeout(focusTimerRef.current);
+          focusTimerRef.current = null;
+        }
+
+        handledFocusIdRef.current = null;
+        setFocusedScanId(String(createdScanId));
+      },
+    );
+
+    return () => {
+      unsubscribe();
+
+      if (focusTimerRef.current) {
+        window.clearTimeout(focusTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!focusedScanId || handledFocusIdRef.current === focusedScanId) {
+      return;
+    }
+
+    const matchingScan = scans.find((scan) =>
+      scanMatchesIdentity(scan, focusedScanId),
+    );
+
+    if (!matchingScan) {
+      return;
+    }
+
+    const focusTargets = panelRef.current?.querySelectorAll(
+      '[data-new-scan-focus="true"]',
+    );
+
+    const visibleTarget = Array.from(focusTargets || []).find(
+      (element) => element.getClientRects().length > 0,
+    );
+
+    if (!visibleTarget) {
+      return;
+    }
+
+    handledFocusIdRef.current = focusedScanId;
+
+    const prefersReducedMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+
+    visibleTarget.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "center",
+    });
+
+    focusTimerRef.current = window.setTimeout(() => {
+      setFocusedScanId((currentScanId) =>
+        currentScanId === focusedScanId ? null : currentScanId,
+      );
+
+      if (handledFocusIdRef.current === focusedScanId) {
+        handledFocusIdRef.current = null;
+      }
+
+      focusTimerRef.current = null;
+    }, NEW_SCAN_FOCUS_DURATION_MS);
+  }, [focusedScanId, scans]);
 
   const mobileScans = showAllMobileScans
     ? scans
@@ -102,7 +204,7 @@ function RecentScansPanel() {
   }
 
   return (
-    <div className="recent-scans-panel">
+    <div className="recent-scans-panel" ref={panelRef}>
       {error ? (
         <div className="scan-error-state" role="alert" aria-live="polite">
           <span>{error} Showing the last available scan telemetry.</span>
@@ -131,69 +233,76 @@ function RecentScansPanel() {
           </thead>
 
           <tbody>
-            {scans.map((scan, index) => (
-              <tr
-                key={scan.scanId || scan._id || index}
-                className="scan-table-row"
-              >
-                <td
-                  className="scan-table-cell target-cell"
-                  data-label="Target"
-                  title={scan.target}
+            {scans.map((scan, index) => {
+              const isFocusedScan = scanMatchesIdentity(scan, focusedScanId);
+
+              return (
+                <tr
+                  key={getStableScanKey(scan, index)}
+                  className={`scan-table-row${
+                    isFocusedScan ? " scan-new-focus" : ""
+                  }`}
+                  data-new-scan-focus={isFocusedScan ? "true" : undefined}
                 >
-                  {scan.target}
-                </td>
-
-                <td className="scan-table-cell" data-label="Type">
-                  <span
-                    className={`scan-type-badge scan-type-${(
-                      scan.type ||
-                      scan.scanType ||
-                      "full"
-                    ).toLowerCase()}`}
+                  <td
+                    className="scan-table-cell target-cell"
+                    data-label="Target"
+                    title={scan.target}
                   >
-                    {formatScanType(scan.type || scan.scanType || "full")}
-                  </span>
-                </td>
+                    {scan.target}
+                  </td>
 
-                <td className="scan-table-cell" data-label="Status">
-                  <span
-                    className={`status-chip status-${(
-                      scan.status || "completed"
-                    ).toLowerCase()}`}
-                  >
-                    {formatStatusLabel(scan.status || "completed")}
-                  </span>
-                </td>
-
-                <td className="scan-table-cell" data-label="Progress">
-                  <div className="progress-wrapper">
-                    <span className="progress-label">
-                      {scan.progress || 0}%
+                  <td className="scan-table-cell" data-label="Type">
+                    <span
+                      className={`scan-type-badge scan-type-${(
+                        scan.type ||
+                        scan.scanType ||
+                        "full"
+                      ).toLowerCase()}`}
+                    >
+                      {formatScanType(scan.type || scan.scanType || "full")}
                     </span>
+                  </td>
 
-                    <div className="progress-track">
-                      <div
-                        className="progress-fill"
-                        style={{
-                          width: `${scan.progress || 0}%`,
-                        }}
-                      />
+                  <td className="scan-table-cell" data-label="Status">
+                    <span
+                      className={`status-chip status-${(
+                        scan.status || "completed"
+                      ).toLowerCase()}`}
+                    >
+                      {formatStatusLabel(scan.status || "completed")}
+                    </span>
+                  </td>
+
+                  <td className="scan-table-cell" data-label="Progress">
+                    <div className="progress-wrapper">
+                      <span className="progress-label">
+                        {scan.progress || 0}%
+                      </span>
+
+                      <div className="progress-track">
+                        <div
+                          className="progress-fill"
+                          style={{
+                            width: `${scan.progress || 0}%`,
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </td>
+                  </td>
 
-                <td className="scan-table-cell" data-label="Started">
-                  {formatStartedTime(scan.startedAt)}
-                </td>
+                  <td className="scan-table-cell" data-label="Started">
+                    {formatStartedTime(scan.startedAt)}
+                  </td>
 
-                <td className="scan-table-cell" data-label="Actions">
-                  <button type="button" className="scan-action-button">
-                    View
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  <td className="scan-table-cell" data-label="Actions">
+                    <button type="button" className="scan-action-button">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -203,11 +312,15 @@ function RecentScansPanel() {
           const scanType = scan.type || scan.scanType || "full";
           const scanStatus = scan.status || "completed";
           const scanProgress = scan.progress || 0;
+          const isFocusedScan = scanMatchesIdentity(scan, focusedScanId);
 
           return (
             <article
-              key={`mobile-${scan.scanId || scan._id || index}`}
-              className="mobile-scan-card"
+              key={`mobile-${getStableScanKey(scan, index)}`}
+              className={`mobile-scan-card${
+                isFocusedScan ? " scan-new-focus" : ""
+              }`}
+              data-new-scan-focus={isFocusedScan ? "true" : undefined}
             >
               <div className="mobile-scan-target" title={scan.target}>
                 {scan.target}
@@ -238,9 +351,7 @@ function RecentScansPanel() {
                   <span className="mobile-scan-label">Progress</span>
 
                   <div className="progress-wrapper">
-                    <span className="progress-label">
-                      {scanProgress}%
-                    </span>
+                    <span className="progress-label">{scanProgress}%</span>
 
                     <div className="progress-track">
                       <div
