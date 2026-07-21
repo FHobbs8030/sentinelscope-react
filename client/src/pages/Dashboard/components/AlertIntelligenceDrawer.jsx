@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 
+import useAlerts from "../../../hooks/useAlerts";
+
 import "./AlertIntelligenceDrawer.css";
+
+function getAlertId(alert) {
+  return alert?._id || alert?.id || null;
+}
 
 function getRiskAssessment(severity) {
   switch (severity?.toLowerCase()) {
@@ -83,6 +89,7 @@ function getFindingIdentifier(finding) {
 function AlertIntelligenceDrawer({ alert }) {
   const [copiedFindingId, setCopiedFindingId] = useState(null);
   const copyTimerRef = useRef(null);
+  const { isUpdating, acknowledge, investigate, resolve, close } = useAlerts();
 
   useEffect(() => {
     return () => {
@@ -106,6 +113,56 @@ function AlertIntelligenceDrawer({ alert }) {
       </section>
     );
   }
+
+  const alertId = getAlertId(alert);
+
+  const getWorkflowActionLabel = () => {
+    switch (alert.status) {
+      case "open":
+        return "Acknowledge";
+
+      case "acknowledged":
+        return "Investigate";
+
+      case "investigating":
+        return "Resolve";
+
+      case "resolved":
+        return "Close";
+
+      default:
+        return null;
+    }
+  };
+
+  const runWorkflowAction = () => {
+    if (!alertId) {
+      return;
+    }
+
+    switch (alert.status) {
+      case "open":
+        void acknowledge(alertId);
+        break;
+
+      case "acknowledged":
+        void investigate(alertId);
+        break;
+
+      case "investigating":
+        void resolve(alertId);
+        break;
+
+      case "resolved":
+        void close(alertId);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const workflowActionLabel = getWorkflowActionLabel();
 
   const riskScore = getRiskScore(alert);
 
@@ -382,23 +439,42 @@ function AlertIntelligenceDrawer({ alert }) {
         </div>
 
         <div className="alert-intelligence-drawer__action-buttons">
+          {workflowActionLabel ? (
+            <button
+              type="button"
+              className="alert-action-button alert-action-button--primary"
+              disabled={isUpdating}
+              onClick={runWorkflowAction}
+            >
+              {isUpdating ? "Updating..." : workflowActionLabel}
+            </button>
+          ) : null}
+
           <button
             type="button"
-            className="alert-action-button alert-action-button--primary"
+            className="alert-action-button"
+            disabled
+            title="Analyst assignment is planned for a future release."
           >
-            Acknowledge
+            Assign Analyst — Planned
           </button>
 
-          <button type="button" className="alert-action-button">
-            Assign Analyst
+          <button
+            type="button"
+            className="alert-action-button"
+            disabled
+            title="Incident creation is planned for a future release."
+          >
+            Create Incident — Planned
           </button>
 
-          <button type="button" className="alert-action-button">
-            Create Incident
-          </button>
-
-          <button type="button" className="alert-action-button">
-            Export Report
+          <button
+            type="button"
+            className="alert-action-button"
+            disabled
+            title="Alert report export is planned for a future release."
+          >
+            Export Report — Planned
           </button>
         </div>
       </footer>

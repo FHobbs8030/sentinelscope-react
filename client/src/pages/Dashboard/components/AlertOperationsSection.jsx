@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import "./AlertOperationsSection.css";
 
 import useAlerts from "../../../hooks/useAlerts";
@@ -62,6 +63,9 @@ const getShortId = (alert) => {
 };
 
 function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
+  const [copiedAlertId, setCopiedAlertId] = useState(null);
+  const copyTimerRef = useRef(null);
+
   const {
     alerts,
     loading,
@@ -75,6 +79,14 @@ function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
     close,
   } = useAlerts();
 
+    useEffect(() => {
+      return () => {
+        if (copyTimerRef.current) {
+          window.clearTimeout(copyTimerRef.current);
+        }
+      };
+    }, []);
+
   const allActiveAlerts = alerts.filter((alert) => alert.status !== "closed");
 
   const visibleAlerts = allActiveAlerts.slice(0, 12);
@@ -82,6 +94,31 @@ function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
   const retryLoad = () => {
     void refreshAlerts();
   };
+
+    const copyAlertId = async (event, alertId) => {
+      event.stopPropagation();
+
+      if (!alertId || !navigator.clipboard) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(String(alertId));
+
+        setCopiedAlertId(String(alertId));
+
+        if (copyTimerRef.current) {
+          window.clearTimeout(copyTimerRef.current);
+        }
+
+        copyTimerRef.current = window.setTimeout(() => {
+          setCopiedAlertId(null);
+          copyTimerRef.current = null;
+        }, 1800);
+      } catch (copyError) {
+        console.error("Unable to copy alert ID:", copyError);
+      }
+    };
 
   const selectAlert = (alert) => {
     onSelectAlert(alert);
@@ -313,12 +350,40 @@ function AlertOperationsSection({ selectedAlert, onSelectAlert }) {
                   </span>
                 </div>
 
-                <span
+                <button
+                  type="button"
                   className="alert-operations-card__id"
-                  title={alertId ? String(alertId) : "Alert ID unavailable"}
+                  disabled={!alertId}
+                  aria-label={
+                    alertId
+                      ? `Copy alert ID ${String(alertId)}`
+                      : "Alert ID unavailable"
+                  }
+                  title={
+                    alertId
+                      ? `Copy alert ID: ${String(alertId)}`
+                      : "Alert ID unavailable"
+                  }
+                  onClick={(event) => {
+                    void copyAlertId(event, alertId);
+                  }}
+                  onKeyDown={(event) => {
+                    event.stopPropagation();
+                  }}
                 >
-                  ID {getShortId(alert)}
-                </span>
+                  <span className="alert-operations-card__id-label">ID</span>
+
+                  <span className="alert-operations-card__id-value">
+                    {getShortId(alert)}
+                  </span>
+
+                  <span
+                    className="alert-operations-card__id-copy"
+                    aria-hidden="true"
+                  >
+                    {copiedAlertId === String(alertId) ? "✓" : "⧉"}
+                  </span>
+                </button>
               </div>
 
               <div className="alert-operations-card__content">

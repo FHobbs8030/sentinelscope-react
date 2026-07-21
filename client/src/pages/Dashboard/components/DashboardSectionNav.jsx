@@ -51,14 +51,14 @@ const dashboardSections = [
   },
   {
     id: "dashboard-reports",
-    label: "Reports",
+    label: "Metrics",
     color: "#4ade80",
     rgb: "74, 222, 128",
     icon: FileText,
   },
   {
     id: "dashboard-terminal",
-    label: "Terminal",
+    label: "Telemetry",
     color: "#2dd4bf",
     rgb: "45, 212, 191",
     icon: Terminal,

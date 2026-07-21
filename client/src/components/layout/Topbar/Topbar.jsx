@@ -32,6 +32,18 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
     );
   });
 
+  const [scannerAnimation, setScannerAnimation] = useState(() => {
+    const savedPreference = window.localStorage.getItem(
+      "sentinelscope-scanner-animation",
+    );
+
+    if (savedPreference !== null) {
+      return savedPreference === "true";
+    }
+
+    return true;
+  });
+
   const notificationsRef = useRef(null);
   const settingsRef = useRef(null);
 
@@ -152,6 +164,17 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
       String(reducedMotion),
     );
   }, [reducedMotion]);
+
+  useEffect(() => {
+    document.documentElement.dataset.scannerAnimation = scannerAnimation
+      ? "on"
+      : "off";
+
+    window.localStorage.setItem(
+      "sentinelscope-scanner-animation",
+      String(scannerAnimation),
+    );
+  }, [scannerAnimation]);
 
   useEffect(() => {
     if (!showNotifications && !showSettings) {
@@ -416,6 +439,31 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
                     role="switch"
                     aria-checked={reducedMotion}
                     onClick={() => setReducedMotion((current) => !current)}
+                  >
+                    <span className="topbar-settings-switch-thumb" />
+                  </button>
+                </div>
+
+                <div className="topbar-settings-option">
+                  <div className="topbar-settings-option-copy">
+                    <strong>Scanner Animation</strong>
+
+                    <span>
+                      Enable the Sentinel Pulse sweep while operational scans
+                      are active.
+                    </span>
+                  </div>
+
+                  <button
+                    className={`topbar-settings-switch ${
+                      scannerAnimation ? "topbar-settings-switch--active" : ""
+                    }`}
+                    type="button"
+                    role="switch"
+                    aria-checked={scannerAnimation}
+                    onClick={() => {
+                      setScannerAnimation((current) => !current);
+                    }}
                   >
                     <span className="topbar-settings-switch-thumb" />
                   </button>

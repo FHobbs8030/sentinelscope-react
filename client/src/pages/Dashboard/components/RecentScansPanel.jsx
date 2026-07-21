@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import "./ScanOperationsSection.css";
 
@@ -20,13 +21,19 @@ const scanMatchesIdentity = (scan, scanId) => {
     .some((identity) => String(identity) === String(scanId));
 };
 
+const getStableScanId = (scan) => {
+  return scan?.clientScanId || scan?.scanId || scan?._id || scan?.id || null;
+};
+
 const getStableScanKey = (scan, index) => {
   return (
     scan.clientScanId || scan.scanId || scan._id || scan.id || `scan-${index}`
   );
 };
 
-function RecentScansPanel() {
+function RecentScansPanel({ focusType, focusId }) {
+  const navigate = useNavigate();
+
   const { scans, isLoading, error, refreshScans } = useScans();
 
   const [showAllMobileScans, setShowAllMobileScans] = useState(false);
@@ -35,6 +42,11 @@ function RecentScansPanel() {
   const panelRef = useRef(null);
   const handledFocusIdRef = useRef(null);
   const focusTimerRef = useRef(null);
+
+  const externalFocusedScanId =
+    focusType === "scan" && focusId ? String(focusId) : null;
+
+  const effectiveFocusedScanId = externalFocusedScanId || focusedScanId;
 
   useEffect(() => {
     const unsubscribe = scanEventBus.subscribe(
@@ -65,53 +77,77 @@ function RecentScansPanel() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!focusedScanId || handledFocusIdRef.current === focusedScanId) {
-      return;
+useEffect(() => {
+  if (
+    !effectiveFocusedScanId ||
+    handledFocusIdRef.current === effectiveFocusedScanId
+  ) {
+    return;
+  }
+
+  const matchingScan = scans.find((scan) =>
+    scanMatchesIdentity(scan, effectiveFocusedScanId),
+  );
+
+  if (!matchingScan) {
+    return;
+  }
+
+  const focusTargets = panelRef.current?.querySelectorAll(
+    '[data-new-scan-focus="true"]',
+  );
+
+  const visibleTarget = Array.from(focusTargets || []).find(
+    (element) => element.getClientRects().length > 0,
+  );
+
+  if (!visibleTarget) {
+    return;
+  }
+
+  handledFocusIdRef.current = effectiveFocusedScanId;
+
+  const prefersReducedMotion =
+    document.documentElement.dataset.motion === "reduced" ||
+    (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false);
+
+  visibleTarget.scrollIntoView({
+    behavior: prefersReducedMotion ? "auto" : "smooth",
+    block: "center",
+  });
+
+  /*
+    URL-driven focus remains active while ?focus=scan&id=... is present.
+
+    Newly created scan auto-focus remains temporary.
+  */
+  if (externalFocusedScanId) {
+    if (focusTimerRef.current) {
+      window.clearTimeout(focusTimerRef.current);
     }
-
-    const matchingScan = scans.find((scan) =>
-      scanMatchesIdentity(scan, focusedScanId),
-    );
-
-    if (!matchingScan) {
-      return;
-    }
-
-    const focusTargets = panelRef.current?.querySelectorAll(
-      '[data-new-scan-focus="true"]',
-    );
-
-    const visibleTarget = Array.from(focusTargets || []).find(
-      (element) => element.getClientRects().length > 0,
-    );
-
-    if (!visibleTarget) {
-      return;
-    }
-
-    handledFocusIdRef.current = focusedScanId;
-
-    const prefersReducedMotion =
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-
-    visibleTarget.scrollIntoView({
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-      block: "center",
-    });
 
     focusTimerRef.current = window.setTimeout(() => {
-      setFocusedScanId((currentScanId) =>
-        currentScanId === focusedScanId ? null : currentScanId,
-      );
+      navigate("/", { replace: true });
 
-      if (handledFocusIdRef.current === focusedScanId) {
-        handledFocusIdRef.current = null;
-      }
-
+      handledFocusIdRef.current = null;
       focusTimerRef.current = null;
     }, NEW_SCAN_FOCUS_DURATION_MS);
-  }, [focusedScanId, scans]);
+
+    return;
+  }
+
+  focusTimerRef.current = window.setTimeout(() => {
+    setFocusedScanId((currentScanId) =>
+      currentScanId === effectiveFocusedScanId ? null : currentScanId,
+    );
+
+    if (handledFocusIdRef.current === effectiveFocusedScanId) {
+      handledFocusIdRef.current = null;
+    }
+
+    focusTimerRef.current = null;
+  }, NEW_SCAN_FOCUS_DURATION_MS);
+}, [effectiveFocusedScanId, externalFocusedScanId, navigate, scans]);
 
   const mobileScans = showAllMobileScans
     ? scans
@@ -169,6 +205,29 @@ function RecentScansPanel() {
     const diffDays = Math.floor(diffHours / 24);
 
     return `${diffDays}d ago`;
+  };
+
+  const viewScan = (scan) => {
+    const scanId = getStableScanId(scan);
+
+    if (!scanId) {
+      return;
+    }
+
+    const params = new URLSearchParams({
+      focus: "scan",
+      id: String(scanId),
+    });
+
+    navigate(`/?${params.toString()}`);
+
+    window.dispatchEvent(
+      new CustomEvent("dashboard:section-focus", {
+        detail: {
+          sectionId: "dashboard-operations",
+        },
+      }),
+    );
   };
 
   const retryLoad = () => {
@@ -234,7 +293,10 @@ function RecentScansPanel() {
 
           <tbody>
             {scans.map((scan, index) => {
-              const isFocusedScan = scanMatchesIdentity(scan, focusedScanId);
+              const isFocusedScan = scanMatchesIdentity(
+                scan,
+                effectiveFocusedScanId,
+              );
 
               return (
                 <tr
@@ -296,7 +358,14 @@ function RecentScansPanel() {
                   </td>
 
                   <td className="scan-table-cell" data-label="Actions">
-                    <button type="button" className="scan-action-button">
+                    <button
+                      type="button"
+                      className="scan-action-button"
+                      disabled={!getStableScanId(scan)}
+                      onClick={() => {
+                        viewScan(scan);
+                      }}
+                    >
                       View
                     </button>
                   </td>
@@ -312,7 +381,10 @@ function RecentScansPanel() {
           const scanType = scan.type || scan.scanType || "full";
           const scanStatus = scan.status || "completed";
           const scanProgress = scan.progress || 0;
-          const isFocusedScan = scanMatchesIdentity(scan, focusedScanId);
+          const isFocusedScan = scanMatchesIdentity(
+            scan,
+            effectiveFocusedScanId,
+          );
 
           return (
             <article
@@ -375,7 +447,14 @@ function RecentScansPanel() {
                 <div className="mobile-scan-field">
                   <span className="mobile-scan-label">Actions</span>
 
-                  <button type="button" className="scan-action-button">
+                  <button
+                    type="button"
+                    className="scan-action-button"
+                    disabled={!getStableScanId(scan)}
+                    onClick={() => {
+                      viewScan(scan);
+                    }}
+                  >
                     View
                   </button>
                 </div>

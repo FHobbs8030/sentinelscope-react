@@ -298,6 +298,23 @@
   margin-bottom: 6px;
 }
 
+.scan-target-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+.scan-target-error {
+  margin: 0;
+
+  color: #fca5a5;
+
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 /* =========================================
    PANEL TITLE / SUBTITLE
 ========================================= */
@@ -343,6 +360,33 @@
   color: var(--color-text-secondary);
 }
 
+.scan-field-status {
+  display: inline-flex;
+
+  margin-left: 8px;
+  padding: 2px 6px;
+
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 999px;
+
+  background: rgba(148, 163, 184, 0.07);
+
+  color: #94a3b8;
+
+  font-size: 0.58rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.scan-field-helper {
+  color: #7c8ba1;
+
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
 .scan-select {
   width: 100%;
 
@@ -373,6 +417,14 @@
   border-radius: 10px;
 
   color: var(--color-text-secondary);
+}
+
+.scan-secondary-action:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+  filter: saturate(0.55);
+  transform: none;
+  box-shadow: none;
 }
 
 /* =========================================

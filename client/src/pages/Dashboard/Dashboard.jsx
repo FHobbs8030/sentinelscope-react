@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import "./Dashboard.css";
@@ -24,15 +24,37 @@ import CorrelationIntelligenceSection from "./components/CorrelationIntelligence
 import TerminalPanel from "../../components/dashboard/TerminalPanel/TerminalPanel";
 
 import useTelemetry from "../../hooks/useTelemetry";
+import useAlerts from "../../hooks/useAlerts";
 
 function Dashboard() {
   const telemetryLogs = useTelemetry();
+  const { alerts } = useAlerts();
 
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [searchParams] = useSearchParams();
 
   const focusType = searchParams.get("focus");
   const focusId = searchParams.get("id");
+
+  const canonicalSelectedAlert = useMemo(() => {
+    if (!selectedAlert) {
+      return null;
+    }
+
+    const selectedAlertId = selectedAlert._id || selectedAlert.id;
+
+    if (!selectedAlertId) {
+      return selectedAlert;
+    }
+
+    return (
+      alerts.find((alert) => {
+        const alertId = alert._id || alert.id;
+
+        return alertId && String(alertId) === String(selectedAlertId);
+      }) ?? selectedAlert
+    );
+  }, [alerts, selectedAlert]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -63,6 +85,25 @@ function Dashboard() {
     const supportedFocusTypes = new Set(["scan", "finding", "mission"]);
 
     if (!focusType || !focusId || !supportedFocusTypes.has(focusType)) {
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent("dashboard:section-focus", {
+        detail: {
+          sectionId: "dashboard-operations",
+        },
+      }),
+    );
+
+    /*
+    Scan focus is handled precisely by RecentScansPanel.
+
+    Do not also scroll the entire Operations workspace, because that
+    competes with the exact scan-row focus and can leave the user at
+    the top of Operations instead of at the selected scan.
+  */
+    if (focusType === "scan") {
       return;
     }
 
@@ -103,7 +144,7 @@ function Dashboard() {
           <ExecutiveIntelligenceSection />
 
           <PredictiveIntelligenceSection
-            alerts={selectedAlert ? [selectedAlert] : []}
+            alerts={canonicalSelectedAlert ? [canonicalSelectedAlert] : []}
           />
 
           <CorrelationIntelligenceSection />
@@ -112,15 +153,15 @@ function Dashboard() {
         {/* Investigation Workspace */}
         <section id="dashboard-alerts" className="dashboard-zone">
           <AlertOperationsSection
-            selectedAlert={selectedAlert}
+            selectedAlert={canonicalSelectedAlert}
             onSelectAlert={setSelectedAlert}
           />
 
-          <AlertDetailsPanel alert={selectedAlert} />
+          <AlertDetailsPanel alert={canonicalSelectedAlert} />
 
-          <AlertTimelineViewer alert={selectedAlert} />
+          <AlertTimelineViewer alert={canonicalSelectedAlert} />
 
-          <AlertIntelligenceDrawer alert={selectedAlert} />
+          <AlertIntelligenceDrawer alert={canonicalSelectedAlert} />
         </section>
 
         {/* Reporting Workspace */}
@@ -131,7 +172,7 @@ function Dashboard() {
         {/* Terminal Workspace */}
         <section id="dashboard-terminal" className="dashboard-zone">
           <TerminalPanel
-            title="Network Operations Terminal"
+            title="Network Operations Telemetry"
             status="LIVE"
             logs={telemetryLogs}
           />
