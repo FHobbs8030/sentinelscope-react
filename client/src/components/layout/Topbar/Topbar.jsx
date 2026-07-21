@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import useScans from "../../../hooks/useScans";
 import useFindings from "../../../hooks/useFindings";
 import useMissions from "../../../hooks/useMissions";
+import useAlerts from "../../../hooks/useAlerts";
 
 import SearchResultsModal from "../../Search/SearchResultsModal";
 
@@ -14,12 +15,36 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  const [reducedMotion, setReducedMotion] = useState(() => {
+    const savedPreference = window.localStorage.getItem(
+      "sentinelscope-reduced-motion",
+    );
+
+    if (savedPreference !== null) {
+      return savedPreference === "true";
+    }
+
+    return (
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
+    );
+  });
+
+  const notificationsRef = useRef(null);
+  const settingsRef = useRef(null);
 
   const { scans = [] } = useScans();
 
   const { findings = [] } = useFindings();
 
   const { missions = [] } = useMissions();
+  const {
+    alerts = [],
+    loading: alertsLoading,
+    error: alertsError,
+  } = useAlerts();
 
   const searchResults = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -92,6 +117,91 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
     };
   }, [searchTerm, scans, findings, missions]);
 
+  const notificationAlerts = useMemo(() => {
+    return [...alerts]
+      .filter((alert) => {
+        const severity = String(alert?.severity || "").toLowerCase();
+        const status = String(alert?.status || "").toLowerCase();
+
+        return (
+          ["critical", "high"].includes(severity) &&
+          !["resolved", "closed"].includes(status)
+        );
+      })
+      .sort((firstAlert, secondAlert) => {
+        const firstTime = new Date(
+          firstAlert?.updatedAt || firstAlert?.createdAt || 0,
+        ).getTime();
+
+        const secondTime = new Date(
+          secondAlert?.updatedAt || secondAlert?.createdAt || 0,
+        ).getTime();
+
+        return secondTime - firstTime;
+      })
+      .slice(0, 6);
+  }, [alerts]);
+
+  useEffect(() => {
+    document.documentElement.dataset.motion = reducedMotion
+      ? "reduced"
+      : "full";
+
+    window.localStorage.setItem(
+      "sentinelscope-reduced-motion",
+      String(reducedMotion),
+    );
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    if (!showNotifications && !showSettings) {
+      return undefined;
+    }
+
+    const handlePointerDown = (event) => {
+      if (
+        showNotifications &&
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target)
+      ) {
+        setShowNotifications(false);
+      }
+
+      if (
+        showSettings &&
+        settingsRef.current &&
+        !settingsRef.current.contains(event.target)
+      ) {
+        setShowSettings(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setShowNotifications(false);
+        setShowSettings(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showNotifications, showSettings]);
+
+  const handleNotificationsToggle = () => {
+    setShowSettings(false);
+    setShowNotifications((current) => !current);
+  };
+
+  const handleSettingsToggle = () => {
+    setShowNotifications(false);
+    setShowSettings((current) => !current);
+  };
+
   const handleSearch = () => {
     if (!searchTerm.trim()) {
       return;
@@ -116,6 +226,19 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
 
     window.requestAnimationFrame(() => {
       document.getElementById("dashboard-operations")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  };
+
+  const handleViewAlerts = () => {
+    setShowNotifications(false);
+
+    navigate("/");
+
+    window.requestAnimationFrame(() => {
+      document.getElementById("dashboard-alerts")?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
@@ -159,21 +282,151 @@ function Topbar({ onMenuToggle, sidebarOpen }) {
         </div>
 
         <div className="topbar-right">
-          <button
-            className="topbar-icon-button"
-            type="button"
-            aria-label="Notifications"
-          >
-            🔔
-          </button>
+          <div className="topbar-notifications" ref={notificationsRef}>
+            <button
+              className="topbar-icon-button"
+              type="button"
+              aria-label="Notifications"
+              aria-expanded={showNotifications}
+              aria-controls="topbar-notifications-panel"
+              onClick={handleNotificationsToggle}
+            >
+              🔔
+              {notificationAlerts.length > 0 && (
+                <span className="topbar-notification-badge">
+                  {notificationAlerts.length}
+                </span>
+              )}
+            </button>
 
-          <button
-            className="topbar-icon-button"
-            type="button"
-            aria-label="Settings"
-          >
-            ⚙️
-          </button>
+            {showNotifications && (
+              <div
+                id="topbar-notifications-panel"
+                className="topbar-notification-panel"
+              >
+                <div className="topbar-notification-header">
+                  <div>
+                    <strong>Notifications</strong>
+                    <span>Priority security activity</span>
+                  </div>
+
+                  <span className="topbar-notification-count">
+                    {notificationAlerts.length}
+                  </span>
+                </div>
+
+                <div className="topbar-notification-list">
+                  {alertsLoading && (
+                    <p className="topbar-notification-message">
+                      Loading alert activity...
+                    </p>
+                  )}
+
+                  {!alertsLoading && alertsError && (
+                    <p className="topbar-notification-message">
+                      Unable to load alert activity.
+                    </p>
+                  )}
+
+                  {!alertsLoading &&
+                    !alertsError &&
+                    notificationAlerts.length === 0 && (
+                      <p className="topbar-notification-message">
+                        No active high-priority alerts.
+                      </p>
+                    )}
+
+                  {!alertsLoading &&
+                    !alertsError &&
+                    notificationAlerts.map((alert) => {
+                      const alertId =
+                        alert?._id ||
+                        alert?.alertId ||
+                        alert?.clientAlertId ||
+                        `${alert?.target}-${alert?.createdAt}`;
+
+                      return (
+                        <div className="topbar-notification-item" key={alertId}>
+                          <div className="topbar-notification-item-heading">
+                            <span
+                              className={`topbar-notification-severity topbar-notification-severity--${String(
+                                alert?.severity || "unknown",
+                              ).toLowerCase()}`}
+                            >
+                              {alert?.severity || "Unknown"}
+                            </span>
+
+                            <span className="topbar-notification-status">
+                              {alert?.status || "Open"}
+                            </span>
+                          </div>
+
+                          <strong>{alert?.title || "Security Alert"}</strong>
+
+                          <span>{alert?.target || "Unknown target"}</span>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                <button
+                  className="topbar-notification-view-all"
+                  type="button"
+                  onClick={handleViewAlerts}
+                >
+                  View Alert Operations →
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="topbar-settings" ref={settingsRef}>
+            <button
+              className="topbar-icon-button"
+              type="button"
+              aria-label="Settings"
+              aria-expanded={showSettings}
+              aria-controls="topbar-settings-panel"
+              onClick={handleSettingsToggle}
+            >
+              ⚙️
+            </button>
+
+            {showSettings && (
+              <div id="topbar-settings-panel" className="topbar-settings-panel">
+                <div className="topbar-settings-header">
+                  <strong>Interface Settings</strong>
+                  <span>Local workspace preferences</span>
+                </div>
+
+                <div className="topbar-settings-option">
+                  <div className="topbar-settings-option-copy">
+                    <strong>Reduced Motion</strong>
+
+                    <span>
+                      Minimize interface animations and smooth scrolling.
+                    </span>
+                  </div>
+
+                  <button
+                    className={`topbar-settings-switch ${
+                      reducedMotion ? "topbar-settings-switch--active" : ""
+                    }`}
+                    type="button"
+                    role="switch"
+                    aria-checked={reducedMotion}
+                    onClick={() => setReducedMotion((current) => !current)}
+                  >
+                    <span className="topbar-settings-switch-thumb" />
+                  </button>
+                </div>
+
+                <div className="topbar-settings-footer">
+                  Preference saved in this browser
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="topbar-user">
             <div className="topbar-avatar">A</div>
